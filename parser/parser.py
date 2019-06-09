@@ -27229,7 +27229,7 @@ accept_table = [
 class Lexer(object):
     def __init__(self, source):
         if isinstance(source, type('String')):
-            self.reader = PushbackReader(file(source, "r"))
+            self.reader = PushbackReader(open(source, "r"))
         else:
             self.reader = PushbackReader(source)
 

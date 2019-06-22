@@ -24,6 +24,7 @@ class PushbackReader(object):
     def __init__(self, reader):
         self.__reader = reader
         self.__stack = Stack()
+        print(self.__reader)
 
     def peek (self):
         if (len(self.__stack) > 0 ): 
@@ -27277,7 +27278,7 @@ class Lexer(object):
 
         while 1:
             c = self.getChar()
-
+            
             if(c != -1):
                 if (c == 10):
                     if(self.cr):
@@ -27294,7 +27295,8 @@ class Lexer(object):
                     self.cr = False
 
                 text.append(chr(c))
-                
+                print(text)
+                print(len(text))    
                 while 1:
                     if (dfa_state < -1):
                         oldState = (-2 -dfa_state)
@@ -27306,9 +27308,9 @@ class Lexer(object):
                     tmp1 =  gotoTable[oldState]
                     low = 0
                     high = len(tmp1) - 1
-
+                    
                     while (low <= high):
-                        middle = (low + high) / 2
+                        middle = int((low + high) / 2)
                         tmp2 = tmp1[middle]
 
                         if(c < tmp2[0]):

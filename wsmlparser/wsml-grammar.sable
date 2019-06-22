@@ -153,6 +153,9 @@ Tokens
     full_iri	=	luridel iri_reference ruridel;
     name	=	( letter | '_' ) namechar*;
 
+Ignored Tokens
+    t_blank, t_comment;
+
 Productions
     wsmlvariant	= t_wsmlvariant full_iri;
     namespace = t_namespace prefixdefinitionlist;

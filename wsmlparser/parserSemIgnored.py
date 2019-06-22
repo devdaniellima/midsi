@@ -27310,7 +27310,7 @@ class Lexer(object):
                     high = len(tmp1) - 1
                     
                     while (low <= high):
-                        middle = int((low + high) / 2)
+                        middle = (low + high) // 2
                         tmp2 = tmp1[middle]
 
                         if(c < tmp2[0]):
@@ -34610,7 +34610,7 @@ class Parser(object):
         value = parser_gotoTable[index][0][1]
 
         while (low <= high):
-            middle = (low + high) / 2
+            middle = (low + high) // 2
 
             if (state < parser_gotoTable[index][middle][0]):
                 high = middle - 1
@@ -34657,7 +34657,7 @@ class Parser(object):
             high = len(actionTable[self.state()]) - 1
 
             while (low <= high):
-                middle = (low + high) / 2
+                middle = (low + high) // 2
 
                 if (index < actionTable[self.state()][middle][0]):
                     high = middle - 1

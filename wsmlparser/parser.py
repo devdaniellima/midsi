@@ -145,7 +145,7 @@ class Node(object):
             self.parent.replaceChild(self, node)
 
     def toString(self, other):
-        if isinstance(other, ListType):
+        if isinstance(other, list):
             sb = StringBuffer()
 
             for node in other:
@@ -34643,6 +34643,7 @@ class Parser(object):
                 lexer.next()
 
             token = lexer.peek()
+            # print('token encontrado: ' + str(token))
             last_pos = token.getPos()
             last_line = token.getLine()
             last_token = token
@@ -34681,10 +34682,10 @@ class Parser(object):
                 node = Start(node1, node2)
                 return node
             elif (action[0] == ACTION_ERROR):
-                print('TOKEN: ' + last_token.getText())
-                print('LINHA: ' + str(last_line))
-                print('POSIÇÃO: ' + str(last_pos))
-                print('ERRO: ' + errorMessages[errors[action[1]]])
+                # print('TOKEN: ' + last_token.getText())
+                # print('LINHA: ' + str(last_line))
+                # print('POSIÇÃO: ' + str(last_pos))
+                # print('ERRO: ' + errorMessages[errors[action[1]]])
                 raise ParserException(last_token, "[" + str(last_line) + "," + str(last_pos) + "] " + errorMessages[errors[action[1]]])
     
     def unescape (self, s):

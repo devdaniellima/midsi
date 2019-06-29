@@ -38392,4 +38392,48 @@ class Parser(object):
               
         return str(_out_)
 
+############################# Analisador pyDatalog ############################################## 
 
+class PyDatalogAnalysis(Analysis) :
+    def __init__(self):
+        print('\n\n---------- Analysis PyDatalog ---------\n')
+
+    def caseStart(self, node):
+        # node - Class Start
+        print('-- caseStart --')
+        node.getPWsml().apply(self) # returning AWsml
+
+    def caseAWsml(self, node):
+        # node - Class AWsml
+        # Gramática
+        # wsml = wsmlvariant? namespace? definition*;
+        print('-- caseAWsml --')
+        
+        # node.getDefinition()
+        for definition in node.getDefinition():
+            definition.apply(self)
+
+    def caseAOntologyDefinition(self,node):
+        # node - Class AOntologyDefinition
+        print('-- caseAOntologyDefinition --')
+        
+        # node.getOntology()
+        node.getOntology().apply(self) # returning AOntology
+        
+    def caseAOntology(self,node):
+        # node - Class AOntology
+        # Gramática
+        # ontology = t_ontology id? header* ontology_element*;
+        print('-- caseAOntology --')
+
+        # id?
+        if node.getId() != None: # returning AIriId
+            # print(node.getId()) Salvar id da ontologia
+           pass
+        
+lexer = Lexer('wsmlcodes/OntologiaMundo.wsml')
+container = PyDatalogAnalysis()
+
+parser = Parser(lexer)
+head = parser.parse()
+head.apply(container)

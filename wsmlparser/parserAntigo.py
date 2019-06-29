@@ -24,7 +24,6 @@ class PushbackReader(object):
     def __init__(self, reader):
         self.__reader = reader
         self.__stack = Stack()
-        print(self.__reader)
 
     def peek (self):
         if (len(self.__stack) > 0 ): 
@@ -146,7 +145,7 @@ class Node(object):
             self.parent.replaceChild(self, node)
 
     def toString(self, other):
-        if isinstance(other, ListType):
+        if isinstance(other, list):
             sb = StringBuffer()
 
             for node in other:
@@ -212,7 +211,7 @@ class Token(Node):
       
 
 class TComma(Token):
-    TokenIndex = 2
+    TokenIndex = 0
     
     def __init__(self, line=0, pos=0):
         super(TComma, self).__init__()
@@ -234,7 +233,7 @@ class TComma(Token):
 
 
 class TLpar(Token):
-    TokenIndex = 4
+    TokenIndex = 2
     
     def __init__(self, line=0, pos=0):
         super(TLpar, self).__init__()
@@ -256,7 +255,7 @@ class TLpar(Token):
 
 
 class TRpar(Token):
-    TokenIndex = 5
+    TokenIndex = 3
     
     def __init__(self, line=0, pos=0):
         super(TRpar, self).__init__()
@@ -278,7 +277,7 @@ class TRpar(Token):
 
 
 class TLbracket(Token):
-    TokenIndex = 6
+    TokenIndex = 4
     
     def __init__(self, line=0, pos=0):
         super(TLbracket, self).__init__()
@@ -300,7 +299,7 @@ class TLbracket(Token):
 
 
 class TRbracket(Token):
-    TokenIndex = 7
+    TokenIndex = 5
     
     def __init__(self, line=0, pos=0):
         super(TRbracket, self).__init__()
@@ -322,7 +321,7 @@ class TRbracket(Token):
 
 
 class TLbrace(Token):
-    TokenIndex = 8
+    TokenIndex = 6
     
     def __init__(self, line=0, pos=0):
         super(TLbrace, self).__init__()
@@ -344,7 +343,7 @@ class TLbrace(Token):
 
 
 class TRbrace(Token):
-    TokenIndex = 9
+    TokenIndex = 7
     
     def __init__(self, line=0, pos=0):
         super(TRbrace, self).__init__()
@@ -366,7 +365,7 @@ class TRbrace(Token):
 
 
 class THash(Token):
-    TokenIndex = 10
+    TokenIndex = 8
     
     def __init__(self, line=0, pos=0):
         super(THash, self).__init__()
@@ -388,7 +387,7 @@ class THash(Token):
 
 
 class TTAnd(Token):
-    TokenIndex = 11
+    TokenIndex = 9
     
     def __init__(self, line=0, pos=0):
         super(TTAnd, self).__init__()
@@ -410,7 +409,7 @@ class TTAnd(Token):
 
 
 class TTOr(Token):
-    TokenIndex = 12
+    TokenIndex = 10
     
     def __init__(self, line=0, pos=0):
         super(TTOr, self).__init__()
@@ -432,7 +431,7 @@ class TTOr(Token):
 
 
 class TTImpliedByLp(Token):
-    TokenIndex = 16
+    TokenIndex = 14
     
     def __init__(self, line=0, pos=0):
         super(TTImpliedByLp, self).__init__()
@@ -454,7 +453,7 @@ class TTImpliedByLp(Token):
 
 
 class TTConstraint(Token):
-    TokenIndex = 17
+    TokenIndex = 15
     
     def __init__(self, line=0, pos=0):
         super(TTConstraint, self).__init__()
@@ -476,7 +475,7 @@ class TTConstraint(Token):
 
 
 class TTExists(Token):
-    TokenIndex = 19
+    TokenIndex = 17
     
     def __init__(self, line=0, pos=0):
         super(TTExists, self).__init__()
@@ -498,7 +497,7 @@ class TTExists(Token):
 
 
 class TTForall(Token):
-    TokenIndex = 20
+    TokenIndex = 18
     
     def __init__(self, line=0, pos=0):
         super(TTForall, self).__init__()
@@ -520,7 +519,7 @@ class TTForall(Token):
 
 
 class TTUnivfalse(Token):
-    TokenIndex = 21
+    TokenIndex = 19
     
     def __init__(self, line=0, pos=0):
         super(TTUnivfalse, self).__init__()
@@ -542,7 +541,7 @@ class TTUnivfalse(Token):
 
 
 class TTUnivtrue(Token):
-    TokenIndex = 22
+    TokenIndex = 20
     
     def __init__(self, line=0, pos=0):
         super(TTUnivtrue, self).__init__()
@@ -564,7 +563,7 @@ class TTUnivtrue(Token):
 
 
 class TGt(Token):
-    TokenIndex = 23
+    TokenIndex = 21
     
     def __init__(self, line=0, pos=0):
         super(TGt, self).__init__()
@@ -586,7 +585,7 @@ class TGt(Token):
 
 
 class TLt(Token):
-    TokenIndex = 24
+    TokenIndex = 22
     
     def __init__(self, line=0, pos=0):
         super(TLt, self).__init__()
@@ -608,7 +607,7 @@ class TLt(Token):
 
 
 class TGte(Token):
-    TokenIndex = 25
+    TokenIndex = 23
     
     def __init__(self, line=0, pos=0):
         super(TGte, self).__init__()
@@ -630,7 +629,7 @@ class TGte(Token):
 
 
 class TLte(Token):
-    TokenIndex = 26
+    TokenIndex = 24
     
     def __init__(self, line=0, pos=0):
         super(TLte, self).__init__()
@@ -652,7 +651,7 @@ class TLte(Token):
 
 
 class TEqual(Token):
-    TokenIndex = 27
+    TokenIndex = 25
     
     def __init__(self, line=0, pos=0):
         super(TEqual, self).__init__()
@@ -674,7 +673,7 @@ class TEqual(Token):
 
 
 class TUnequal(Token):
-    TokenIndex = 28
+    TokenIndex = 26
     
     def __init__(self, line=0, pos=0):
         super(TUnequal, self).__init__()
@@ -696,7 +695,7 @@ class TUnequal(Token):
 
 
 class TAddOp(Token):
-    TokenIndex = 29
+    TokenIndex = 27
     
     def __init__(self, line=0, pos=0):
         super(TAddOp, self).__init__()
@@ -718,7 +717,7 @@ class TAddOp(Token):
 
 
 class TSubOp(Token):
-    TokenIndex = 30
+    TokenIndex = 28
     
     def __init__(self, line=0, pos=0):
         super(TSubOp, self).__init__()
@@ -740,7 +739,7 @@ class TSubOp(Token):
 
 
 class TStar(Token):
-    TokenIndex = 31
+    TokenIndex = 29
     
     def __init__(self, line=0, pos=0):
         super(TStar, self).__init__()
@@ -762,7 +761,7 @@ class TStar(Token):
 
 
 class TDivOp(Token):
-    TokenIndex = 32
+    TokenIndex = 30
     
     def __init__(self, line=0, pos=0):
         super(TDivOp, self).__init__()
@@ -784,7 +783,7 @@ class TDivOp(Token):
 
 
 class TTAssumption(Token):
-    TokenIndex = 33
+    TokenIndex = 31
     
     def __init__(self, line=0, pos=0):
         super(TTAssumption, self).__init__()
@@ -806,7 +805,7 @@ class TTAssumption(Token):
 
 
 class TTAxiom(Token):
-    TokenIndex = 34
+    TokenIndex = 32
     
     def __init__(self, line=0, pos=0):
         super(TTAxiom, self).__init__()
@@ -828,7 +827,7 @@ class TTAxiom(Token):
 
 
 class TTCapability(Token):
-    TokenIndex = 35
+    TokenIndex = 33
     
     def __init__(self, line=0, pos=0):
         super(TTCapability, self).__init__()
@@ -850,7 +849,7 @@ class TTCapability(Token):
 
 
 class TTChoreography(Token):
-    TokenIndex = 36
+    TokenIndex = 34
     
     def __init__(self, line=0, pos=0):
         super(TTChoreography, self).__init__()
@@ -872,7 +871,7 @@ class TTChoreography(Token):
 
 
 class TTConcept(Token):
-    TokenIndex = 37
+    TokenIndex = 35
     
     def __init__(self, line=0, pos=0):
         super(TTConcept, self).__init__()
@@ -894,7 +893,7 @@ class TTConcept(Token):
 
 
 class TTDefinedby(Token):
-    TokenIndex = 38
+    TokenIndex = 36
     
     def __init__(self, line=0, pos=0):
         super(TTDefinedby, self).__init__()
@@ -916,7 +915,7 @@ class TTDefinedby(Token):
 
 
 class TTEffect(Token):
-    TokenIndex = 39
+    TokenIndex = 37
     
     def __init__(self, line=0, pos=0):
         super(TTEffect, self).__init__()
@@ -938,7 +937,7 @@ class TTEffect(Token):
 
 
 class TTGgmediator(Token):
-    TokenIndex = 41
+    TokenIndex = 39
     
     def __init__(self, line=0, pos=0):
         super(TTGgmediator, self).__init__()
@@ -960,7 +959,7 @@ class TTGgmediator(Token):
 
 
 class TTGoal(Token):
-    TokenIndex = 42
+    TokenIndex = 40
     
     def __init__(self, line=0, pos=0):
         super(TTGoal, self).__init__()
@@ -982,7 +981,7 @@ class TTGoal(Token):
 
 
 class TTHasvalue(Token):
-    TokenIndex = 43
+    TokenIndex = 41
     
     def __init__(self, line=0, pos=0):
         super(TTHasvalue, self).__init__()
@@ -1004,7 +1003,7 @@ class TTHasvalue(Token):
 
 
 class TTImpliestype(Token):
-    TokenIndex = 44
+    TokenIndex = 42
     
     def __init__(self, line=0, pos=0):
         super(TTImpliestype, self).__init__()
@@ -1026,7 +1025,7 @@ class TTImpliestype(Token):
 
 
 class TTImportontology(Token):
-    TokenIndex = 45
+    TokenIndex = 43
     
     def __init__(self, line=0, pos=0):
         super(TTImportontology, self).__init__()
@@ -1048,7 +1047,7 @@ class TTImportontology(Token):
 
 
 class TTInstance(Token):
-    TokenIndex = 46
+    TokenIndex = 44
     
     def __init__(self, line=0, pos=0):
         super(TTInstance, self).__init__()
@@ -1070,7 +1069,7 @@ class TTInstance(Token):
 
 
 class TTInterface(Token):
-    TokenIndex = 47
+    TokenIndex = 45
     
     def __init__(self, line=0, pos=0):
         super(TTInterface, self).__init__()
@@ -1092,7 +1091,7 @@ class TTInterface(Token):
 
 
 class TTInverseof(Token):
-    TokenIndex = 48
+    TokenIndex = 46
     
     def __init__(self, line=0, pos=0):
         super(TTInverseof, self).__init__()
@@ -1114,7 +1113,7 @@ class TTInverseof(Token):
 
 
 class TTMemberof(Token):
-    TokenIndex = 49
+    TokenIndex = 47
     
     def __init__(self, line=0, pos=0):
         super(TTMemberof, self).__init__()
@@ -1136,7 +1135,7 @@ class TTMemberof(Token):
 
 
 class TTNamespace(Token):
-    TokenIndex = 50
+    TokenIndex = 48
     
     def __init__(self, line=0, pos=0):
         super(TTNamespace, self).__init__()
@@ -1158,7 +1157,7 @@ class TTNamespace(Token):
 
 
 class TTOftype(Token):
-    TokenIndex = 52
+    TokenIndex = 50
     
     def __init__(self, line=0, pos=0):
         super(TTOftype, self).__init__()
@@ -1180,7 +1179,7 @@ class TTOftype(Token):
 
 
 class TTOntology(Token):
-    TokenIndex = 53
+    TokenIndex = 51
     
     def __init__(self, line=0, pos=0):
         super(TTOntology, self).__init__()
@@ -1202,7 +1201,7 @@ class TTOntology(Token):
 
 
 class TTOomediator(Token):
-    TokenIndex = 54
+    TokenIndex = 52
     
     def __init__(self, line=0, pos=0):
         super(TTOomediator, self).__init__()
@@ -1224,7 +1223,7 @@ class TTOomediator(Token):
 
 
 class TTOrchestration(Token):
-    TokenIndex = 55
+    TokenIndex = 53
     
     def __init__(self, line=0, pos=0):
         super(TTOrchestration, self).__init__()
@@ -1246,7 +1245,7 @@ class TTOrchestration(Token):
 
 
 class TTPostcondition(Token):
-    TokenIndex = 56
+    TokenIndex = 54
     
     def __init__(self, line=0, pos=0):
         super(TTPostcondition, self).__init__()
@@ -1268,7 +1267,7 @@ class TTPostcondition(Token):
 
 
 class TTPrecondition(Token):
-    TokenIndex = 57
+    TokenIndex = 55
     
     def __init__(self, line=0, pos=0):
         super(TTPrecondition, self).__init__()
@@ -1290,7 +1289,7 @@ class TTPrecondition(Token):
 
 
 class TTReflexive(Token):
-    TokenIndex = 58
+    TokenIndex = 56
     
     def __init__(self, line=0, pos=0):
         super(TTReflexive, self).__init__()
@@ -1312,7 +1311,7 @@ class TTReflexive(Token):
 
 
 class TTRelation(Token):
-    TokenIndex = 59
+    TokenIndex = 57
     
     def __init__(self, line=0, pos=0):
         super(TTRelation, self).__init__()
@@ -1334,7 +1333,7 @@ class TTRelation(Token):
 
 
 class TTRelationInstance(Token):
-    TokenIndex = 60
+    TokenIndex = 58
     
     def __init__(self, line=0, pos=0):
         super(TTRelationInstance, self).__init__()
@@ -1356,7 +1355,7 @@ class TTRelationInstance(Token):
 
 
 class TTSharedvariable(Token):
-    TokenIndex = 61
+    TokenIndex = 59
     
     def __init__(self, line=0, pos=0):
         super(TTSharedvariable, self).__init__()
@@ -1378,7 +1377,7 @@ class TTSharedvariable(Token):
 
 
 class TTSource(Token):
-    TokenIndex = 62
+    TokenIndex = 60
     
     def __init__(self, line=0, pos=0):
         super(TTSource, self).__init__()
@@ -1400,7 +1399,7 @@ class TTSource(Token):
 
 
 class TTSubconcept(Token):
-    TokenIndex = 63
+    TokenIndex = 61
     
     def __init__(self, line=0, pos=0):
         super(TTSubconcept, self).__init__()
@@ -1422,7 +1421,7 @@ class TTSubconcept(Token):
 
 
 class TTSubrelation(Token):
-    TokenIndex = 64
+    TokenIndex = 62
     
     def __init__(self, line=0, pos=0):
         super(TTSubrelation, self).__init__()
@@ -1444,7 +1443,7 @@ class TTSubrelation(Token):
 
 
 class TTSymmetric(Token):
-    TokenIndex = 65
+    TokenIndex = 63
     
     def __init__(self, line=0, pos=0):
         super(TTSymmetric, self).__init__()
@@ -1466,7 +1465,7 @@ class TTSymmetric(Token):
 
 
 class TTTarget(Token):
-    TokenIndex = 66
+    TokenIndex = 64
     
     def __init__(self, line=0, pos=0):
         super(TTTarget, self).__init__()
@@ -1488,7 +1487,7 @@ class TTTarget(Token):
 
 
 class TTTransitive(Token):
-    TokenIndex = 67
+    TokenIndex = 65
     
     def __init__(self, line=0, pos=0):
         super(TTTransitive, self).__init__()
@@ -1510,7 +1509,7 @@ class TTTransitive(Token):
 
 
 class TTUsemediator(Token):
-    TokenIndex = 68
+    TokenIndex = 66
     
     def __init__(self, line=0, pos=0):
         super(TTUsemediator, self).__init__()
@@ -1532,7 +1531,7 @@ class TTUsemediator(Token):
 
 
 class TTUseservice(Token):
-    TokenIndex = 69
+    TokenIndex = 67
     
     def __init__(self, line=0, pos=0):
         super(TTUseservice, self).__init__()
@@ -1554,7 +1553,7 @@ class TTUseservice(Token):
 
 
 class TTWebservice(Token):
-    TokenIndex = 70
+    TokenIndex = 68
     
     def __init__(self, line=0, pos=0):
         super(TTWebservice, self).__init__()
@@ -1576,7 +1575,7 @@ class TTWebservice(Token):
 
 
 class TTWgmediator(Token):
-    TokenIndex = 71
+    TokenIndex = 69
     
     def __init__(self, line=0, pos=0):
         super(TTWgmediator, self).__init__()
@@ -1598,7 +1597,7 @@ class TTWgmediator(Token):
 
 
 class TTWsmlvariant(Token):
-    TokenIndex = 72
+    TokenIndex = 70
     
     def __init__(self, line=0, pos=0):
         super(TTWsmlvariant, self).__init__()
@@ -1620,7 +1619,7 @@ class TTWsmlvariant(Token):
 
 
 class TTWwmediator(Token):
-    TokenIndex = 73
+    TokenIndex = 71
     
     def __init__(self, line=0, pos=0):
         super(TTWwmediator, self).__init__()
@@ -1642,7 +1641,7 @@ class TTWwmediator(Token):
 
 
 class TAnonymous(Token):
-    TokenIndex = 75
+    TokenIndex = 73
     
     def __init__(self, line=0, pos=0):
         super(TAnonymous, self).__init__()
@@ -1664,8 +1663,8 @@ class TAnonymous(Token):
 
 
 class TTBlank(Token):
-    TokenIndex = 0
-    
+    TokenIndex = -1
+        
     def __init__(self, text, line=0, pos=0):
         super(TTBlank, self).__init__()    
         self.setText(text)
@@ -1679,8 +1678,8 @@ class TTBlank(Token):
        analysis.caseTTBlank(self)
       
 class TTComment(Token):
-    TokenIndex = 1
-    
+    TokenIndex = -1
+        
     def __init__(self, text, line=0, pos=0):
         super(TTComment, self).__init__()    
         self.setText(text)
@@ -1694,7 +1693,7 @@ class TTComment(Token):
        analysis.caseTTComment(self)
       
 class TEndpoint(Token):
-    TokenIndex = 3
+    TokenIndex = 1
     
     def __init__(self, text, line=0, pos=0):
         super(TEndpoint, self).__init__()    
@@ -1709,7 +1708,7 @@ class TEndpoint(Token):
        analysis.caseTEndpoint(self)
       
 class TTImplies(Token):
-    TokenIndex = 13
+    TokenIndex = 11
     
     def __init__(self, text, line=0, pos=0):
         super(TTImplies, self).__init__()    
@@ -1724,7 +1723,7 @@ class TTImplies(Token):
        analysis.caseTTImplies(self)
       
 class TTImpliedBy(Token):
-    TokenIndex = 14
+    TokenIndex = 12
     
     def __init__(self, text, line=0, pos=0):
         super(TTImpliedBy, self).__init__()    
@@ -1739,7 +1738,7 @@ class TTImpliedBy(Token):
        analysis.caseTTImpliedBy(self)
       
 class TTEquivalent(Token):
-    TokenIndex = 15
+    TokenIndex = 13
     
     def __init__(self, text, line=0, pos=0):
         super(TTEquivalent, self).__init__()    
@@ -1754,7 +1753,7 @@ class TTEquivalent(Token):
        analysis.caseTTEquivalent(self)
       
 class TTNot(Token):
-    TokenIndex = 18
+    TokenIndex = 16
     
     def __init__(self, text, line=0, pos=0):
         super(TTNot, self).__init__()    
@@ -1769,7 +1768,7 @@ class TTNot(Token):
        analysis.caseTTNot(self)
       
 class TTEndnfp(Token):
-    TokenIndex = 40
+    TokenIndex = 38
     
     def __init__(self, text, line=0, pos=0):
         super(TTEndnfp, self).__init__()    
@@ -1784,7 +1783,7 @@ class TTEndnfp(Token):
        analysis.caseTTEndnfp(self)
       
 class TTNfp(Token):
-    TokenIndex = 51
+    TokenIndex = 49
     
     def __init__(self, text, line=0, pos=0):
         super(TTNfp, self).__init__()    
@@ -1799,7 +1798,7 @@ class TTNfp(Token):
        analysis.caseTTNfp(self)
       
 class TVariable(Token):
-    TokenIndex = 74
+    TokenIndex = 72
     
     def __init__(self, text, line=0, pos=0):
         super(TVariable, self).__init__()    
@@ -1814,7 +1813,7 @@ class TVariable(Token):
        analysis.caseTVariable(self)
       
 class TNbAnonymous(Token):
-    TokenIndex = 76
+    TokenIndex = 74
     
     def __init__(self, text, line=0, pos=0):
         super(TNbAnonymous, self).__init__()    
@@ -1829,7 +1828,7 @@ class TNbAnonymous(Token):
        analysis.caseTNbAnonymous(self)
       
 class TPosInteger(Token):
-    TokenIndex = 77
+    TokenIndex = 75
     
     def __init__(self, text, line=0, pos=0):
         super(TPosInteger, self).__init__()    
@@ -1844,7 +1843,7 @@ class TPosInteger(Token):
        analysis.caseTPosInteger(self)
       
 class TPosDecimal(Token):
-    TokenIndex = 78
+    TokenIndex = 76
     
     def __init__(self, text, line=0, pos=0):
         super(TPosDecimal, self).__init__()    
@@ -1859,7 +1858,7 @@ class TPosDecimal(Token):
        analysis.caseTPosDecimal(self)
       
 class TString(Token):
-    TokenIndex = 79
+    TokenIndex = 77
     
     def __init__(self, text, line=0, pos=0):
         super(TString, self).__init__()    
@@ -1874,7 +1873,7 @@ class TString(Token):
        analysis.caseTString(self)
       
 class TFullIri(Token):
-    TokenIndex = 80
+    TokenIndex = 78
     
     def __init__(self, text, line=0, pos=0):
         super(TFullIri, self).__init__()    
@@ -1889,7 +1888,7 @@ class TFullIri(Token):
        analysis.caseTFullIri(self)
       
 class TName(Token):
-    TokenIndex = 81
+    TokenIndex = 79
     
     def __init__(self, text, line=0, pos=0):
         super(TName, self).__init__()    
@@ -1905,7 +1904,7 @@ class TName(Token):
       
 
 class EOF(Token):
-    TokenIndex = 82
+    TokenIndex = 80
 
     def __init__(self, line=0, pos=0):
         super(EOF, self).__init__()    
@@ -27278,7 +27277,7 @@ class Lexer(object):
 
         while 1:
             c = self.getChar()
-            
+
             if(c != -1):
                 if (c == 10):
                     if(self.cr):
@@ -27295,8 +27294,7 @@ class Lexer(object):
                     self.cr = False
 
                 text.append(chr(c))
-                print(text)
-                print(len(text))    
+                
                 while 1:
                     if (dfa_state < -1):
                         oldState = (-2 -dfa_state)
@@ -27308,7 +27306,7 @@ class Lexer(object):
                     tmp1 =  gotoTable[oldState]
                     low = 0
                     high = len(tmp1) - 1
-                    
+
                     while (low <= high):
                         middle = (low + high) // 2
                         tmp2 = tmp1[middle]
@@ -27337,7 +27335,7 @@ class Lexer(object):
                     if (accept_token >= 0 and accept_token <= 81):
                     	token = accept_tokens[accept_token](start_line + 1, start_pos + 1)
                     	if token.getText() == None:
-                    	    token.setText(self.getText(accept_length))
+                            token.setText(self.getText(accept_length))
                     	
                     	self.pushBack(accept_length)
                     	self.pos = accept_pos
@@ -34261,15 +34259,15 @@ newnode = [
 actionTable = [
                 [
                   [-1, 3, 0],
-                  [72, 0, 1],
+                  [70, 0, 1],
                 ],
                 [
                   [-1, 3, 1],
-                  [80, 0, 3],
+                  [78, 0, 3],
                 ],
                 [
                   [-1, 3, 2],
-                  [82, 2, -1],
+                  [80, 2, -1],
                 ],
                 [
                   [-1, 1, 0],
@@ -34610,7 +34608,7 @@ class Parser(object):
         value = parser_gotoTable[index][0][1]
 
         while (low <= high):
-            middle = (low + high) // 2
+            middle = (low + high) / 2
 
             if (state < parser_gotoTable[index][middle][0]):
                 high = middle - 1
@@ -34645,6 +34643,7 @@ class Parser(object):
                 lexer.next()
 
             token = lexer.peek()
+            # print('token encontrado: ' + str(token))
             last_pos = token.getPos()
             last_line = token.getLine()
             last_token = token
@@ -34683,6 +34682,10 @@ class Parser(object):
                 node = Start(node1, node2)
                 return node
             elif (action[0] == ACTION_ERROR):
+                # print('TOKEN: ' + last_token.getText())
+                # print('LINHA: ' + str(last_line))
+                # print('POSIÇÃO: ' + str(last_pos))
+                # print('ERRO: ' + errorMessages[errors[action[1]]])
                 raise ParserException(last_token, "[" + str(last_line) + "," + str(last_pos) + "] " + errorMessages[errors[action[1]]])
     
     def unescape (self, s):

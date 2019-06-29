@@ -1,12 +1,10 @@
 from wsmlparser.parser import *
 from types import *
 
-lexer = Lexer('wsmlcodes/OntologiaMundoTeste.wsml')
+lexer = Lexer('wsmlcodes/OntologiaMundo.wsml')
 
-container = Analysis()
+# container = Analysis()
 
 parser = Parser(lexer)
-
 head = parser.parse()
-head.apply(container)
-print(head.getEOF())
+print(head)

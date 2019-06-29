@@ -1,0 +1,140 @@
+wsmlVariant _"http://www.wsmo.org/wsml/wsml-syntax/wsml-rule"
+
+namespace {_"http://www.wsmo.org/sws-challenge/OntologiaMundo#",
+	dc	 _"http://purl.org/dc/elements/1.1#",
+	wsml _"http://www.wsmo.org/wsml/wsml-syntax#"}
+
+ontology OntologiaMundo
+	nfp 
+		dc#title hasValue "Ontologia do domínio Mundo"
+		dc#contributor hasValue "Daniel Lima"
+		dc#date hasValue _date(2019,04,17)
+		dc#format hasValue "text/plain"
+		dc#language hasValue "pt-BR" 
+	endnfp
+	
+concept City
+	nfp
+		dc#description hasValue "concept of a city"
+	endnfp
+	name ofType _string	
+	country ofType Country
+
+concept Country
+	nfp
+		dc#description hasValue "concept of a country"
+	endnfp
+	name ofType _string
+	continent ofType Continent
+	
+concept Continent
+	nfp 
+		dc#description hasValue "concept of a continent"
+	endnfp
+	name ofType _string	
+
+/*
+ * relations
+ */
+relation cityIsOnContinent (ofType City, ofType Continent)
+   nonFunctionalProperties
+       dc#description hasValue "Relation that holds between a city and the continent it belongs to"
+   endNonFunctionalProperties
+
+relation cityIsInCountry (ofType City, ofType Country)
+   nonFunctionalProperties
+       dc#description hasValue "Relation that holds between a city and the country it belongs to"
+   endNonFunctionalProperties
+
+/*
+ * instances
+ */
+instance Europe memberOf Continent
+	name hasValue "Europe"
+	
+instance NorthAmerica memberOf Continent
+ 	name hasValue "North America"
+
+instance SouthAmerica memberOf Continent
+ 	name hasValue "South America"
+ 	
+instance Africa memberOf Continent
+	name hasValue "Africa"
+	
+instance Asia memberOf Continent
+	name hasValue "Asia"	
+
+instance Oceania memberOf Continent
+	name hasValue "Oceania"
+
+instance NY memberOf City
+	name hasValue "New York"
+	country hasValue USA
+
+instance MoonCity memberOf City
+	name hasValue "Moon City"
+	country hasValue USA
+
+instance Bristol memberOf City
+	name hasValue "Bristol"
+	country hasValue UK
+
+instance Tunis memberOf City
+	name hasValue "Tunis"
+	country hasValue Tunisia
+
+instance Luxembourg memberOf City
+	name hasValue "Luxembourg"
+	country hasValue LuxembourgCountry
+
+
+/*
+ * axioms
+ */ 
+axiom cityIsOnContinentDef
+	definedBy
+		(?city [country hasValue ?country] memberOf City
+			and 
+		?country [continent hasValue ?continent])
+			implies 
+		cityIsOnContinent(?city, ?continent).
+
+axiom cityIsInCountryDef
+	definedBy
+		(?city [country hasValue ?country] memberOf City)
+			implies 
+		cityIsInCountry(?city, ?country).
+
+axiom cidadeDoContinente
+	definedBy
+		(cityIsOnContinent(?city,?continent))
+			implies
+		cidadeDoContinente(?city,?continent).
+
+instance Austria memberOf Country
+	name hasValue "Austria"
+	continent hasValue Europe
+
+instance USA memberOf Country
+	name hasValue "United States"
+	continent hasValue NorthAmerica
+	
+instance Canada memberOf Country
+	name hasValue "Canada"
+	continent hasValue NorthAmerica
+	
+instance UK memberOf Country
+	name hasValue "United Kingdom"
+	continent hasValue Europe
+	
+instance Tunisia memberOf Country
+	name hasValue "Tunisia"
+	continent hasValue Africa
+	
+instance LuxembourgCountry memberOf Country
+	name hasValue "Luxembourg"
+	continent hasValue Europe
+
+instance Argentina memberOf Country
+	name hasValue "Argentina"
+	continent hasValue SouthAmerica

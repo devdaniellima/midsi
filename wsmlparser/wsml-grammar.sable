@@ -153,7 +153,11 @@ Tokens
     full_iri	=	luridel iri_reference ruridel;
     name	=	( letter | '_' ) namechar*;
 
+Ignored Tokens
+    t_blank, t_comment;
+
 Productions
+    wsml = wsmlvariant? namespace? definition*;
     wsmlvariant	= t_wsmlvariant full_iri;
     namespace = t_namespace prefixdefinitionlist;
     sharedvardef = t_sharedvariable variablelist;
@@ -161,7 +165,6 @@ Productions
     goal = t_goal id? header* capability? interfaces*;
     webservice = t_webservice id? header* capability? interfaces*;
     definition = {goal}	goal | {ontology} ontology | {webservice} webservice | {mediator} mediator;
-    wsml = wsmlvariant? namespace? definition*;
     prefixdefinitionlist = {defaultns} full_iri | {prefixdefinitionlist} lbrace prefixdefinition moreprefixdefinitions* rbrace;
     prefixdefinition = {namespacedef} name full_iri | {default}	full_iri;
     moreprefixdefinitions = comma prefixdefinition;

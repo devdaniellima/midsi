@@ -1,5 +1,0 @@
-wsmlVariant _"http://www.wsmo.org/wsml/wsml-syntax/wsml-rule"
-
-namespace {_"http://www.wsmo.org/sws-challenge/OntologiaMundo#",
-	dc	 _"http://purl.org/dc/elements/1.1#",
-	wsml _"http://www.wsmo.org/wsml/wsml-syntax#"}

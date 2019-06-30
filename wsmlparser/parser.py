@@ -6886,7 +6886,7 @@ class AMemberof(Node):
         return AMemberof(self.cloneNode(self._t_memberof_),self.cloneNode(self._idlist_))
 
     def apply(self, analysis):
-        analysis.caseAMemberof(self)
+        return analysis.caseAMemberof(self)
 
     def getTMemberof (self):
         return self._t_memberof_
@@ -11667,7 +11667,7 @@ class AIriId(Node):
         return AIriId(self.cloneNode(self._iri_))
 
     def apply(self, analysis):
-        analysis.caseAIriId(self)
+        return analysis.caseAIriId(self)
 
     def getIri (self):
         return self._iri_
@@ -11843,7 +11843,7 @@ class AIdIdlist(Node):
         return AIdIdlist(self.cloneNode(self._id_))
 
     def apply(self, analysis):
-        analysis.caseAIdIdlist(self)
+        return analysis.caseAIdIdlist(self)
 
     def getId (self):
         return self._id_
@@ -11896,7 +11896,7 @@ class AIdlistIdlist(Node):
         return AIdlistIdlist(self.cloneNode(self._lbrace_),self.cloneNode(self._id_),self.cloneList(self._moreids_),self.cloneNode(self._rbrace_))
 
     def apply(self, analysis):
-        analysis.caseAIdlistIdlist(self)
+        return analysis.caseAIdlistIdlist(self)
 
     def getLbrace (self):
         return self._lbrace_
@@ -12003,7 +12003,7 @@ class AMoreids(Node):
         return AMoreids(self.cloneNode(self._comma_),self.cloneNode(self._id_))
 
     def apply(self, analysis):
-        analysis.caseAMoreids(self)
+        return analysis.caseAMoreids(self)
 
     def getComma (self):
         return self._comma_
@@ -38394,20 +38394,32 @@ class Parser(object):
 
 ############################# Analisador pyDatalog ############################################## 
 
-class PyDatalogAnalysis(Analysis) :
+class Knowledge:
     def __init__(self):
+        self.facts = dict()
+        self.facts['ontology'] = []
+        self.facts['concept'] = []
+        self.facts['instance'] = []
+        self.facts['memberOf'] = []
+
+class PyDatalogAnalysis(Analysis):
+    def __init__(self,knowledge):
+        self.knowledge = knowledge
+        self.printComments = False
         print('\n\n---------- Analysis PyDatalog ---------\n')
 
     def caseStart(self, node):
         # node - Class Start
-        print('-- caseStart --')
+        if self.printComments: 
+            print('-- caseStart --')
         node.getPWsml().apply(self) # returning AWsml
 
     def caseAWsml(self, node):
         # node - Class AWsml
         # Gramática
         # wsml = wsmlvariant? namespace? definition*;
-        print('-- caseAWsml --')
+        if self.printComments: 
+            print('-- caseAWsml --')
         
         # node.getDefinition()
         for definition in node.getDefinition():
@@ -38415,25 +38427,100 @@ class PyDatalogAnalysis(Analysis) :
 
     def caseAOntologyDefinition(self,node):
         # node - Class AOntologyDefinition
-        print('-- caseAOntologyDefinition --')
-        
-        # node.getOntology()
+        if self.printComments: 
+            print('-- caseAOntologyDefinition --')        
         node.getOntology().apply(self) # returning AOntology
         
+    def caseAIriId(self,node):
+        return str(node.getIri()).strip()
+
     def caseAOntology(self,node):
         # node - Class AOntology
         # Gramática
         # ontology = t_ontology id? header* ontology_element*;
-        print('-- caseAOntology --')
+        if self.printComments: 
+            print('-- caseAOntology --')
+        
+        # t_ontology
+        # node.getTOntology()
 
         # id?
         if node.getId() != None: # returning AIriId
-            # print(node.getId()) Salvar id da ontologia
-           pass
+        #    print(node.getId()) # Salvar id da ontologia
+            ontologyId = {node.getId().apply(self)}
+            self.knowledge.facts['ontology'].append(ontologyId)
+
+        # header*
+        # node.getHeader()
+
+        for ontologyElement in node.getOntologyElement():
+            # print(type(ontologyElement))
+            ontologyElement.apply(self)
+        
+    def caseAConceptOntologyElement(self,node):
+        # node - Class AConceptOntologyElement
+        if self.printComments: 
+            print('-- caseAConceptOntologyElement --')
+        node.getConcept().apply(self) # returning AConcept
+
+    def caseAConcept(self,node):
+        # node - Class AConcept
+        # Gramática
+        # concept	= t_concept id superconcept? nfp? attribute*;
+        if self.printComments: 
+            print('-- caseAConcept --')
+
+        conceptId = {node.getId().apply(self)}
+        self.knowledge.facts['concept'].append(conceptId)
+
+    def caseAInstanceOntologyElement(self,node):
+        # node - Class AInstanceOntologyElement
+        if self.printComments: 
+            print('-- caseAInstanceOntologyElement --')
+        node.getInstance().apply(self) # returning AInstance
+
+    def caseAInstance(self,node):
+        # node - Class AInstance
+        # Gramática
+        # instance = t_instance id? memberof? nfp? attributevalue*;
+        if self.printComments: 
+            print('-- caseAInstance --')
+        
+        instanceId = node.getId().apply(self)
+        instance = {instanceId}
+        self.knowledge.facts['instance'].append(instance)
+
+        if node.getMemberof() != None:
+            ids = node.getMemberof().apply(self)
+            for idMemberOf in ids:
+                memberOfInstance = {instanceId,idMemberOf}
+                self.knowledge.facts['memberOf'].append(memberOfInstance)
+    
+    def caseAMemberof(self,node):
+        return node.getIdlist().apply(self)
+    
+    def caseAIdIdlist(self,node):
+        return [node.getId().apply(self)]
+    
+    def caseAIdlistIdlist(self,node):
+        idlist = []
+        idlist.append(node.getId().apply(self)) 
+        for id in node.getMoreids():
+            idlist.append(id.apply(self))
+        return idlist
+
+    def caseAMoreids(self,node):
+        return node.getId().apply(self)
         
 lexer = Lexer('wsmlcodes/OntologiaMundo.wsml')
-container = PyDatalogAnalysis()
+knowledge = Knowledge()
+container = PyDatalogAnalysis(knowledge)
 
 parser = Parser(lexer)
 head = parser.parse()
 head.apply(container)
+
+for fact in container.knowledge.facts:
+    print(fact)
+    print(container.knowledge.facts[fact])
+    print()

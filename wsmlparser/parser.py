@@ -6956,7 +6956,7 @@ class AAttributevalue(Node):
         return AAttributevalue(self.cloneNode(self._id_),self.cloneNode(self._t_hasvalue_),self.cloneNode(self._valuelist_))
 
     def apply(self, analysis):
-        analysis.caseAAttributevalue(self)
+        return analysis.caseAAttributevalue(self)
 
     def getId (self):
         return self._id_
@@ -12111,7 +12111,7 @@ class ATermValue(Node):
         return ATermValue(self.cloneNode(self._id_))
 
     def apply(self, analysis):
-        analysis.caseATermValue(self)
+        return analysis.caseATermValue(self)
 
     def getId (self):
         return self._id_
@@ -12199,7 +12199,7 @@ class AStringValue(Node):
         return AStringValue(self.cloneNode(self._string_))
 
     def apply(self, analysis):
-        analysis.caseAStringValue(self)
+        return analysis.caseAStringValue(self)
 
     def getString (self):
         return self._string_
@@ -12243,7 +12243,7 @@ class ATermValuelist(Node):
         return ATermValuelist(self.cloneNode(self._value_))
 
     def apply(self, analysis):
-        analysis.caseATermValuelist(self)
+        return analysis.caseATermValuelist(self)
 
     def getValue (self):
         return self._value_
@@ -12296,7 +12296,7 @@ class AValuelistValuelist(Node):
         return AValuelistValuelist(self.cloneNode(self._lbrace_),self.cloneNode(self._value_),self.cloneList(self._morevalues_),self.cloneNode(self._rbrace_))
 
     def apply(self, analysis):
-        analysis.caseAValuelistValuelist(self)
+        return analysis.caseAValuelistValuelist(self)
 
     def getLbrace (self):
         return self._lbrace_
@@ -12403,7 +12403,7 @@ class AMorevalues(Node):
         return AMorevalues(self.cloneNode(self._comma_),self.cloneNode(self._value_))
 
     def apply(self, analysis):
-        analysis.caseAMorevalues(self)
+        return analysis.caseAMorevalues(self)
 
     def getComma (self):
         return self._comma_
@@ -38401,6 +38401,7 @@ class Knowledge:
         self.facts['concept'] = []
         self.facts['instance'] = []
         self.facts['memberOf'] = []
+        self.facts['hasValue'] = []
 
 class PyDatalogAnalysis(Analysis):
     def __init__(self,knowledge):
@@ -38431,6 +38432,12 @@ class PyDatalogAnalysis(Analysis):
             print('-- caseAOntologyDefinition --')        
         node.getOntology().apply(self) # returning AOntology
         
+    def caseAStringValue(self,node):
+        return str(node.getString()).strip()
+
+    def caseATermValue(self,node):
+        return str(node.getId()).strip()
+
     def caseAIriId(self,node):
         return str(node.getIri()).strip()
 
@@ -38447,7 +38454,7 @@ class PyDatalogAnalysis(Analysis):
         # id?
         if node.getId() != None: # returning AIriId
         #    print(node.getId()) # Salvar id da ontologia
-            ontologyId = {node.getId().apply(self)}
+            ontologyId = (node.getId().apply(self))
             self.knowledge.facts['ontology'].append(ontologyId)
 
         # header*
@@ -38470,7 +38477,7 @@ class PyDatalogAnalysis(Analysis):
         if self.printComments: 
             print('-- caseAConcept --')
 
-        conceptId = {node.getId().apply(self)}
+        conceptId = (node.getId().apply(self))
         self.knowledge.facts['concept'].append(conceptId)
 
     def caseAInstanceOntologyElement(self,node):
@@ -38493,8 +38500,14 @@ class PyDatalogAnalysis(Analysis):
         if node.getMemberof() != None:
             ids = node.getMemberof().apply(self)
             for idMemberOf in ids:
-                memberOfInstance = {instanceId,idMemberOf}
+                memberOfInstance = (instanceId,idMemberOf)
                 self.knowledge.facts['memberOf'].append(memberOfInstance)
+
+        for attribute in node.getAttributevalue():
+            attributeValues = attribute.apply(self)
+            for attributeValue in attributeValues:
+                attributeOfInstance = tuple([instanceId] + attributeValue)
+                self.knowledge.facts['hasValue'].append(attributeOfInstance)
     
     def caseAMemberof(self,node):
         return node.getIdlist().apply(self)
@@ -38511,6 +38524,29 @@ class PyDatalogAnalysis(Analysis):
 
     def caseAMoreids(self,node):
         return node.getId().apply(self)
+
+    def caseAAttributevalue(self,node):
+        idAttribute = node.getId().apply(self)
+        valueAttribute = node.getValuelist().apply(self)
+        factHasValue = []
+        for value in valueAttribute:
+            factHasValue.append([idAttribute,value])
+        return factHasValue
+
+    def caseAValuelistValuelist(self,node):
+        valuelist = []
+        valuelist.append(node.getValue().apply(self))
+        for value in node.getMorevalues():
+            valuelist.append(value.apply(self))
+        return valuelist
+
+    def caseAMorevalues(self,node):
+        return node.getValue().apply(self)
+
+    def caseATermValuelist(self,node):
+        return [node.getValue().apply(self)]
+
+#### Testando 
         
 lexer = Lexer('wsmlcodes/OntologiaMundo.wsml')
 knowledge = Knowledge()

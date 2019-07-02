@@ -1,0 +1,42 @@
+wsmlVariant _"http://www.wsmo.org/wsml/wsml-syntax/wsml-flight"
+namespace {
+	_"http://everton.org/tcc/ontologies/ontDispositivos#",
+	ontCasa _"http://everton.org/tcc/ontologies/ontCasa#"
+}
+
+ontology ontDispositivos
+
+	importsOntology {
+	 	_"http://everton.org/tcc/ontologies/ontCasa"
+	}
+
+	concept Dispositivo
+		id ofType _integer
+		nome ofType _string
+		local impliesType ontCasa#Comodos
+		status ofType _boolean //ligado ou desligado
+		
+	concept Tv subConceptOf Dispositivo
+		canal ofType _integer
+		voluma ofType _integer
+		mudo ofType _boolean
+		av ofType _integer
+		
+	concept ReceptorParabolica subConceptOf Dispositivo
+		canal ofType _integer
+		voluma ofType _integer
+		mudo ofType _boolean
+	
+	concept Som subConceptOf Dispositivo
+		frequencia ofType _integer
+		voluma ofType _integer
+		mudo ofType _integer
+		aux ofType _integer
+		
+	concept Ventilador subConceptOf Dispositivo
+	
+	concept Lampada subConceptOf Dispositivo
+	
+	concept Sensores subConceptOf Dispositivo
+		valor ofType _decimal
+	

@@ -1,0 +1,51 @@
+/*
+ * Serviço web	- Representa a visão do solicitando sobre a funcionalidade disponíveis
+ * 				  Recursos que estão disponiveis para ser usados 
+ *  
+ * GOAL			- Representa a visão do solicitador sobre a funcionalidade desejada do serviço.
+ *				  Respondendo ao questionamento, "o que eu desejo com base no serviço?", 
+ * 		  		  "O que eu espero que aconteça?"
+ */
+
+1. Mostrar os DISPOSITIVOS pertencentes a um determinado grupo, exemplo:
+	Lampada
+		?disp memberOf disp#Lampada
+	Ventilador
+		?disp memberOf disp#Ventilador
+	Tv
+		?disp memberOf disp#Tv
+	Som
+		?disp memberOf disp#Som
+	Sensor
+		?disp memberOf disp#Sensores
+	
+2. Mostar todos os DISPOSITIVOS de um determinado COMODOS, exemplo:
+	QuartoDeSolteiro
+		?disp[local hasValue QuartoDeSolteiro] memberOf disp#Dispositivo
+	QuartoDeCasal
+		?disp[local hasValue QuartoDeCasal] memberOf disp#Dispositivo
+	SalaDeEstar
+		?disp[local hasValue SalaDeEstar] memberOf disp#Dispositivo
+	Garagem
+		?disp[local hasValue Garagem] memberOf disp#Dispositivo
+		
+3. Mostrar todos os DISPOSITIVOS
+	?dispositivos memberOf disp#Dispositivo //Infere através da definição do axioma defDispositivoAxm
+	
+3. Mostrar todos os COMODOS
+	?comodos memberOf casa#Comodos //Infere através da definição do axioma defComodoAxm
+		
+4. Mostar todos os DISPOSITIVOS e o seu respectivo COMODOS.	 
+	?dispositivos[local hasValue ?local]
+	  
+5. Qual o status do DISPOSITIVOS
+	instacia_do_dispositivo[status hasValue ?status]
+	
+. Mostra todas as LAMPADAS, o LOCAL no qual está localizada e o STATUS da mesma	
+	?lampada[local hasValue ?comodo, status hasValue ?status] memberOf disp#Lampada
+
+. Individuos da residência
+	?individuos memberOf pessoa#pessoa 
+
+. verifica se a temperatura de um comodo maior ou igual a 30
+	?dispositivo[valor hasValue ?temp, local hasValue ?comodo] memberOf disp#Sensores and ?temp >= 30

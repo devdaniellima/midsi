@@ -1,0 +1,4 @@
+include LICENCE
+include pyDatalog\*.c
+include pyDatalog\examples\*.py
+include pyDatalog\IPython\*.ipynb

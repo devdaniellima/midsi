@@ -3140,7 +3140,7 @@ class ANfpHeader(Node):
         return ANfpHeader(self.cloneNode(self._nfp_))
 
     def apply(self, analysis):
-        analysis.caseANfpHeader(self)
+        return analysis.caseANfpHeader(self)
 
     def getNfp (self):
         return self._nfp_
@@ -3412,7 +3412,7 @@ class ANfp(Node):
         return ANfp(self.cloneNode(self._t_nfp_),self.cloneList(self._attributevalue_),self.cloneNode(self._t_endnfp_))
 
     def apply(self, analysis):
-        analysis.caseANfp(self)
+        return analysis.caseANfp(self)
 
     def getTNfp (self):
         return self._t_nfp_
@@ -6157,7 +6157,7 @@ class AAttribute(Node):
         return AAttribute(self.cloneNode(self._id_),self.cloneList(self._attributefeature_),self.cloneNode(self._att_type_),self.cloneNode(self._cardinality_),self.cloneNode(self._idlist_),self.cloneNode(self._nfp_))
 
     def apply(self, analysis):
-        analysis.caseAAttribute(self)
+        return analysis.caseAAttribute(self)
 
     def getId (self):
         return self._id_
@@ -11381,7 +11381,7 @@ class AAnySqname(Node):
         return AAnySqname(self.cloneNode(self._prefix_),self.cloneNode(self._name_))
 
     def apply(self, analysis):
-        analysis.caseAAnySqname(self)
+        return analysis.caseAAnySqname(self)
 
     def getPrefix (self):
         return self._prefix_
@@ -11623,7 +11623,7 @@ class ASqnameIri(Node):
         return ASqnameIri(self.cloneNode(self._sqname_))
 
     def apply(self, analysis):
-        analysis.caseASqnameIri(self)
+        return analysis.caseASqnameIri(self)
 
     def getSqname (self):
         return self._sqname_
@@ -38402,6 +38402,8 @@ class Knowledge:
         self.facts['instance'] = []
         self.facts['memberOf'] = []
         self.facts['hasValue'] = []
+        self.facts['nfp'] = []
+        self.facts['conceptAttribute'] = []
 
 class PyDatalogAnalysis(Analysis):
     def __init__(self,knowledge):
@@ -38439,7 +38441,15 @@ class PyDatalogAnalysis(Analysis):
         return str(node.getId()).strip()
 
     def caseAIriId(self,node):
-        return str(node.getIri()).strip()
+        return node.getIri().apply(self)
+
+    def caseASqnameIri(self,node):
+        return node.getSqname().apply(self)
+
+    def caseAAnySqname(self,node):
+        # print(node.getPrefix())
+        # print(node.getName())
+        return str(node.getName()).strip()
 
     def caseAOntology(self,node):
         # node - Class AOntology
@@ -38458,12 +38468,30 @@ class PyDatalogAnalysis(Analysis):
             self.knowledge.facts['ontology'].append(ontologyId)
 
         # header*
-        # node.getHeader()
+        # print(type(node.getHeader()))
+        for ontologyHeader in node.getHeader():
+            nfps = ontologyHeader.apply(self)
+            if nfps != None:
+                for nfpAttributeList in ontologyHeader.apply(self):
+                    for nfpAttribute in nfpAttributeList:
+                        # nfp = "nfp("+str(nfpAttribute[0])+" hasValue "+str(nfpAttribute[1])+")"
+                        nfpId,nfpValue = nfpAttribute
+                        nfpFact = (ontologyId,nfpId,nfpValue)
+                        self.knowledge.facts['nfp'].append(nfpFact)
 
         for ontologyElement in node.getOntologyElement():
             # print(type(ontologyElement))
             ontologyElement.apply(self)
         
+    def caseANfpHeader(self,node):
+        return node.getNfp().apply(self)
+
+    def caseANfp(self,node):
+        listAttributeValue = []
+        for attributeValue in node.getAttributevalue():
+            listAttributeValue.append(attributeValue.apply(self))
+        return listAttributeValue
+
     def caseAConceptOntologyElement(self,node):
         # node - Class AConceptOntologyElement
         if self.printComments: 
@@ -38479,6 +38507,37 @@ class PyDatalogAnalysis(Analysis):
 
         conceptId = (node.getId().apply(self))
         self.knowledge.facts['concept'].append(conceptId)
+        # header*
+        nfp = node.getNfp()
+        if nfp != None:
+            nfpAttributeList = nfp.apply(self)
+            for nfpAttribute in nfpAttributeList:
+                for nfpAttribute in nfpAttribute:
+                    # nfp = "nfp("+str(nfpAttribute[0])+" hasValue "+str(nfpAttribute[1])+")"
+                    nfpId,nfpValue = nfpAttribute
+                    nfpFact = (conceptId,nfpId,nfpValue)
+                    self.knowledge.facts['nfp'].append(nfpFact)
+        
+        listAttribute = node.getAttribute()
+        if listAttribute != None:
+            for attribute in listAttribute:
+                factAttributeValue = attribute.apply(self)
+                for factAttr in factAttributeValue:
+                    fact = tuple([conceptId]+factAttr)
+                    self.knowledge.facts['conceptAttribute'].append(fact)
+
+    def caseAAttribute(self,node):
+        idAttr = node.getId().apply(self)
+        # print(node.getAttributefeature())
+        typeAttr = str(node.getAttType()).strip()
+        # print(node.getCardinality())
+        ids = node.getIdlist().apply(self)
+        # print(node.getNfp())
+        attributes = []
+        for id in ids:
+            attributes.append([idAttr,typeAttr,id])
+        
+        return attributes
 
     def caseAInstanceOntologyElement(self,node):
         # node - Class AInstanceOntologyElement
@@ -38494,8 +38553,7 @@ class PyDatalogAnalysis(Analysis):
             print('-- caseAInstance --')
         
         instanceId = node.getId().apply(self)
-        instance = {instanceId}
-        self.knowledge.facts['instance'].append(instance)
+        self.knowledge.facts['instance'].append(instanceId)
 
         if node.getMemberof() != None:
             ids = node.getMemberof().apply(self)

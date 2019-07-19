@@ -9173,7 +9173,7 @@ class AMoleculeSimple(Node):
         return AMoleculeSimple(self.cloneNode(self._molecule_))
 
     def apply(self, analysis):
-        analysis.caseAMoleculeSimple(self)
+        return analysis.caseAMoleculeSimple(self)
 
     def getMolecule (self):
         return self._molecule_
@@ -9534,7 +9534,7 @@ class AAttributeMoleculeMolecule(Node):
         return AAttributeMoleculeMolecule(self.cloneNode(self._term_),self.cloneNode(self._attr_specification_))
 
     def apply(self, analysis):
-        analysis.caseAAttributeMoleculeMolecule(self)
+        return analysis.caseAAttributeMoleculeMolecule(self)
 
     def getTerm (self):
         return self._term_
@@ -9604,7 +9604,7 @@ class AAttrSpecification(Node):
         return AAttrSpecification(self.cloneNode(self._lbracket_),self.cloneNode(self._attr_rel_list_),self.cloneNode(self._rbracket_))
 
     def apply(self, analysis):
-        analysis.caseAAttrSpecification(self)
+        return analysis.caseAAttrSpecification(self)
 
     def getLbracket (self):
         return self._lbracket_
@@ -9688,7 +9688,7 @@ class AAttrRelationAttrRelList(Node):
         return AAttrRelationAttrRelList(self.cloneNode(self._attr_relation_))
 
     def apply(self, analysis):
-        analysis.caseAAttrRelationAttrRelList(self)
+        return analysis.caseAAttrRelationAttrRelList(self)
 
     def getAttrRelation (self):
         return self._attr_relation_
@@ -9918,7 +9918,7 @@ class AAttrValAttrRelation(Node):
         return AAttrValAttrRelation(self.cloneNode(self._term_),self.cloneNode(self._t_hasvalue_),self.cloneNode(self._termlist_))
 
     def apply(self, analysis):
-        analysis.caseAAttrValAttrRelation(self)
+        return analysis.caseAAttrValAttrRelation(self)
 
     def getTerm (self):
         return self._term_
@@ -12467,7 +12467,7 @@ class ADataTerm(Node):
         return ADataTerm(self.cloneNode(self._value_))
 
     def apply(self, analysis):
-        analysis.caseADataTerm(self)
+        return analysis.caseADataTerm(self)
 
     def getValue (self):
         return self._value_
@@ -12511,7 +12511,7 @@ class AVarTerm(Node):
         return AVarTerm(self.cloneNode(self._variable_))
 
     def apply(self, analysis):
-        analysis.caseAVarTerm(self)
+        return analysis.caseAVarTerm(self)
 
     def getVariable (self):
         return self._variable_
@@ -38453,6 +38453,14 @@ class PyDatalogAnalysis(Analysis):
         # print(node.getName())
         return str(node.getName()).strip()
 
+    def caseAVarTerm(self,node):
+        termo = str(node.getVariable()).strip()
+        termo = termo[1:].capitalize()
+        return termo
+
+    def caseADataTerm(self,node):
+        return str(node).strip()
+
     def caseAOntology(self,node):
         # node - Class AOntology
         # Gramática
@@ -38653,10 +38661,36 @@ class PyDatalogAnalysis(Analysis):
         return str(node)
     
     def caseASimpleSubexpr(self,node):
-        print(type(node.getSimple()))
-        print(node.getSimple())
-        return str(node)
+        # AMoleculeSimple
+        # 
+        return node.getSimple().apply(self)
 
+    def caseAMoleculeSimple(self,node):
+        # AttributeMoleculeMolecule
+        # 
+        return node.getMolecule().apply(self)
+
+    def caseAAttributeMoleculeMolecule(self,node):
+        variable = node.getTerm().apply(self)
+        self.axiomsVariablesTemp.append(variable)
+        specification = node.getAttrSpecification().apply(self)
+
+        molecule = specification[1] + '(' + variable + ',' + specification[0] + ',' + specification[2] + ')'
+        return molecule
+
+    def caseAAttrSpecification(self,node):
+        return node.getAttrRelList().apply(self)
+
+    def caseAAttrRelationAttrRelList(self,node):
+        return node.getAttrRelation().apply(self)
+
+    def caseAAttrValAttrRelation(self,node):
+        term = "'" + node.getTerm().apply(self) + "'"
+        # node.getTHasvalue()
+        print('Resolver ATermTermlist')
+        print(type(node.getTermlist()))
+        return [term,'hasValue',str(node.getTermlist())]
+    
     def caseAConjunction(self,node):
         conjuncao = ''
         conjuncao = node.getConjunction().apply(self)
@@ -38664,8 +38698,6 @@ class PyDatalogAnalysis(Analysis):
         conjuncao = conjuncao + node.getSubexpr().apply(self)
 
         return conjuncao
-        
-        
 
 #### Testando 
         

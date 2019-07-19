@@ -7788,7 +7788,7 @@ class AAxiom(Node):
         return AAxiom(self.cloneNode(self._t_axiom_),self.cloneNode(self._axiomdefinition_))
 
     def apply(self, analysis):
-        analysis.caseAAxiom(self)
+        return analysis.caseAAxiom(self)
 
     def getTAxiom (self):
         return self._t_axiom_
@@ -7969,7 +7969,7 @@ class ADefinedAxiomAxiomdefinition(Node):
         return ADefinedAxiomAxiomdefinition(self.cloneNode(self._id_),self.cloneNode(self._nfp_),self.cloneNode(self._log_definition_))
 
     def apply(self, analysis):
-        analysis.caseADefinedAxiomAxiomdefinition(self)
+        return analysis.caseADefinedAxiomAxiomdefinition(self)
 
     def getId (self):
         return self._id_
@@ -8056,7 +8056,7 @@ class ALogDefinition(Node):
         return ALogDefinition(self.cloneNode(self._t_definedby_),self.cloneList(self._log_expr_))
 
     def apply(self, analysis):
-        analysis.caseALogDefinition(self)
+        return analysis.caseALogDefinition(self)
 
     def getTDefinedby (self):
         return self._t_definedby_
@@ -8326,7 +8326,7 @@ class AOtherExpressionLogExpr(Node):
         return AOtherExpressionLogExpr(self.cloneNode(self._expr_),self.cloneNode(self._endpoint_))
 
     def apply(self, analysis):
-        analysis.caseAOtherExpressionLogExpr(self)
+        return analysis.caseAOtherExpressionLogExpr(self)
 
     def getExpr (self):
         return self._expr_
@@ -8396,7 +8396,7 @@ class AImplicationExpr(Node):
         return AImplicationExpr(self.cloneNode(self._expr_),self.cloneNode(self._imply_op_),self.cloneNode(self._disjunction_))
 
     def apply(self, analysis):
-        analysis.caseAImplicationExpr(self)
+        return analysis.caseAImplicationExpr(self)
 
     def getExpr (self):
         return self._expr_
@@ -8480,7 +8480,7 @@ class ADisjunctionExpr(Node):
         return ADisjunctionExpr(self.cloneNode(self._disjunction_))
 
     def apply(self, analysis):
-        analysis.caseADisjunctionExpr(self)
+        return analysis.caseADisjunctionExpr(self)
 
     def getDisjunction (self):
         return self._disjunction_
@@ -8524,7 +8524,7 @@ class AConjunctionDisjunction(Node):
         return AConjunctionDisjunction(self.cloneNode(self._conjunction_))
 
     def apply(self, analysis):
-        analysis.caseAConjunctionDisjunction(self)
+        return analysis.caseAConjunctionDisjunction(self)
 
     def getConjunction (self):
         return self._conjunction_
@@ -8658,7 +8658,7 @@ class ASubexprConjunction(Node):
         return ASubexprConjunction(self.cloneNode(self._subexpr_))
 
     def apply(self, analysis):
-        analysis.caseASubexprConjunction(self)
+        return analysis.caseASubexprConjunction(self)
 
     def getSubexpr (self):
         return self._subexpr_
@@ -8708,7 +8708,7 @@ class AConjunction(Node):
         return AConjunction(self.cloneNode(self._conjunction_),self.cloneNode(self._t_and_),self.cloneNode(self._subexpr_))
 
     def apply(self, analysis):
-        analysis.caseAConjunction(self)
+        return analysis.caseAConjunction(self)
 
     def getConjunction (self):
         return self._conjunction_
@@ -8859,7 +8859,7 @@ class ASimpleSubexpr(Node):
         return ASimpleSubexpr(self.cloneNode(self._simple_))
 
     def apply(self, analysis):
-        analysis.caseASimpleSubexpr(self)
+        return analysis.caseASimpleSubexpr(self)
 
     def getSimple (self):
         return self._simple_
@@ -38404,10 +38404,12 @@ class Knowledge:
         self.facts['hasValue'] = []
         self.facts['nfp'] = []
         self.facts['conceptAttribute'] = []
+        self.axioms = []
 
 class PyDatalogAnalysis(Analysis):
     def __init__(self,knowledge):
         self.knowledge = knowledge
+        self.axiomsVariablesTemp = []
         self.printComments = False
         print('\n\n---------- Analysis PyDatalog ---------\n')
 
@@ -38604,6 +38606,67 @@ class PyDatalogAnalysis(Analysis):
     def caseATermValuelist(self,node):
         return [node.getValue().apply(self)]
 
+    def caseAAxiomOntologyElement(self,node):
+        return node.getAxiom().apply(self)
+    
+    def caseAAxiom(self,node):
+        self.knowledge.axioms.append(node.getAxiomdefinition().apply(self))
+
+    def caseADefinedAxiomAxiomdefinition(self,node):
+        self.axiomsVariablesTemp = []
+        axiom = ""
+
+        axiomId = node.getId().apply(self)
+        
+        logDefinition = node.getLogDefinition().apply(self)
+
+        axiom = axiomId + '('+ ','.join(self.axiomsVariablesTemp) +')'
+        axiom = axiom + ' <= ' + str(logDefinition)
+
+        return axiom
+    
+    def caseALogDefinition(self,node):
+        exprs = []
+        for logExpr in node.getLogExpr():
+            exprs.append(logExpr.apply(self))
+        
+        return exprs[0]
+    
+    def caseAOtherExpressionLogExpr(self,node):
+        return node.getExpr().apply(self)
+    
+    def caseAImplicationExpr(self,node):
+        # print(type(node.getExpr()))
+        # print(node.getImplyOp())
+        # print(node.getDisjunction())
+        # print()
+        return node.getExpr().apply(self)
+
+    def caseADisjunctionExpr(self,node):
+        return node.getDisjunction().apply(self)
+
+    def caseAConjunctionDisjunction(self,node):
+        # print(type(node.getConjunction()))
+        return node.getConjunction().apply(self)
+
+    def caseASubexprConjunction(self,node):
+        return str(node)
+    
+    def caseASimpleSubexpr(self,node):
+        print(type(node.getSimple()))
+        print(node.getSimple())
+        return str(node)
+
+    def caseAConjunction(self,node):
+        conjuncao = ''
+        conjuncao = node.getConjunction().apply(self)
+        conjuncao = conjuncao + ' & ' # print(node.getTAnd())
+        conjuncao = conjuncao + node.getSubexpr().apply(self)
+
+        return conjuncao
+        
+        
+
 #### Testando 
         
 lexer = Lexer('wsmlcodes/OntologiaMundo.wsml')
@@ -38614,7 +38677,11 @@ parser = Parser(lexer)
 head = parser.parse()
 head.apply(container)
 
-for fact in container.knowledge.facts:
-    print(fact)
-    print(container.knowledge.facts[fact])
+# for fact in container.knowledge.facts:
+#     print(fact)
+#     print(container.knowledge.facts[fact])
+#     print()
+
+for axiom in container.knowledge.axioms:
+    print(axiom)
     print()

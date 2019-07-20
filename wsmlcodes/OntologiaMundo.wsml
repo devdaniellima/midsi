@@ -93,11 +93,10 @@ instance Luxembourg memberOf City
  */ 
 axiom cityIsOnContinentDef
 	definedBy
-		(?city [country hasValue ?country] memberOf City
+		?city [country hasValue ?country] memberOf City
 			and 
-		?country [continent hasValue ?continent])
-			implies 
-		cityIsOnContinent(?city, ?continent).
+		?country [continent hasValue ?continent]
+			.
 
 axiom cityIsInCountryDef
 	definedBy
@@ -110,6 +109,12 @@ axiom cidadeDoContinente
 		(cityIsOnContinent(?city,?continent))
 			implies
 		cidadeDoContinente(?city,?continent).
+
+axiom isLocalDef
+	definedBy
+		?x memberOf City implies ?x memberOf Country.
+		?x memberOf Country implies ?x memberOf Continent.
+			
 
 instance Austria memberOf Country
 	name hasValue "Austria"

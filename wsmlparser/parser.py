@@ -38409,6 +38409,7 @@ class Knowledge:
 class PyDatalogAnalysis(Analysis):
     def __init__(self,knowledge):
         self.knowledge = knowledge
+        self.saveAxiomsVariablesTemp = True
         self.axiomsVariablesTemp = []
         self.printComments = False
         print('\n\n---------- Analysis PyDatalog ---------\n')
@@ -38456,6 +38457,10 @@ class PyDatalogAnalysis(Analysis):
     def caseAVarTerm(self,node):
         termo = str(node.getVariable()).strip()
         termo = termo[1:].capitalize()
+        
+        if self.saveAxiomsVariablesTemp == True and termo not in self.axiomsVariablesTemp:
+            self.axiomsVariablesTemp.append(termo)
+
         return termo
 
     def caseADataTerm(self,node):
@@ -38653,40 +38658,49 @@ class PyDatalogAnalysis(Analysis):
         return [value]
 
     def caseAAxiomOntologyElement(self,node):
-        return node.getAxiom().apply(self)
+        for axiom in node.getAxiom().apply(self):
+            self.knowledge.axioms.append(axiom)
     
     def caseAAxiom(self,node):
-        self.knowledge.axioms.append(node.getAxiomdefinition().apply(self))
+        return node.getAxiomdefinition().apply(self)
 
     def caseADefinedAxiomAxiomdefinition(self,node):
-        self.axiomsVariablesTemp = []
-        axiom = ""
-
+        axioms = []
         axiomId = node.getId().apply(self)
-
+        
+        self.axiomsVariablesTemp = []
         logDefinition = node.getLogDefinition().apply(self)
 
-        axiom = axiomId + '('+ ','.join(self.axiomsVariablesTemp) +')'
-        axiom = axiom + ' <= ' + str(logDefinition)
+        for ax in logDefinition:
+            axiom = ''
+            axiom = axiomId + '('+ ','.join(self.axiomsVariablesTemp) +')'
+            axiom = axiom + ' <= ' + str(ax)
+            axioms.append(axiom)
 
-        return axiom
+        return axioms
     
     def caseALogDefinition(self,node):
         exprs = []
         for logExpr in node.getLogExpr():
-            exprs.append(logExpr.apply(self))
-        
-        return exprs[0]
+            exp = logExpr.apply(self)
+            # print(exp)
+            exprs.append(exp)
+        # print(exprs)
+        return exprs
     
     def caseAOtherExpressionLogExpr(self,node):
         return node.getExpr().apply(self)
     
     def caseAImplicationExpr(self,node):
-        # print(type(node.getExpr()))
+        expr = node.getExpr().apply(self)
         # print(node.getImplyOp())
-        # print(node.getDisjunction())
-        # print()
-        return node.getExpr().apply(self)
+        
+        exprImpl = node.getDisjunction().apply(self)
+        
+        axiomImpl = exprImpl + ' <= ' + expr
+        self.knowledge.axioms.append(axiomImpl)
+        
+        return expr
 
     def caseADisjunctionExpr(self,node):
         # print(type(node.getDisjunction()))
@@ -38766,7 +38780,7 @@ class PyDatalogAnalysis(Analysis):
         return node.getExpr().apply(self)
 
 #### Testando 
-        
+
 lexer = Lexer('wsmlcodes/OntologiaMundo.wsml')
 knowledge = Knowledge()
 container = PyDatalogAnalysis(knowledge)
@@ -38774,7 +38788,7 @@ container = PyDatalogAnalysis(knowledge)
 parser = Parser(lexer)
 head = parser.parse()
 head.apply(container)
-
+print('---------------------------------------')
 # for fact in container.knowledge.facts:
 #     print(fact)
 #     print(container.knowledge.facts[fact])

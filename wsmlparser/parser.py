@@ -8909,7 +8909,7 @@ class AComplexSubexpr(Node):
         return AComplexSubexpr(self.cloneNode(self._lpar_),self.cloneNode(self._expr_),self.cloneNode(self._rpar_))
 
     def apply(self, analysis):
-        analysis.caseAComplexSubexpr(self)
+        return analysis.caseAComplexSubexpr(self)
 
     def getLpar (self):
         return self._lpar_
@@ -9261,7 +9261,7 @@ class AAtomSimple(Node):
         return AAtomSimple(self.cloneNode(self._term_))
 
     def apply(self, analysis):
-        analysis.caseAAtomSimple(self)
+        return analysis.caseAAtomSimple(self)
 
     def getTerm (self):
         return self._term_
@@ -9314,7 +9314,7 @@ class AConceptMoleculePreferredMolecule(Node):
         return AConceptMoleculePreferredMolecule(self.cloneNode(self._term_),self.cloneNode(self._attr_specification_),self.cloneNode(self._cpt_op_),self.cloneNode(self._termlist_))
 
     def apply(self, analysis):
-        analysis.caseAConceptMoleculePreferredMolecule(self)
+        return analysis.caseAConceptMoleculePreferredMolecule(self)
 
     def getTerm (self):
         return self._term_
@@ -10101,7 +10101,7 @@ class AParametrizedFunctionsymbol(Node):
         return AParametrizedFunctionsymbol(self.cloneNode(self._id_),self.cloneNode(self._lpar_),self.cloneNode(self._terms_),self.cloneNode(self._rpar_))
 
     def apply(self, analysis):
-        analysis.caseAParametrizedFunctionsymbol(self)
+        return analysis.caseAParametrizedFunctionsymbol(self)
 
     def getId (self):
         return self._id_
@@ -12067,7 +12067,7 @@ class ADatatypeValue(Node):
         return ADatatypeValue(self.cloneNode(self._functionsymbol_))
 
     def apply(self, analysis):
-        analysis.caseADatatypeValue(self)
+        return analysis.caseADatatypeValue(self)
 
     def getFunctionsymbol (self):
         return self._functionsymbol_
@@ -12155,7 +12155,7 @@ class ANumericValue(Node):
         return ANumericValue(self.cloneNode(self._number_))
 
     def apply(self, analysis):
-        analysis.caseANumericValue(self)
+        return analysis.caseANumericValue(self)
 
     def getNumber (self):
         return self._number_
@@ -12599,7 +12599,7 @@ class ATermTerms(Node):
         return ATermTerms(self.cloneNode(self._term_))
 
     def apply(self, analysis):
-        analysis.caseATermTerms(self)
+        return analysis.caseATermTerms(self)
 
     def getTerm (self):
         return self._term_
@@ -12649,7 +12649,7 @@ class ATerms(Node):
         return ATerms(self.cloneNode(self._terms_),self.cloneNode(self._comma_),self.cloneNode(self._term_))
 
     def apply(self, analysis):
-        analysis.caseATerms(self)
+        return analysis.caseATerms(self)
 
     def getTerms (self):
         return self._terms_
@@ -12733,7 +12733,7 @@ class ATermTermlist(Node):
         return ATermTermlist(self.cloneNode(self._term_))
 
     def apply(self, analysis):
-        analysis.caseATermTermlist(self)
+        return analysis.caseATermTermlist(self)
 
     def getTerm (self):
         return self._term_
@@ -12783,7 +12783,7 @@ class ATermlist(Node):
         return ATermlist(self.cloneNode(self._lbrace_),self.cloneNode(self._terms_),self.cloneNode(self._rbrace_))
 
     def apply(self, analysis):
-        analysis.caseATermlist(self)
+        return analysis.caseATermlist(self)
 
     def getLbrace (self):
         return self._lbrace_
@@ -38440,7 +38440,7 @@ class PyDatalogAnalysis(Analysis):
         return str(node.getString()).strip()
 
     def caseATermValue(self,node):
-        return str(node.getId()).strip()
+        return "'" + str(node.getId()).strip() + "'"
 
     def caseAIriId(self,node):
         return node.getIri().apply(self)
@@ -38459,7 +38459,41 @@ class PyDatalogAnalysis(Analysis):
         return termo
 
     def caseADataTerm(self,node):
-        return str(node).strip()
+        # print(type(node.getValue()))
+        return node.getValue().apply(self)
+
+    def caseANumericValue(self,node):
+        return str(node.getNumber()).strip()
+
+    def caseADatatypeValue(self,node):
+        return node.getFunctionsymbol().apply(self)
+
+    def caseAParametrizedFunctionsymbol(self,node):
+        id = node.getId().apply(self)
+        terms = node.getTerms().apply(self)
+        
+        return id + '(' + ','.join(terms) + ')'
+
+    def caseATermlist(self,node):
+        return node.getTerms().apply(self)
+    
+    def caseATerms(self,node):
+        terms = []
+        if node.getTerms() != None :
+            term = node.getTerms().apply(self)
+            if type(term) == str:
+                term = [term]
+            
+            terms = terms + term
+        terms = terms + [node.getTerm().apply(self)]
+        return terms
+
+    def caseATermTerms(self,node):
+        return node.getTerm().apply(self)
+
+    def caseATermTermlist(self,node):
+        term = node.getTerm().apply(self)
+        return [term]
 
     def caseAOntology(self,node):
         # node - Class AOntology
@@ -38612,7 +38646,11 @@ class PyDatalogAnalysis(Analysis):
         return node.getValue().apply(self)
 
     def caseATermValuelist(self,node):
-        return [node.getValue().apply(self)]
+        value = node.getValue().apply(self)
+        if (isinstance(node.getValue(),ATermValue)):
+            value = value[1:-1]
+        
+        return [value]
 
     def caseAAxiomOntologyElement(self,node):
         return node.getAxiom().apply(self)
@@ -38625,7 +38663,7 @@ class PyDatalogAnalysis(Analysis):
         axiom = ""
 
         axiomId = node.getId().apply(self)
-        
+
         logDefinition = node.getLogDefinition().apply(self)
 
         axiom = axiomId + '('+ ','.join(self.axiomsVariablesTemp) +')'
@@ -38651,19 +38689,22 @@ class PyDatalogAnalysis(Analysis):
         return node.getExpr().apply(self)
 
     def caseADisjunctionExpr(self,node):
+        # print(type(node.getDisjunction()))
         return node.getDisjunction().apply(self)
 
     def caseAConjunctionDisjunction(self,node):
         # print(type(node.getConjunction()))
         return node.getConjunction().apply(self)
-
-    def caseASubexprConjunction(self,node):
-        return str(node)
     
     def caseASimpleSubexpr(self,node):
         # AMoleculeSimple
+        # AAtomSimple
         # 
+        # print(type(node.getSimple()))
         return node.getSimple().apply(self)
+
+    def caseAAtomSimple(self,node):
+        return node.getTerm().apply(self)
 
     def caseAMoleculeSimple(self,node):
         # AttributeMoleculeMolecule
@@ -38671,11 +38712,11 @@ class PyDatalogAnalysis(Analysis):
         return node.getMolecule().apply(self)
 
     def caseAAttributeMoleculeMolecule(self,node):
-        variable = node.getTerm().apply(self)
-        self.axiomsVariablesTemp.append(variable)
+        term = node.getTerm().apply(self)
+        # self.axiomsVariablesTemp.append(term)
         specification = node.getAttrSpecification().apply(self)
 
-        molecule = specification[1] + '(' + variable + ',' + specification[0] + ',' + specification[2] + ')'
+        molecule = specification[1] + '(' + term + ',' + specification[0] + ',' + specification[2] + ')'
         return molecule
 
     def caseAAttrSpecification(self,node):
@@ -38685,12 +38726,29 @@ class PyDatalogAnalysis(Analysis):
         return node.getAttrRelation().apply(self)
 
     def caseAAttrValAttrRelation(self,node):
-        term = "'" + node.getTerm().apply(self) + "'"
+        # Tratar OR ?
+        term =  node.getTerm().apply(self)
         # node.getTHasvalue()
-        print('Resolver ATermTermlist')
-        print(type(node.getTermlist()))
-        return [term,'hasValue',str(node.getTermlist())]
+        termlist = node.getTermlist().apply(self)        
+        return [term,'hasValue',termlist[0]]
     
+    def caseAConceptMoleculePreferredMolecule(self,node):
+        molecule = ''
+        # Tratar OR ?
+        term = node.getTerm().apply(self)
+        conceptOp = str(node.getCptOp()).strip()
+        termlist = node.getTermlist().apply(self)
+
+        # Montando o conceito
+        molecule = molecule + conceptOp + '(' + term + ',' + termlist[0] + ')'
+        # Montando os termos adicionais
+        if (node.getAttrSpecification() != None):
+            specification = node.getAttrSpecification().apply(self)
+            moleculeSpecification = specification[1] + '(' + term + ',' + specification[0] + ',' + specification[2] + ')'            
+            molecule = molecule + ' & ' + moleculeSpecification
+        
+        return molecule
+
     def caseAConjunction(self,node):
         conjuncao = ''
         conjuncao = node.getConjunction().apply(self)
@@ -38698,6 +38756,14 @@ class PyDatalogAnalysis(Analysis):
         conjuncao = conjuncao + node.getSubexpr().apply(self)
 
         return conjuncao
+    
+    def caseASubexprConjunction(self,node):
+        # print(type(node.getSubexpr()))
+        return node.getSubexpr().apply(self)
+
+    def caseAComplexSubexpr(self,node):
+        # print(node.getExpr().apply(self))
+        return node.getExpr().apply(self)
 
 #### Testando 
         

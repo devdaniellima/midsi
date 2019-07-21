@@ -3228,7 +3228,7 @@ class AImportsontologyHeader(Node):
         return AImportsontologyHeader(self.cloneNode(self._importsontology_))
 
     def apply(self, analysis):
-        analysis.caseAImportsontologyHeader(self)
+        return analysis.caseAImportsontologyHeader(self)
 
     def getImportsontology (self):
         return self._importsontology_
@@ -3342,7 +3342,7 @@ class AImportsontology(Node):
         return AImportsontology(self.cloneNode(self._t_importontology_),self.cloneNode(self._idlist_))
 
     def apply(self, analysis):
-        analysis.caseAImportsontology(self)
+        return analysis.caseAImportsontology(self)
 
     def getTImportontology (self):
         return self._t_importontology_
@@ -38405,6 +38405,7 @@ class Knowledge:
         self.facts['nfp'] = []
         self.facts['conceptAttribute'] = []
         self.axioms = []
+        self.imports = []
 
 class PyDatalogAnalysis(Analysis):
     def __init__(self,knowledge):
@@ -38516,26 +38517,32 @@ class PyDatalogAnalysis(Analysis):
             ontologyId = (node.getId().apply(self))
             self.knowledge.facts['ontology'].append(ontologyId)
 
-        # header*
-        if node.getHeader() != None:
-            for header in node.getHeader():
-                print(header)
-
-        # print(type(node.getHeader()))
         for ontologyHeader in node.getHeader():
-            nfps = ontologyHeader.apply(self)
-            if nfps != None:
-                for nfpAttributeList in ontologyHeader.apply(self):
-                    for nfpAttribute in nfpAttributeList:
-                        # nfp = "nfp("+str(nfpAttribute[0])+" hasValue "+str(nfpAttribute[1])+")"
-                        nfpId,nfpValue = nfpAttribute
-                        nfpFact = (ontologyId,nfpId,nfpValue)
-                        self.knowledge.facts['nfp'].append(nfpFact)
+            if (isinstance(ontologyHeader,AImportsontologyHeader)):
+                for imp in ontologyHeader.apply(self):
+                    if imp not in self.knowledge.imports:
+                        self.knowledge.imports.append(imp)
+            else:
+                nfps = ontologyHeader.apply(self)
+                if nfps != None:
+                    for nfpAttributeList in ontologyHeader.apply(self):
+                        for nfpAttribute in nfpAttributeList:
+                            # nfp = "nfp("+str(nfpAttribute[0])+" hasValue "+str(nfpAttribute[1])+")"
+                            nfpId,nfpValue = nfpAttribute
+                            nfpFact = (ontologyId,nfpId,nfpValue)
+                            self.knowledge.facts['nfp'].append(nfpFact)
 
         for ontologyElement in node.getOntologyElement():
             # print(type(ontologyElement))
             ontologyElement.apply(self)
-        
+    
+    def caseAImportsontologyHeader(self,node):
+        # print(type(node.getImportsontology()))
+        return node.getImportsontology().apply(self)
+
+    def caseAImportsontology(self,node):
+        return node.getIdlist().apply(self)
+
     def caseANfpHeader(self,node):
         return node.getNfp().apply(self)
 
@@ -38802,4 +38809,3 @@ head.apply(container)
 # for axiom in container.knowledge.axioms:
 #     print(axiom)
 #     print()
-

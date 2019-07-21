@@ -38441,7 +38441,7 @@ class PyDatalogAnalysis(Analysis):
         return str(node.getString()).strip()
 
     def caseATermValue(self,node):
-        return "'" + str(node.getId()).strip() + "'"
+        return "'" + str(node.getId().apply(self)).strip() + "'"
 
     def caseAIriId(self,node):
         return node.getIri().apply(self)
@@ -38517,6 +38517,10 @@ class PyDatalogAnalysis(Analysis):
             self.knowledge.facts['ontology'].append(ontologyId)
 
         # header*
+        if node.getHeader() != None:
+            for header in node.getHeader():
+                print(header)
+
         # print(type(node.getHeader()))
         for ontologyHeader in node.getHeader():
             nfps = ontologyHeader.apply(self)
@@ -38781,19 +38785,21 @@ class PyDatalogAnalysis(Analysis):
 
 #### Testando 
 
-lexer = Lexer('wsmlcodes/OntologiaMundo.wsml')
+# lexer = Lexer('wsmlcodes/OntologiaMundo.wsml')
+lexer = Lexer('wsmlcodes/CasaAutomatizada.wsml')
 knowledge = Knowledge()
 container = PyDatalogAnalysis(knowledge)
 
 parser = Parser(lexer)
 head = parser.parse()
 head.apply(container)
-print('---------------------------------------')
+# print('---------------------------------------')
 # for fact in container.knowledge.facts:
 #     print(fact)
 #     print(container.knowledge.facts[fact])
 #     print()
 
-for axiom in container.knowledge.axioms:
-    print(axiom)
-    print()
+# for axiom in container.knowledge.axioms:
+#     print(axiom)
+#     print()
+

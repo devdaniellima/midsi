@@ -2,6 +2,7 @@
 
 # from types import type('String'), FileType, ListType
 from types import *
+import os
 
 def caller(n=1):
     import inspect
@@ -38413,7 +38414,6 @@ class PyDatalogAnalysis(Analysis):
         self.saveAxiomsVariablesTemp = True
         self.axiomsVariablesTemp = []
         self.printComments = False
-        print('\n\n---------- Analysis PyDatalog ---------\n')
 
     def caseStart(self, node):
         # node - Class Start
@@ -38790,16 +38790,32 @@ class PyDatalogAnalysis(Analysis):
         # print(node.getExpr().apply(self))
         return node.getExpr().apply(self)
 
+class Reasoner:
+    def __init__(self,):
+        self.loadedFiles = []
+
+    def load(self,file):
+        absFile = os.path.abspath(file)
+        if absFile not in self.loadedFiles:
+            print(absFile)
+            self.loadedFiles.append(absFile)
+        pass
+    
+    def execute(self,query):
+        pass
+
+reasoner = Reasoner()
+reasoner.load('wsmlcodes/OntologiaMundo.wsml')
 #### Testando 
 
 # lexer = Lexer('wsmlcodes/OntologiaMundo.wsml')
-lexer = Lexer('wsmlcodes/CasaAutomatizada.wsml')
-knowledge = Knowledge()
-container = PyDatalogAnalysis(knowledge)
+# lexer = Lexer('wsmlcodes/CasaAutomatizada.wsml')
+# knowledge = Knowledge()
+# container = PyDatalogAnalysis(knowledge)
 
-parser = Parser(lexer)
-head = parser.parse()
-head.apply(container)
+# parser = Parser(lexer)
+# head = parser.parse()
+# head.apply(container)
 # print('---------------------------------------')
 # for fact in container.knowledge.facts:
 #     print(fact)

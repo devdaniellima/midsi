@@ -38793,35 +38793,30 @@ class PyDatalogAnalysis(Analysis):
 class Reasoner:
     def __init__(self,):
         self.loadedFiles = []
+        self.parser = None
+        self.head = None
+        self.analysis = PyDatalogAnalysis(Knowledge())
 
     def load(self,file):
         absFile = os.path.abspath(file)
+        relativePath = os.path.dirname(file)
         if absFile not in self.loadedFiles:
-            print(absFile)
             self.loadedFiles.append(absFile)
-        pass
+            # Carregando o arquivo em memória
+            self.parser = Parser(Lexer(file))
+            self.head = self.parser.parse()
+            self.head.apply(self.analysis)
+            # Carregando arquivos de importação
+            for arqImp in self.analysis.knowledge.imports:
+                arq = relativePath + '/' + arqImp + '.wsml'
+                if os.path.exists(arq) == True:
+                    Parser(Lexer(arq))
+                else:
+                    print('Arquivo '+ arqImp + '.wsml não foi encontrado!')
     
     def execute(self,query):
         pass
 
 reasoner = Reasoner()
-reasoner.load('wsmlcodes/OntologiaMundo.wsml')
-#### Testando 
-
-# lexer = Lexer('wsmlcodes/OntologiaMundo.wsml')
-# lexer = Lexer('wsmlcodes/CasaAutomatizada.wsml')
-# knowledge = Knowledge()
-# container = PyDatalogAnalysis(knowledge)
-
-# parser = Parser(lexer)
-# head = parser.parse()
-# head.apply(container)
-# print('---------------------------------------')
-# for fact in container.knowledge.facts:
-#     print(fact)
-#     print(container.knowledge.facts[fact])
-#     print()
-
-# for axiom in container.knowledge.axioms:
-#     print(axiom)
-#     print()
+# reasoner.load('../wsmlcodes/OntologiaMundo.wsml')
+reasoner.load('../wsmlcodes/CasaAutomatizada.wsml')

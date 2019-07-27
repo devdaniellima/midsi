@@ -38520,7 +38520,7 @@ class PyDatalogAnalysis(Analysis):
         for ontologyHeader in node.getHeader():
             if (isinstance(ontologyHeader,AImportsontologyHeader)):
                 for imp in ontologyHeader.apply(self):
-                    if imp not in self.knowledge.imports:
+                    if imp != None and imp not in self.knowledge.imports:
                         self.knowledge.imports.append(imp)
             else:
                 nfps = ontologyHeader.apply(self)
@@ -38541,6 +38541,7 @@ class PyDatalogAnalysis(Analysis):
         return node.getImportsontology().apply(self)
 
     def caseAImportsontology(self,node):
+        # print(type(node.getIdlist()))
         return node.getIdlist().apply(self)
 
     def caseANfpHeader(self,node):
@@ -38793,30 +38794,39 @@ class PyDatalogAnalysis(Analysis):
 class Reasoner:
     def __init__(self,):
         self.loadedFiles = []
-        self.parser = None
-        self.head = None
         self.analysis = PyDatalogAnalysis(Knowledge())
 
     def load(self,file):
-        absFile = os.path.abspath(file)
-        relativePath = os.path.dirname(file)
-        if absFile not in self.loadedFiles:
-            self.loadedFiles.append(absFile)
-            # Carregando o arquivo em memória
-            self.parser = Parser(Lexer(file))
-            self.head = self.parser.parse()
-            self.head.apply(self.analysis)
-            # Carregando arquivos de importação
-            for arqImp in self.analysis.knowledge.imports:
-                arq = relativePath + '/' + arqImp + '.wsml'
-                if os.path.exists(arq) == True:
-                    Parser(Lexer(arq))
+        if os.path.exists(file) == False:
+            print('Arquivo '+ file + ' não foi encontrado!')
+            return False
+        
+        fileCamArr = file.split('/')
+        fileNameArr = str(fileCamArr[-1]).split('.')
+        fileName = '.'.join(fileNameArr[0:-1])
+        dirName = '/'.join(fileCamArr[0:-1]) + '/'
+
+        self.analysis.knowledge.imports.append(fileName)
+
+        for arqImp in self.analysis.knowledge.imports:
+
+            absPath = os.path.abspath(dirName+arqImp)
+            if absPath not in self.loadedFiles:
+                relativeName = dirName+arqImp+'.wsml'
+                print('Início do carregamento de '+relativeName)
+                if os.path.exists(relativeName) == True:
+                    parser = Parser(Lexer(relativeName))
+                    head = parser.parse()
+                    head.apply(self.analysis)
+                    print('Arquivo ' + relativeName + ' carregado com sucesso!')
                 else:
-                    print('Arquivo '+ arqImp + '.wsml não foi encontrado!')
-    
+                    print('Arquivo ' + relativeName + ' não foi encontrado!')
+
+            self.loadedFiles.append(absPath)
+
     def execute(self,query):
         pass
 
 reasoner = Reasoner()
 # reasoner.load('../wsmlcodes/OntologiaMundo.wsml')
-reasoner.load('../wsmlcodes/CasaAutomatizada.wsml')
+reasoner.load('wsmlcodes/CasaAutomatizada.wsml')

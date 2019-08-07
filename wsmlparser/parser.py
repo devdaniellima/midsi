@@ -2,6 +2,7 @@
 
 # from types import type('String'), FileType, ListType
 from types import *
+from pyswip import Prolog
 import os
 
 def caller(n=1):
@@ -38393,7 +38394,7 @@ class Parser(object):
               
         return str(_out_)
 
-############################# Analisador pyDatalog ############################################## 
+############################# Analisador ############################################## 
 
 class Knowledge:
     def __init__(self):
@@ -38408,12 +38409,13 @@ class Knowledge:
         self.axioms = []
         self.imports = []
 
-class PyDatalogAnalysis(Analysis):
+class PySwipAnalysis(Analysis):
     def __init__(self,knowledge):
         self.knowledge = knowledge
         self.saveAxiomsVariablesTemp = True
         self.axiomsVariablesTemp = []
         self.printComments = False
+        self.termQuotes = True
 
     def caseStart(self, node):
         # node - Class Start
@@ -38442,6 +38444,8 @@ class PyDatalogAnalysis(Analysis):
         return str(node.getString()).strip()
 
     def caseATermValue(self,node):
+        #print(type(node.getId()))
+        #print(node.getId())
         return "'" + str(node.getId().apply(self)).strip() + "'"
 
     def caseAIriId(self,node):
@@ -38452,7 +38456,7 @@ class PyDatalogAnalysis(Analysis):
 
     def caseAAnySqname(self,node):
         # print(node.getPrefix())
-        # print(node.getName())
+        #print(node.getName())
         return str(node.getName()).strip()
 
     def caseAVarTerm(self,node):
@@ -38465,14 +38469,15 @@ class PyDatalogAnalysis(Analysis):
         return termo
 
     def caseADataTerm(self,node):
-        # print(type(node.getValue()))
+        #print(type(node.getValue()))
+        #print(node.getValue().apply(self))
         return node.getValue().apply(self)
 
     def caseANumericValue(self,node):
         return str(node.getNumber()).strip()
 
     def caseADatatypeValue(self,node):
-        return node.getFunctionsymbol().apply(self)
+        return "'"+node.getFunctionsymbol().apply(self)+"'"
 
     def caseAParametrizedFunctionsymbol(self,node):
         id = node.getId().apply(self)
@@ -38514,7 +38519,7 @@ class PyDatalogAnalysis(Analysis):
         # id?
         if node.getId() != None: # returning AIriId
         #    print(node.getId()) # Salvar id da ontologia
-            ontologyId = (node.getId().apply(self))
+            ontologyId = "'"+node.getId().apply(self)+"'"
             self.knowledge.facts['ontology'].append(ontologyId)
 
         for ontologyHeader in node.getHeader():
@@ -38566,7 +38571,7 @@ class PyDatalogAnalysis(Analysis):
         if self.printComments: 
             print('-- caseAConcept --')
 
-        conceptId = (node.getId().apply(self))
+        conceptId = "'"+node.getId().apply(self)+"'"
         self.knowledge.facts['concept'].append(conceptId)
         # header*
         nfp = node.getNfp()
@@ -38583,20 +38588,20 @@ class PyDatalogAnalysis(Analysis):
         if listAttribute != None:
             for attribute in listAttribute:
                 factAttributeValue = attribute.apply(self)
-                for factAttr in factAttributeValue:
+                for factAttr in factAttributeValue:                    
                     fact = tuple([conceptId]+factAttr)
                     self.knowledge.facts['conceptAttribute'].append(fact)
 
     def caseAAttribute(self,node):
-        idAttr = node.getId().apply(self)
+        idAttr = "'"+node.getId().apply(self)+"'"
         # print(node.getAttributefeature())
-        typeAttr = str(node.getAttType()).strip()
+        typeAttr = "'"+str(node.getAttType()).strip()+"'"
         # print(node.getCardinality())
         ids = node.getIdlist().apply(self)
         # print(node.getNfp())
         attributes = []
         for id in ids:
-            attributes.append([idAttr,typeAttr,id])
+            attributes.append([idAttr,typeAttr,"'"+id+"'"])
         
         return attributes
 
@@ -38613,13 +38618,13 @@ class PyDatalogAnalysis(Analysis):
         if self.printComments: 
             print('-- caseAInstance --')
         
-        instanceId = node.getId().apply(self)
+        instanceId = "'"+node.getId().apply(self)+"'"
         self.knowledge.facts['instance'].append(instanceId)
 
         if node.getMemberof() != None:
             ids = node.getMemberof().apply(self)
             for idMemberOf in ids:
-                memberOfInstance = (instanceId,idMemberOf)
+                memberOfInstance = (instanceId,"'"+idMemberOf+"'")
                 self.knowledge.facts['memberOf'].append(memberOfInstance)
 
         for attribute in node.getAttributevalue():
@@ -38645,7 +38650,7 @@ class PyDatalogAnalysis(Analysis):
         return node.getId().apply(self)
 
     def caseAAttributevalue(self,node):
-        idAttribute = node.getId().apply(self)
+        idAttribute = "'"+node.getId().apply(self)+"'"
         valueAttribute = node.getValuelist().apply(self)
         factHasValue = []
         for value in valueAttribute:
@@ -38664,8 +38669,8 @@ class PyDatalogAnalysis(Analysis):
 
     def caseATermValuelist(self,node):
         value = node.getValue().apply(self)
-        if (isinstance(node.getValue(),ATermValue)):
-            value = value[1:-1]
+        #if (isinstance(node.getValue(),ATermValue)):
+        #    value = value[1:-1]
         
         return [value]
 
@@ -38679,6 +38684,8 @@ class PyDatalogAnalysis(Analysis):
     def caseADefinedAxiomAxiomdefinition(self,node):
         axioms = []
         axiomId = node.getId().apply(self)
+        #if (axiomId[0] == axiomId[-1] == "'"):
+        #    axiomId = axiomId[1:-1]
         
         self.axiomsVariablesTemp = []
         logDefinition = node.getLogDefinition().apply(self)
@@ -38686,7 +38693,7 @@ class PyDatalogAnalysis(Analysis):
         for ax in logDefinition:
             axiom = ''
             axiom = axiomId + '('+ ','.join(self.axiomsVariablesTemp) +')'
-            axiom = axiom + ' <= ' + str(ax)
+            axiom = axiom + ' :- ' + str(ax)
             axioms.append(axiom)
 
         return axioms
@@ -38695,12 +38702,14 @@ class PyDatalogAnalysis(Analysis):
         exprs = []
         for logExpr in node.getLogExpr():
             exp = logExpr.apply(self)
-            # print(exp)
+            #print(type(logExpr))
             exprs.append(exp)
-        # print(exprs)
+        #print(exprs)
         return exprs
     
     def caseAOtherExpressionLogExpr(self,node):
+        #print(type(node.getExpr()))
+        #print(node.getExpr())
         return node.getExpr().apply(self)
     
     def caseAImplicationExpr(self,node):
@@ -38708,33 +38717,41 @@ class PyDatalogAnalysis(Analysis):
         # print(node.getImplyOp())
         
         exprImpl = node.getDisjunction().apply(self)
+        if exprImpl[0] == exprImpl[-1] == "'":
+            exprImpl = exprImpl[1:-1]
         
-        axiomImpl = exprImpl + ' <= ' + expr
+        axiomImpl = exprImpl + ' :- ' + expr
         self.knowledge.axioms.append(axiomImpl)
         
         return expr
 
     def caseADisjunctionExpr(self,node):
-        # print(type(node.getDisjunction()))
+        #print(type(node.getDisjunction()))
+        #print(node.getDisjunction())
         return node.getDisjunction().apply(self)
 
     def caseAConjunctionDisjunction(self,node):
-        # print(type(node.getConjunction()))
+        #print(type(node.getConjunction()))
+        #print(node.getConjunction())
         return node.getConjunction().apply(self)
     
     def caseASimpleSubexpr(self,node):
         # AMoleculeSimple
         # AAtomSimple
         # 
-        # print(type(node.getSimple()))
+        #print(type(node.getSimple()))
+        #print(node.getSimple())
         return node.getSimple().apply(self)
 
     def caseAAtomSimple(self,node):
+        self.termQuotes = False
         return node.getTerm().apply(self)
+        self.termQuotes = True
 
     def caseAMoleculeSimple(self,node):
         # AttributeMoleculeMolecule
         # 
+        #print(type(node.getMolecule()))
         return node.getMolecule().apply(self)
 
     def caseAAttributeMoleculeMolecule(self,node):
@@ -38754,8 +38771,13 @@ class PyDatalogAnalysis(Analysis):
     def caseAAttrValAttrRelation(self,node):
         # Tratar OR ?
         term =  node.getTerm().apply(self)
+        #if term[0] == term[-1] == "'":
+        #    term = term[1:-1]
+        
         # node.getTHasvalue()
         termlist = node.getTermlist().apply(self)        
+        #print('t'+term)
+        #print(termlist[0])
         return [term,'hasValue',termlist[0]]
     
     def caseAConceptMoleculePreferredMolecule(self,node):
@@ -38764,27 +38786,32 @@ class PyDatalogAnalysis(Analysis):
         term = node.getTerm().apply(self)
         conceptOp = str(node.getCptOp()).strip()
         termlist = node.getTermlist().apply(self)
+        #print(type(node.getTermlist()))
+        #if termlist[0][0] == termlist[0][-1] == "'":
+        #    termlist[0] = termlist[0][1:-1]
 
         # Montando o conceito
         molecule = molecule + conceptOp + '(' + term + ',' + termlist[0] + ')'
+        #print(molecule)
         # Montando os termos adicionais
         if (node.getAttrSpecification() != None):
             specification = node.getAttrSpecification().apply(self)
             moleculeSpecification = specification[1] + '(' + term + ',' + specification[0] + ',' + specification[2] + ')'            
-            molecule = molecule + ' & ' + moleculeSpecification
+            molecule = molecule + ',' + moleculeSpecification
         
         return molecule
 
     def caseAConjunction(self,node):
         conjuncao = ''
         conjuncao = node.getConjunction().apply(self)
-        conjuncao = conjuncao + ' & ' # print(node.getTAnd())
+        conjuncao = conjuncao + ',' # print(node.getTAnd())
         conjuncao = conjuncao + node.getSubexpr().apply(self)
 
         return conjuncao
     
     def caseASubexprConjunction(self,node):
-        # print(type(node.getSubexpr()))
+        #print(type(node.getSubexpr()))
+        #print(node.getSubexpr())
         return node.getSubexpr().apply(self)
 
     def caseAComplexSubexpr(self,node):
@@ -38794,7 +38821,8 @@ class PyDatalogAnalysis(Analysis):
 class Reasoner:
     def __init__(self,):
         self.loadedFiles = []
-        self.analysis = PyDatalogAnalysis(Knowledge())
+        self.analysis = PySwipAnalysis(Knowledge())
+        self.prolog = Prolog()
 
     def load(self,file):
         if os.path.exists(file) == False:
@@ -38824,9 +38852,19 @@ class Reasoner:
 
             self.loadedFiles.append(absPath)
 
-    def execute(self,query):
-        pass
+        for fact in self.analysis.knowledge.facts:
+            for asserts in self.analysis.knowledge.facts[fact]:
+                fato = fact+"("
+                if isinstance(asserts,str):
+                    fato = fato + asserts
+                elif isinstance(asserts,tuple):
+                    fato = fato + ','.join(asserts)
+                fato = fato + ")"
+                self.prolog.assertz(fato)
 
-reasoner = Reasoner()
-# reasoner.load('../wsmlcodes/OntologiaMundo.wsml')
-reasoner.load('wsmlcodes/CasaAutomatizada.wsml')
+        for axiom in self.analysis.knowledge.axioms:
+            self.prolog.assertz(axiom)
+            
+
+    def execute(self,query):
+        return list(self.prolog.query(query,catcherrors = True))

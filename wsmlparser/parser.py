@@ -8131,7 +8131,7 @@ class ALpRuleLogExpr(Node):
         return ALpRuleLogExpr(self.cloneNode(self._head_),self.cloneNode(self._t_implied_by_lp_),self.cloneNode(self._body_),self.cloneNode(self._endpoint_))
 
     def apply(self, analysis):
-        analysis.caseALpRuleLogExpr(self)
+        return analysis.caseALpRuleLogExpr(self)
 
     def getHead (self):
         return self._head_
@@ -9219,7 +9219,7 @@ class AComparisonSimple(Node):
         return AComparisonSimple(self.cloneNode(self._comparison_))
 
     def apply(self, analysis):
-        analysis.caseAComparisonSimple(self)
+        return analysis.caseAComparisonSimple(self)
 
     def getComparison (self):
         return self._comparison_
@@ -10010,7 +10010,7 @@ class AComparison(Node):
         return AComparison(self.cloneNode(self._left_),self.cloneNode(self._comp_op_),self.cloneNode(self._right_))
 
     def apply(self, analysis):
-        analysis.caseAComparison(self)
+        return analysis.caseAComparison(self)
 
     def getLeft (self):
         return self._left_
@@ -10219,7 +10219,7 @@ class AMathFunctionsymbol(Node):
         return AMathFunctionsymbol(self.cloneNode(self._lpar_),self.cloneNode(self._mathexpr_),self.cloneNode(self._math_op_),self.cloneNode(self._term_),self.cloneNode(self._rpar_))
 
     def apply(self, analysis):
-        analysis.caseAMathFunctionsymbol(self)
+        return analysis.caseAMathFunctionsymbol(self)
 
     def getLpar (self):
         return self._lpar_
@@ -10433,7 +10433,7 @@ class AMathexpr(Node):
         return AMathexpr(self.cloneNode(self._term_))
 
     def apply(self, analysis):
-        analysis.caseAMathexpr(self)
+        return analysis.caseAMathexpr(self)
 
     def getTerm (self):
         return self._term_
@@ -10653,7 +10653,7 @@ class AEqualCompOp(Node):
         return AEqualCompOp(self.cloneNode(self._equal_))
 
     def apply(self, analysis):
-        analysis.caseAEqualCompOp(self)
+        return analysis.caseAEqualCompOp(self)
 
     def getEqual (self):
         return self._equal_
@@ -38477,14 +38477,26 @@ class PySwipAnalysis(Analysis):
         return str(node.getNumber()).strip()
 
     def caseADatatypeValue(self,node):
-        return "'"+node.getFunctionsymbol().apply(self)+"'"
+        return node.getFunctionsymbol().apply(self)
 
     def caseAParametrizedFunctionsymbol(self,node):
         id = node.getId().apply(self)
         terms = node.getTerms().apply(self)
         
-        return id + '(' + ','.join(terms) + ')'
+        return "'"+id + '(' + ','.join(terms) + ')'+"'"
 
+    def caseAMathFunctionsymbol(self,node):
+        lpar = '('
+        mathexpr = str(node.getMathexpr().apply(self)).strip()
+        op = str(node.getMathOp()).strip()
+        term = str(node.getTerm().apply(self)).strip()
+        rpar = ')'
+        
+        return lpar + mathexpr + op + term + rpar
+
+    def caseAMathexpr(self,node):
+        return node.getTerm().apply(self)
+        
     def caseATermlist(self,node):
         return node.getTerms().apply(self)
     
@@ -38700,16 +38712,38 @@ class PySwipAnalysis(Analysis):
     
     def caseALogDefinition(self,node):
         exprs = []
-        for logExpr in node.getLogExpr():
+        logExprs = node.getLogExpr()
+        isLpRuleAxiom = False
+        for logExpr in logExprs:
+            exp = logExpr.apply(self)
+            if ':-' in exp:
+                isLpRuleAxiom = True
+
+        for logExpr in logExprs:
             exp = logExpr.apply(self)
             #print(type(logExpr))
-            exprs.append(exp)
-        #print(exprs)
+            if isLpRuleAxiom == True:
+                self.knowledge.axioms.append(exp)
+            
+            else:
+                exprs.append(exp)
+        
         return exprs
     
+    def caseALpRuleLogExpr(self,node):
+        rule = ""
+        rule = rule + node.getHead().apply(self)
+        #print(type(node.getTImpliedByLp()))
+        rule = rule + " :- "
+        #print(type(node.getBody()))
+        #print(node.getBody())
+        rule = rule + node.getBody().apply(self)
+        return rule
+
     def caseAOtherExpressionLogExpr(self,node):
         #print(type(node.getExpr()))
         #print(node.getExpr())
+        
         return node.getExpr().apply(self)
     
     def caseAImplicationExpr(self,node):
@@ -38717,8 +38751,6 @@ class PySwipAnalysis(Analysis):
         # print(node.getImplyOp())
         
         exprImpl = node.getDisjunction().apply(self)
-        if exprImpl[0] == exprImpl[-1] == "'":
-            exprImpl = exprImpl[1:-1]
         
         axiomImpl = exprImpl + ' :- ' + expr
         self.knowledge.axioms.append(axiomImpl)
@@ -38726,9 +38758,14 @@ class PySwipAnalysis(Analysis):
         return expr
 
     def caseADisjunctionExpr(self,node):
-        #print(type(node.getDisjunction()))
         #print(node.getDisjunction())
-        return node.getDisjunction().apply(self)
+        #print(type(node.getDisjunction()))
+        #print(node.getDisjunction().apply(self))
+        disjunction = node.getDisjunction().apply(self)
+        if disjunction[0] == disjunction[-1] == "'":
+            disjunction = disjunction[1:-1]
+        
+        return disjunction
 
     def caseAConjunctionDisjunction(self,node):
         #print(type(node.getConjunction()))
@@ -38738,10 +38775,23 @@ class PySwipAnalysis(Analysis):
     def caseASimpleSubexpr(self,node):
         # AMoleculeSimple
         # AAtomSimple
-        # 
+        # AComparisonSimple
         #print(type(node.getSimple()))
         #print(node.getSimple())
         return node.getSimple().apply(self)
+
+    def caseAComparisonSimple(self,node):
+        #print(type(node.getComparison()))
+        return node.getComparison().apply(self)
+    
+    def caseAComparison(self,node):
+        left = str(node.getLeft().apply(self)).strip()
+        op = str(node.getCompOp()).strip()
+        if op == '=':
+            op = 'is'
+        right = str(node.getRight().apply(self)).strip()
+        
+        return left + ' ' + op + ' ' + right
 
     def caseAAtomSimple(self,node):
         self.termQuotes = False
@@ -38863,8 +38913,11 @@ class Reasoner:
                 self.prolog.assertz(fato)
 
         for axiom in self.analysis.knowledge.axioms:
+            print(axiom)
             self.prolog.assertz(axiom)
+            
             
 
     def execute(self,query):
-        return list(self.prolog.query(query,catcherrors = True))
+        return list(self.prolog.query(query))
+

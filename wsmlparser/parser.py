@@ -8576,7 +8576,7 @@ class ADisjunction(Node):
         return ADisjunction(self.cloneNode(self._disjunction_),self.cloneNode(self._t_or_),self.cloneNode(self._conjunction_))
 
     def apply(self, analysis):
-        analysis.caseADisjunction(self)
+        return analysis.caseADisjunction(self)
 
     def getDisjunction (self):
         return self._disjunction_
@@ -38766,6 +38766,11 @@ class PySwipAnalysis(Analysis):
             disjunction = disjunction[1:-1]
         
         return disjunction
+    
+    def caseADisjunction(self,node):
+        disj = node.getDisjunction().apply(self)
+        conj = node.getConjunction().apply(self)
+        return disj + ';' + conj
 
     def caseAConjunctionDisjunction(self,node):
         #print(type(node.getConjunction()))
@@ -38913,7 +38918,7 @@ class Reasoner:
                 self.prolog.assertz(fato)
 
         for axiom in self.analysis.knowledge.axioms:
-            print(axiom)
+            #print(axiom)
             self.prolog.assertz(axiom)
             
             

@@ -11,7 +11,7 @@ ontology CasaAutomatizada
 
 	importsOntology {
 		casa#ontCasa,
-		disp#ontdispositivos,
+		disp#ontDispositivos,
 		pessoa#ontPessoa,
 		ser#ontServico
 	}

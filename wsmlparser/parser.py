@@ -38409,6 +38409,18 @@ class Knowledge:
         self.axioms = []
         self.imports = []
 
+    def clean(self):
+        self.facts = dict()
+        self.facts['ontology'] = []
+        self.facts['concept'] = []
+        self.facts['instance'] = []
+        self.facts['memberOf'] = []
+        self.facts['hasValue'] = []
+        self.facts['nfp'] = []
+        self.facts['conceptAttribute'] = []
+        self.axioms = []
+        self.imports = []
+
 class PySwipAnalysis(Analysis):
     def __init__(self,knowledge):
         self.knowledge = knowledge
@@ -38920,7 +38932,9 @@ class Reasoner:
         for axiom in self.analysis.knowledge.axioms:
             #print(axiom)
             self.prolog.assertz(axiom)
-            
+        
+        
+        self.analysis.knowledge.clean()
             
 
     def execute(self,query):

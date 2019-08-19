@@ -38890,9 +38890,10 @@ class Reasoner:
         self.loadedFiles = []
         self.analysis = PySwipAnalysis(Knowledge())
         self.prolog = Prolog()
+        self.printLogLoading = False
 
     def load(self,file):
-        if os.path.exists(file) == False:
+        if os.path.exists(file) == False and self.printLogLoading == True:
             print('Arquivo '+ file + ' não foi encontrado!')
             return False
         
@@ -38908,14 +38909,18 @@ class Reasoner:
             absPath = os.path.abspath(dirName+arqImp)
             if absPath not in self.loadedFiles:
                 relativeName = dirName+arqImp+'.wsml'
-                print('Início do carregamento de '+relativeName)
+                if self.printLogLoading == True:
+                    print('Início do carregamento de '+relativeName)
+
                 if os.path.exists(relativeName) == True:
                     parser = Parser(Lexer(relativeName))
                     head = parser.parse()
                     head.apply(self.analysis)
-                    print('Arquivo ' + relativeName + ' carregado com sucesso!')
+                    if self.printLogLoading == True:
+                        print('Arquivo ' + relativeName + ' carregado com sucesso!')
                 else:
-                    print('Arquivo ' + relativeName + ' não foi encontrado!')
+                    if self.printLogLoading == True:
+                        print('Arquivo ' + relativeName + ' não foi encontrado!')
 
             self.loadedFiles.append(absPath)
 

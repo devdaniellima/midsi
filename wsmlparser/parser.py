@@ -2,6 +2,8 @@
 
 # from types import type('String'), FileType, ListType
 from types import *
+from pyswip import Prolog
+import os
 
 def caller(n=1):
     import inspect
@@ -3140,7 +3142,7 @@ class ANfpHeader(Node):
         return ANfpHeader(self.cloneNode(self._nfp_))
 
     def apply(self, analysis):
-        analysis.caseANfpHeader(self)
+        return analysis.caseANfpHeader(self)
 
     def getNfp (self):
         return self._nfp_
@@ -3228,7 +3230,7 @@ class AImportsontologyHeader(Node):
         return AImportsontologyHeader(self.cloneNode(self._importsontology_))
 
     def apply(self, analysis):
-        analysis.caseAImportsontologyHeader(self)
+        return analysis.caseAImportsontologyHeader(self)
 
     def getImportsontology (self):
         return self._importsontology_
@@ -3342,7 +3344,7 @@ class AImportsontology(Node):
         return AImportsontology(self.cloneNode(self._t_importontology_),self.cloneNode(self._idlist_))
 
     def apply(self, analysis):
-        analysis.caseAImportsontology(self)
+        return analysis.caseAImportsontology(self)
 
     def getTImportontology (self):
         return self._t_importontology_
@@ -3412,7 +3414,7 @@ class ANfp(Node):
         return ANfp(self.cloneNode(self._t_nfp_),self.cloneList(self._attributevalue_),self.cloneNode(self._t_endnfp_))
 
     def apply(self, analysis):
-        analysis.caseANfp(self)
+        return analysis.caseANfp(self)
 
     def getTNfp (self):
         return self._t_nfp_
@@ -6157,7 +6159,7 @@ class AAttribute(Node):
         return AAttribute(self.cloneNode(self._id_),self.cloneList(self._attributefeature_),self.cloneNode(self._att_type_),self.cloneNode(self._cardinality_),self.cloneNode(self._idlist_),self.cloneNode(self._nfp_))
 
     def apply(self, analysis):
-        analysis.caseAAttribute(self)
+        return analysis.caseAAttribute(self)
 
     def getId (self):
         return self._id_
@@ -6886,7 +6888,7 @@ class AMemberof(Node):
         return AMemberof(self.cloneNode(self._t_memberof_),self.cloneNode(self._idlist_))
 
     def apply(self, analysis):
-        analysis.caseAMemberof(self)
+        return analysis.caseAMemberof(self)
 
     def getTMemberof (self):
         return self._t_memberof_
@@ -6956,7 +6958,7 @@ class AAttributevalue(Node):
         return AAttributevalue(self.cloneNode(self._id_),self.cloneNode(self._t_hasvalue_),self.cloneNode(self._valuelist_))
 
     def apply(self, analysis):
-        analysis.caseAAttributevalue(self)
+        return analysis.caseAAttributevalue(self)
 
     def getId (self):
         return self._id_
@@ -7788,7 +7790,7 @@ class AAxiom(Node):
         return AAxiom(self.cloneNode(self._t_axiom_),self.cloneNode(self._axiomdefinition_))
 
     def apply(self, analysis):
-        analysis.caseAAxiom(self)
+        return analysis.caseAAxiom(self)
 
     def getTAxiom (self):
         return self._t_axiom_
@@ -7969,7 +7971,7 @@ class ADefinedAxiomAxiomdefinition(Node):
         return ADefinedAxiomAxiomdefinition(self.cloneNode(self._id_),self.cloneNode(self._nfp_),self.cloneNode(self._log_definition_))
 
     def apply(self, analysis):
-        analysis.caseADefinedAxiomAxiomdefinition(self)
+        return analysis.caseADefinedAxiomAxiomdefinition(self)
 
     def getId (self):
         return self._id_
@@ -8056,7 +8058,7 @@ class ALogDefinition(Node):
         return ALogDefinition(self.cloneNode(self._t_definedby_),self.cloneList(self._log_expr_))
 
     def apply(self, analysis):
-        analysis.caseALogDefinition(self)
+        return analysis.caseALogDefinition(self)
 
     def getTDefinedby (self):
         return self._t_definedby_
@@ -8129,7 +8131,7 @@ class ALpRuleLogExpr(Node):
         return ALpRuleLogExpr(self.cloneNode(self._head_),self.cloneNode(self._t_implied_by_lp_),self.cloneNode(self._body_),self.cloneNode(self._endpoint_))
 
     def apply(self, analysis):
-        analysis.caseALpRuleLogExpr(self)
+        return analysis.caseALpRuleLogExpr(self)
 
     def getHead (self):
         return self._head_
@@ -8326,7 +8328,7 @@ class AOtherExpressionLogExpr(Node):
         return AOtherExpressionLogExpr(self.cloneNode(self._expr_),self.cloneNode(self._endpoint_))
 
     def apply(self, analysis):
-        analysis.caseAOtherExpressionLogExpr(self)
+        return analysis.caseAOtherExpressionLogExpr(self)
 
     def getExpr (self):
         return self._expr_
@@ -8396,7 +8398,7 @@ class AImplicationExpr(Node):
         return AImplicationExpr(self.cloneNode(self._expr_),self.cloneNode(self._imply_op_),self.cloneNode(self._disjunction_))
 
     def apply(self, analysis):
-        analysis.caseAImplicationExpr(self)
+        return analysis.caseAImplicationExpr(self)
 
     def getExpr (self):
         return self._expr_
@@ -8480,7 +8482,7 @@ class ADisjunctionExpr(Node):
         return ADisjunctionExpr(self.cloneNode(self._disjunction_))
 
     def apply(self, analysis):
-        analysis.caseADisjunctionExpr(self)
+        return analysis.caseADisjunctionExpr(self)
 
     def getDisjunction (self):
         return self._disjunction_
@@ -8524,7 +8526,7 @@ class AConjunctionDisjunction(Node):
         return AConjunctionDisjunction(self.cloneNode(self._conjunction_))
 
     def apply(self, analysis):
-        analysis.caseAConjunctionDisjunction(self)
+        return analysis.caseAConjunctionDisjunction(self)
 
     def getConjunction (self):
         return self._conjunction_
@@ -8574,7 +8576,7 @@ class ADisjunction(Node):
         return ADisjunction(self.cloneNode(self._disjunction_),self.cloneNode(self._t_or_),self.cloneNode(self._conjunction_))
 
     def apply(self, analysis):
-        analysis.caseADisjunction(self)
+        return analysis.caseADisjunction(self)
 
     def getDisjunction (self):
         return self._disjunction_
@@ -8658,7 +8660,7 @@ class ASubexprConjunction(Node):
         return ASubexprConjunction(self.cloneNode(self._subexpr_))
 
     def apply(self, analysis):
-        analysis.caseASubexprConjunction(self)
+        return analysis.caseASubexprConjunction(self)
 
     def getSubexpr (self):
         return self._subexpr_
@@ -8708,7 +8710,7 @@ class AConjunction(Node):
         return AConjunction(self.cloneNode(self._conjunction_),self.cloneNode(self._t_and_),self.cloneNode(self._subexpr_))
 
     def apply(self, analysis):
-        analysis.caseAConjunction(self)
+        return analysis.caseAConjunction(self)
 
     def getConjunction (self):
         return self._conjunction_
@@ -8859,7 +8861,7 @@ class ASimpleSubexpr(Node):
         return ASimpleSubexpr(self.cloneNode(self._simple_))
 
     def apply(self, analysis):
-        analysis.caseASimpleSubexpr(self)
+        return analysis.caseASimpleSubexpr(self)
 
     def getSimple (self):
         return self._simple_
@@ -8909,7 +8911,7 @@ class AComplexSubexpr(Node):
         return AComplexSubexpr(self.cloneNode(self._lpar_),self.cloneNode(self._expr_),self.cloneNode(self._rpar_))
 
     def apply(self, analysis):
-        analysis.caseAComplexSubexpr(self)
+        return analysis.caseAComplexSubexpr(self)
 
     def getLpar (self):
         return self._lpar_
@@ -9173,7 +9175,7 @@ class AMoleculeSimple(Node):
         return AMoleculeSimple(self.cloneNode(self._molecule_))
 
     def apply(self, analysis):
-        analysis.caseAMoleculeSimple(self)
+        return analysis.caseAMoleculeSimple(self)
 
     def getMolecule (self):
         return self._molecule_
@@ -9217,7 +9219,7 @@ class AComparisonSimple(Node):
         return AComparisonSimple(self.cloneNode(self._comparison_))
 
     def apply(self, analysis):
-        analysis.caseAComparisonSimple(self)
+        return analysis.caseAComparisonSimple(self)
 
     def getComparison (self):
         return self._comparison_
@@ -9261,7 +9263,7 @@ class AAtomSimple(Node):
         return AAtomSimple(self.cloneNode(self._term_))
 
     def apply(self, analysis):
-        analysis.caseAAtomSimple(self)
+        return analysis.caseAAtomSimple(self)
 
     def getTerm (self):
         return self._term_
@@ -9314,7 +9316,7 @@ class AConceptMoleculePreferredMolecule(Node):
         return AConceptMoleculePreferredMolecule(self.cloneNode(self._term_),self.cloneNode(self._attr_specification_),self.cloneNode(self._cpt_op_),self.cloneNode(self._termlist_))
 
     def apply(self, analysis):
-        analysis.caseAConceptMoleculePreferredMolecule(self)
+        return analysis.caseAConceptMoleculePreferredMolecule(self)
 
     def getTerm (self):
         return self._term_
@@ -9534,7 +9536,7 @@ class AAttributeMoleculeMolecule(Node):
         return AAttributeMoleculeMolecule(self.cloneNode(self._term_),self.cloneNode(self._attr_specification_))
 
     def apply(self, analysis):
-        analysis.caseAAttributeMoleculeMolecule(self)
+        return analysis.caseAAttributeMoleculeMolecule(self)
 
     def getTerm (self):
         return self._term_
@@ -9604,7 +9606,7 @@ class AAttrSpecification(Node):
         return AAttrSpecification(self.cloneNode(self._lbracket_),self.cloneNode(self._attr_rel_list_),self.cloneNode(self._rbracket_))
 
     def apply(self, analysis):
-        analysis.caseAAttrSpecification(self)
+        return analysis.caseAAttrSpecification(self)
 
     def getLbracket (self):
         return self._lbracket_
@@ -9688,7 +9690,7 @@ class AAttrRelationAttrRelList(Node):
         return AAttrRelationAttrRelList(self.cloneNode(self._attr_relation_))
 
     def apply(self, analysis):
-        analysis.caseAAttrRelationAttrRelList(self)
+        return analysis.caseAAttrRelationAttrRelList(self)
 
     def getAttrRelation (self):
         return self._attr_relation_
@@ -9918,7 +9920,7 @@ class AAttrValAttrRelation(Node):
         return AAttrValAttrRelation(self.cloneNode(self._term_),self.cloneNode(self._t_hasvalue_),self.cloneNode(self._termlist_))
 
     def apply(self, analysis):
-        analysis.caseAAttrValAttrRelation(self)
+        return analysis.caseAAttrValAttrRelation(self)
 
     def getTerm (self):
         return self._term_
@@ -10008,7 +10010,7 @@ class AComparison(Node):
         return AComparison(self.cloneNode(self._left_),self.cloneNode(self._comp_op_),self.cloneNode(self._right_))
 
     def apply(self, analysis):
-        analysis.caseAComparison(self)
+        return analysis.caseAComparison(self)
 
     def getLeft (self):
         return self._left_
@@ -10101,7 +10103,7 @@ class AParametrizedFunctionsymbol(Node):
         return AParametrizedFunctionsymbol(self.cloneNode(self._id_),self.cloneNode(self._lpar_),self.cloneNode(self._terms_),self.cloneNode(self._rpar_))
 
     def apply(self, analysis):
-        analysis.caseAParametrizedFunctionsymbol(self)
+        return analysis.caseAParametrizedFunctionsymbol(self)
 
     def getId (self):
         return self._id_
@@ -10217,7 +10219,7 @@ class AMathFunctionsymbol(Node):
         return AMathFunctionsymbol(self.cloneNode(self._lpar_),self.cloneNode(self._mathexpr_),self.cloneNode(self._math_op_),self.cloneNode(self._term_),self.cloneNode(self._rpar_))
 
     def apply(self, analysis):
-        analysis.caseAMathFunctionsymbol(self)
+        return analysis.caseAMathFunctionsymbol(self)
 
     def getLpar (self):
         return self._lpar_
@@ -10431,7 +10433,7 @@ class AMathexpr(Node):
         return AMathexpr(self.cloneNode(self._term_))
 
     def apply(self, analysis):
-        analysis.caseAMathexpr(self)
+        return analysis.caseAMathexpr(self)
 
     def getTerm (self):
         return self._term_
@@ -10651,7 +10653,7 @@ class AEqualCompOp(Node):
         return AEqualCompOp(self.cloneNode(self._equal_))
 
     def apply(self, analysis):
-        analysis.caseAEqualCompOp(self)
+        return analysis.caseAEqualCompOp(self)
 
     def getEqual (self):
         return self._equal_
@@ -11381,7 +11383,7 @@ class AAnySqname(Node):
         return AAnySqname(self.cloneNode(self._prefix_),self.cloneNode(self._name_))
 
     def apply(self, analysis):
-        analysis.caseAAnySqname(self)
+        return analysis.caseAAnySqname(self)
 
     def getPrefix (self):
         return self._prefix_
@@ -11623,7 +11625,7 @@ class ASqnameIri(Node):
         return ASqnameIri(self.cloneNode(self._sqname_))
 
     def apply(self, analysis):
-        analysis.caseASqnameIri(self)
+        return analysis.caseASqnameIri(self)
 
     def getSqname (self):
         return self._sqname_
@@ -11667,7 +11669,7 @@ class AIriId(Node):
         return AIriId(self.cloneNode(self._iri_))
 
     def apply(self, analysis):
-        analysis.caseAIriId(self)
+        return analysis.caseAIriId(self)
 
     def getIri (self):
         return self._iri_
@@ -11843,7 +11845,7 @@ class AIdIdlist(Node):
         return AIdIdlist(self.cloneNode(self._id_))
 
     def apply(self, analysis):
-        analysis.caseAIdIdlist(self)
+        return analysis.caseAIdIdlist(self)
 
     def getId (self):
         return self._id_
@@ -11896,7 +11898,7 @@ class AIdlistIdlist(Node):
         return AIdlistIdlist(self.cloneNode(self._lbrace_),self.cloneNode(self._id_),self.cloneList(self._moreids_),self.cloneNode(self._rbrace_))
 
     def apply(self, analysis):
-        analysis.caseAIdlistIdlist(self)
+        return analysis.caseAIdlistIdlist(self)
 
     def getLbrace (self):
         return self._lbrace_
@@ -12003,7 +12005,7 @@ class AMoreids(Node):
         return AMoreids(self.cloneNode(self._comma_),self.cloneNode(self._id_))
 
     def apply(self, analysis):
-        analysis.caseAMoreids(self)
+        return analysis.caseAMoreids(self)
 
     def getComma (self):
         return self._comma_
@@ -12067,7 +12069,7 @@ class ADatatypeValue(Node):
         return ADatatypeValue(self.cloneNode(self._functionsymbol_))
 
     def apply(self, analysis):
-        analysis.caseADatatypeValue(self)
+        return analysis.caseADatatypeValue(self)
 
     def getFunctionsymbol (self):
         return self._functionsymbol_
@@ -12111,7 +12113,7 @@ class ATermValue(Node):
         return ATermValue(self.cloneNode(self._id_))
 
     def apply(self, analysis):
-        analysis.caseATermValue(self)
+        return analysis.caseATermValue(self)
 
     def getId (self):
         return self._id_
@@ -12155,7 +12157,7 @@ class ANumericValue(Node):
         return ANumericValue(self.cloneNode(self._number_))
 
     def apply(self, analysis):
-        analysis.caseANumericValue(self)
+        return analysis.caseANumericValue(self)
 
     def getNumber (self):
         return self._number_
@@ -12199,7 +12201,7 @@ class AStringValue(Node):
         return AStringValue(self.cloneNode(self._string_))
 
     def apply(self, analysis):
-        analysis.caseAStringValue(self)
+        return analysis.caseAStringValue(self)
 
     def getString (self):
         return self._string_
@@ -12243,7 +12245,7 @@ class ATermValuelist(Node):
         return ATermValuelist(self.cloneNode(self._value_))
 
     def apply(self, analysis):
-        analysis.caseATermValuelist(self)
+        return analysis.caseATermValuelist(self)
 
     def getValue (self):
         return self._value_
@@ -12296,7 +12298,7 @@ class AValuelistValuelist(Node):
         return AValuelistValuelist(self.cloneNode(self._lbrace_),self.cloneNode(self._value_),self.cloneList(self._morevalues_),self.cloneNode(self._rbrace_))
 
     def apply(self, analysis):
-        analysis.caseAValuelistValuelist(self)
+        return analysis.caseAValuelistValuelist(self)
 
     def getLbrace (self):
         return self._lbrace_
@@ -12403,7 +12405,7 @@ class AMorevalues(Node):
         return AMorevalues(self.cloneNode(self._comma_),self.cloneNode(self._value_))
 
     def apply(self, analysis):
-        analysis.caseAMorevalues(self)
+        return analysis.caseAMorevalues(self)
 
     def getComma (self):
         return self._comma_
@@ -12467,7 +12469,7 @@ class ADataTerm(Node):
         return ADataTerm(self.cloneNode(self._value_))
 
     def apply(self, analysis):
-        analysis.caseADataTerm(self)
+        return analysis.caseADataTerm(self)
 
     def getValue (self):
         return self._value_
@@ -12511,7 +12513,7 @@ class AVarTerm(Node):
         return AVarTerm(self.cloneNode(self._variable_))
 
     def apply(self, analysis):
-        analysis.caseAVarTerm(self)
+        return analysis.caseAVarTerm(self)
 
     def getVariable (self):
         return self._variable_
@@ -12599,7 +12601,7 @@ class ATermTerms(Node):
         return ATermTerms(self.cloneNode(self._term_))
 
     def apply(self, analysis):
-        analysis.caseATermTerms(self)
+        return analysis.caseATermTerms(self)
 
     def getTerm (self):
         return self._term_
@@ -12649,7 +12651,7 @@ class ATerms(Node):
         return ATerms(self.cloneNode(self._terms_),self.cloneNode(self._comma_),self.cloneNode(self._term_))
 
     def apply(self, analysis):
-        analysis.caseATerms(self)
+        return analysis.caseATerms(self)
 
     def getTerms (self):
         return self._terms_
@@ -12733,7 +12735,7 @@ class ATermTermlist(Node):
         return ATermTermlist(self.cloneNode(self._term_))
 
     def apply(self, analysis):
-        analysis.caseATermTermlist(self)
+        return analysis.caseATermTermlist(self)
 
     def getTerm (self):
         return self._term_
@@ -12783,7 +12785,7 @@ class ATermlist(Node):
         return ATermlist(self.cloneNode(self._lbrace_),self.cloneNode(self._terms_),self.cloneNode(self._rbrace_))
 
     def apply(self, analysis):
-        analysis.caseATermlist(self)
+        return analysis.caseATermlist(self)
 
     def getLbrace (self):
         return self._lbrace_
@@ -38392,4 +38394,554 @@ class Parser(object):
               
         return str(_out_)
 
+############################# Analisador ############################################## 
+
+class Knowledge:
+    def __init__(self):
+        self.facts = dict()
+        self.facts['ontology'] = []
+        self.facts['concept'] = []
+        self.facts['instance'] = []
+        self.facts['memberOf'] = []
+        self.facts['hasValue'] = []
+        self.facts['nfp'] = []
+        self.facts['conceptAttribute'] = []
+        self.axioms = []
+        self.imports = []
+
+    def clean(self):
+        self.facts = dict()
+        self.facts['ontology'] = []
+        self.facts['concept'] = []
+        self.facts['instance'] = []
+        self.facts['memberOf'] = []
+        self.facts['hasValue'] = []
+        self.facts['nfp'] = []
+        self.facts['conceptAttribute'] = []
+        self.axioms = []
+        self.imports = []
+
+class PySwipAnalysis(Analysis):
+    def __init__(self,knowledge):
+        self.knowledge = knowledge
+        self.saveAxiomsVariablesTemp = True
+        self.axiomsVariablesTemp = []
+        self.printComments = False
+        self.termQuotes = True
+
+    def caseStart(self, node):
+        # node - Class Start
+        if self.printComments: 
+            print('-- caseStart --')
+        node.getPWsml().apply(self) # returning AWsml
+
+    def caseAWsml(self, node):
+        # node - Class AWsml
+        # Gramática
+        # wsml = wsmlvariant? namespace? definition*;
+        if self.printComments: 
+            print('-- caseAWsml --')
+        
+        # node.getDefinition()
+        for definition in node.getDefinition():
+            definition.apply(self)
+
+    def caseAOntologyDefinition(self,node):
+        # node - Class AOntologyDefinition
+        if self.printComments: 
+            print('-- caseAOntologyDefinition --')        
+        node.getOntology().apply(self) # returning AOntology
+        
+    def caseAStringValue(self,node):
+        return str(node.getString()).strip()
+
+    def caseATermValue(self,node):
+        #print(type(node.getId()))
+        #print(node.getId())
+        return "'" + str(node.getId().apply(self)).strip() + "'"
+
+    def caseAIriId(self,node):
+        return node.getIri().apply(self)
+
+    def caseASqnameIri(self,node):
+        return node.getSqname().apply(self)
+
+    def caseAAnySqname(self,node):
+        # print(node.getPrefix())
+        #print(node.getName())
+        return str(node.getName()).strip()
+
+    def caseAVarTerm(self,node):
+        termo = str(node.getVariable()).strip()
+        termo = termo[1:].capitalize()
+        
+        if self.saveAxiomsVariablesTemp == True and termo not in self.axiomsVariablesTemp:
+            self.axiomsVariablesTemp.append(termo)
+
+        return termo
+
+    def caseADataTerm(self,node):
+        #print(type(node.getValue()))
+        #print(node.getValue().apply(self))
+        return node.getValue().apply(self)
+
+    def caseANumericValue(self,node):
+        return str(node.getNumber()).strip()
+
+    def caseADatatypeValue(self,node):
+        return node.getFunctionsymbol().apply(self)
+
+    def caseAParametrizedFunctionsymbol(self,node):
+        id = node.getId().apply(self)
+        terms = node.getTerms().apply(self)
+        
+        return "'"+id + '(' + ','.join(terms) + ')'+"'"
+
+    def caseAMathFunctionsymbol(self,node):
+        lpar = '('
+        mathexpr = str(node.getMathexpr().apply(self)).strip()
+        op = str(node.getMathOp()).strip()
+        term = str(node.getTerm().apply(self)).strip()
+        rpar = ')'
+        
+        return lpar + mathexpr + op + term + rpar
+
+    def caseAMathexpr(self,node):
+        return node.getTerm().apply(self)
+        
+    def caseATermlist(self,node):
+        return node.getTerms().apply(self)
+    
+    def caseATerms(self,node):
+        terms = []
+        if node.getTerms() != None :
+            term = node.getTerms().apply(self)
+            if type(term) == str:
+                term = [term]
+            
+            terms = terms + term
+        terms = terms + [node.getTerm().apply(self)]
+        return terms
+
+    def caseATermTerms(self,node):
+        return node.getTerm().apply(self)
+
+    def caseATermTermlist(self,node):
+        term = node.getTerm().apply(self)
+        return [term]
+
+    def caseAOntology(self,node):
+        # node - Class AOntology
+        # Gramática
+        # ontology = t_ontology id? header* ontology_element*;
+        if self.printComments: 
+            print('-- caseAOntology --')
+        
+        # t_ontology
+        # node.getTOntology()
+
+        # id?
+        if node.getId() != None: # returning AIriId
+        #    print(node.getId()) # Salvar id da ontologia
+            ontologyId = "'"+node.getId().apply(self)+"'"
+            self.knowledge.facts['ontology'].append(ontologyId)
+
+        for ontologyHeader in node.getHeader():
+            if (isinstance(ontologyHeader,AImportsontologyHeader)):
+                for imp in ontologyHeader.apply(self):
+                    if imp != None and imp not in self.knowledge.imports:
+                        self.knowledge.imports.append(imp)
+            else:
+                nfps = ontologyHeader.apply(self)
+                if nfps != None:
+                    for nfpAttributeList in ontologyHeader.apply(self):
+                        for nfpAttribute in nfpAttributeList:
+                            # nfp = "nfp("+str(nfpAttribute[0])+" hasValue "+str(nfpAttribute[1])+")"
+                            nfpId,nfpValue = nfpAttribute
+                            nfpFact = (ontologyId,nfpId,nfpValue)
+                            self.knowledge.facts['nfp'].append(nfpFact)
+
+        for ontologyElement in node.getOntologyElement():
+            # print(type(ontologyElement))
+            ontologyElement.apply(self)
+    
+    def caseAImportsontologyHeader(self,node):
+        # print(type(node.getImportsontology()))
+        return node.getImportsontology().apply(self)
+
+    def caseAImportsontology(self,node):
+        # print(type(node.getIdlist()))
+        return node.getIdlist().apply(self)
+
+    def caseANfpHeader(self,node):
+        return node.getNfp().apply(self)
+
+    def caseANfp(self,node):
+        listAttributeValue = []
+        for attributeValue in node.getAttributevalue():
+            listAttributeValue.append(attributeValue.apply(self))
+        return listAttributeValue
+
+    def caseAConceptOntologyElement(self,node):
+        # node - Class AConceptOntologyElement
+        if self.printComments: 
+            print('-- caseAConceptOntologyElement --')
+        node.getConcept().apply(self) # returning AConcept
+
+    def caseAConcept(self,node):
+        # node - Class AConcept
+        # Gramática
+        # concept	= t_concept id superconcept? nfp? attribute*;
+        if self.printComments: 
+            print('-- caseAConcept --')
+
+        conceptId = "'"+node.getId().apply(self)+"'"
+        self.knowledge.facts['concept'].append(conceptId)
+        # header*
+        nfp = node.getNfp()
+        if nfp != None:
+            nfpAttributeList = nfp.apply(self)
+            for nfpAttribute in nfpAttributeList:
+                for nfpAttribute in nfpAttribute:
+                    # nfp = "nfp("+str(nfpAttribute[0])+" hasValue "+str(nfpAttribute[1])+")"
+                    nfpId,nfpValue = nfpAttribute
+                    nfpFact = (conceptId,nfpId,nfpValue)
+                    self.knowledge.facts['nfp'].append(nfpFact)
+        
+        listAttribute = node.getAttribute()
+        if listAttribute != None:
+            for attribute in listAttribute:
+                factAttributeValue = attribute.apply(self)
+                for factAttr in factAttributeValue:                    
+                    fact = tuple([conceptId]+factAttr)
+                    self.knowledge.facts['conceptAttribute'].append(fact)
+
+    def caseAAttribute(self,node):
+        idAttr = "'"+node.getId().apply(self)+"'"
+        # print(node.getAttributefeature())
+        typeAttr = "'"+str(node.getAttType()).strip()+"'"
+        # print(node.getCardinality())
+        ids = node.getIdlist().apply(self)
+        # print(node.getNfp())
+        attributes = []
+        for id in ids:
+            attributes.append([idAttr,typeAttr,"'"+id+"'"])
+        
+        return attributes
+
+    def caseAInstanceOntologyElement(self,node):
+        # node - Class AInstanceOntologyElement
+        if self.printComments: 
+            print('-- caseAInstanceOntologyElement --')
+        node.getInstance().apply(self) # returning AInstance
+
+    def caseAInstance(self,node):
+        # node - Class AInstance
+        # Gramática
+        # instance = t_instance id? memberof? nfp? attributevalue*;
+        if self.printComments: 
+            print('-- caseAInstance --')
+        
+        instanceId = "'"+node.getId().apply(self)+"'"
+        self.knowledge.facts['instance'].append(instanceId)
+
+        if node.getMemberof() != None:
+            ids = node.getMemberof().apply(self)
+            for idMemberOf in ids:
+                memberOfInstance = (instanceId,"'"+idMemberOf+"'")
+                self.knowledge.facts['memberOf'].append(memberOfInstance)
+
+        for attribute in node.getAttributevalue():
+            attributeValues = attribute.apply(self)
+            for attributeValue in attributeValues:
+                attributeOfInstance = tuple([instanceId] + attributeValue)
+                self.knowledge.facts['hasValue'].append(attributeOfInstance)
+    
+    def caseAMemberof(self,node):
+        return node.getIdlist().apply(self)
+    
+    def caseAIdIdlist(self,node):
+        return [node.getId().apply(self)]
+    
+    def caseAIdlistIdlist(self,node):
+        idlist = []
+        idlist.append(node.getId().apply(self)) 
+        for id in node.getMoreids():
+            idlist.append(id.apply(self))
+        return idlist
+
+    def caseAMoreids(self,node):
+        return node.getId().apply(self)
+
+    def caseAAttributevalue(self,node):
+        idAttribute = "'"+node.getId().apply(self)+"'"
+        valueAttribute = node.getValuelist().apply(self)
+        factHasValue = []
+        for value in valueAttribute:
+            factHasValue.append([idAttribute,value])
+        return factHasValue
+
+    def caseAValuelistValuelist(self,node):
+        valuelist = []
+        valuelist.append(node.getValue().apply(self))
+        for value in node.getMorevalues():
+            valuelist.append(value.apply(self))
+        return valuelist
+
+    def caseAMorevalues(self,node):
+        return node.getValue().apply(self)
+
+    def caseATermValuelist(self,node):
+        value = node.getValue().apply(self)
+        #if (isinstance(node.getValue(),ATermValue)):
+        #    value = value[1:-1]
+        
+        return [value]
+
+    def caseAAxiomOntologyElement(self,node):
+        for axiom in node.getAxiom().apply(self):
+            self.knowledge.axioms.append(axiom)
+    
+    def caseAAxiom(self,node):
+        return node.getAxiomdefinition().apply(self)
+
+    def caseADefinedAxiomAxiomdefinition(self,node):
+        axioms = []
+        axiomId = node.getId().apply(self)
+        #if (axiomId[0] == axiomId[-1] == "'"):
+        #    axiomId = axiomId[1:-1]
+        
+        self.axiomsVariablesTemp = []
+        logDefinition = node.getLogDefinition().apply(self)
+
+        for ax in logDefinition:
+            axiom = ''
+            axiom = axiomId + '('+ ','.join(self.axiomsVariablesTemp) +')'
+            axiom = axiom + ' :- ' + str(ax)
+            axioms.append(axiom)
+
+        return axioms
+    
+    def caseALogDefinition(self,node):
+        exprs = []
+        logExprs = node.getLogExpr()
+        isLpRuleAxiom = False
+        for logExpr in logExprs:
+            exp = logExpr.apply(self)
+            if ':-' in exp:
+                isLpRuleAxiom = True
+
+        for logExpr in logExprs:
+            exp = logExpr.apply(self)
+            #print(type(logExpr))
+            if isLpRuleAxiom == True:
+                self.knowledge.axioms.append(exp)
+            
+            else:
+                exprs.append(exp)
+        
+        return exprs
+    
+    def caseALpRuleLogExpr(self,node):
+        rule = ""
+        rule = rule + node.getHead().apply(self)
+        #print(type(node.getTImpliedByLp()))
+        rule = rule + " :- "
+        #print(type(node.getBody()))
+        #print(node.getBody())
+        rule = rule + node.getBody().apply(self)
+        return rule
+
+    def caseAOtherExpressionLogExpr(self,node):
+        #print(type(node.getExpr()))
+        #print(node.getExpr())
+        
+        return node.getExpr().apply(self)
+    
+    def caseAImplicationExpr(self,node):
+        expr = node.getExpr().apply(self)
+        # print(node.getImplyOp())
+        
+        exprImpl = node.getDisjunction().apply(self)
+        
+        axiomImpl = exprImpl + ' :- ' + expr
+        self.knowledge.axioms.append(axiomImpl)
+        
+        return expr
+
+    def caseADisjunctionExpr(self,node):
+        #print(node.getDisjunction())
+        #print(type(node.getDisjunction()))
+        #print(node.getDisjunction().apply(self))
+        disjunction = node.getDisjunction().apply(self)
+        if disjunction[0] == disjunction[-1] == "'":
+            disjunction = disjunction[1:-1]
+        
+        return disjunction
+    
+    def caseADisjunction(self,node):
+        disj = node.getDisjunction().apply(self)
+        conj = node.getConjunction().apply(self)
+        return disj + ';' + conj
+
+    def caseAConjunctionDisjunction(self,node):
+        #print(type(node.getConjunction()))
+        #print(node.getConjunction())
+        return node.getConjunction().apply(self)
+    
+    def caseASimpleSubexpr(self,node):
+        # AMoleculeSimple
+        # AAtomSimple
+        # AComparisonSimple
+        #print(type(node.getSimple()))
+        #print(node.getSimple())
+        return node.getSimple().apply(self)
+
+    def caseAComparisonSimple(self,node):
+        #print(type(node.getComparison()))
+        return node.getComparison().apply(self)
+    
+    def caseAComparison(self,node):
+        left = str(node.getLeft().apply(self)).strip()
+        op = str(node.getCompOp()).strip()
+        if op == '=':
+            op = 'is'
+        right = str(node.getRight().apply(self)).strip()
+        
+        return left + ' ' + op + ' ' + right
+
+    def caseAAtomSimple(self,node):
+        self.termQuotes = False
+        return node.getTerm().apply(self)
+        self.termQuotes = True
+
+    def caseAMoleculeSimple(self,node):
+        # AttributeMoleculeMolecule
+        # 
+        #print(type(node.getMolecule()))
+        return node.getMolecule().apply(self)
+
+    def caseAAttributeMoleculeMolecule(self,node):
+        term = node.getTerm().apply(self)
+        # self.axiomsVariablesTemp.append(term)
+        specification = node.getAttrSpecification().apply(self)
+
+        molecule = specification[1] + '(' + term + ',' + specification[0] + ',' + specification[2] + ')'
+        return molecule
+
+    def caseAAttrSpecification(self,node):
+        return node.getAttrRelList().apply(self)
+
+    def caseAAttrRelationAttrRelList(self,node):
+        return node.getAttrRelation().apply(self)
+
+    def caseAAttrValAttrRelation(self,node):
+        # Tratar OR ?
+        term =  node.getTerm().apply(self)
+        #if term[0] == term[-1] == "'":
+        #    term = term[1:-1]
+        
+        # node.getTHasvalue()
+        termlist = node.getTermlist().apply(self)        
+        #print('t'+term)
+        #print(termlist[0])
+        return [term,'hasValue',termlist[0]]
+    
+    def caseAConceptMoleculePreferredMolecule(self,node):
+        molecule = ''
+        # Tratar OR ?
+        term = node.getTerm().apply(self)
+        conceptOp = str(node.getCptOp()).strip()
+        termlist = node.getTermlist().apply(self)
+        #print(type(node.getTermlist()))
+        #if termlist[0][0] == termlist[0][-1] == "'":
+        #    termlist[0] = termlist[0][1:-1]
+
+        # Montando o conceito
+        molecule = molecule + conceptOp + '(' + term + ',' + termlist[0] + ')'
+        #print(molecule)
+        # Montando os termos adicionais
+        if (node.getAttrSpecification() != None):
+            specification = node.getAttrSpecification().apply(self)
+            moleculeSpecification = specification[1] + '(' + term + ',' + specification[0] + ',' + specification[2] + ')'            
+            molecule = molecule + ',' + moleculeSpecification
+        
+        return molecule
+
+    def caseAConjunction(self,node):
+        conjuncao = ''
+        conjuncao = node.getConjunction().apply(self)
+        conjuncao = conjuncao + ',' # print(node.getTAnd())
+        conjuncao = conjuncao + node.getSubexpr().apply(self)
+
+        return conjuncao
+    
+    def caseASubexprConjunction(self,node):
+        #print(type(node.getSubexpr()))
+        #print(node.getSubexpr())
+        return node.getSubexpr().apply(self)
+
+    def caseAComplexSubexpr(self,node):
+        # print(node.getExpr().apply(self))
+        return node.getExpr().apply(self)
+
+class Reasoner:
+    def __init__(self,):
+        self.loadedFiles = []
+        self.analysis = PySwipAnalysis(Knowledge())
+        self.prolog = Prolog()
+        self.printLogLoading = False
+
+    def load(self,file):
+        if os.path.exists(file) == False and self.printLogLoading == True:
+            print('Arquivo '+ file + ' não foi encontrado!')
+            return False
+        
+        fileCamArr = file.split('/')
+        fileNameArr = str(fileCamArr[-1]).split('.')
+        fileName = '.'.join(fileNameArr[0:-1])
+        dirName = '/'.join(fileCamArr[0:-1]) + '/'
+
+        self.analysis.knowledge.imports.append(fileName)
+
+        for arqImp in self.analysis.knowledge.imports:
+
+            absPath = os.path.abspath(dirName+arqImp)
+            if absPath not in self.loadedFiles:
+                relativeName = dirName+arqImp+'.wsml'
+                if self.printLogLoading == True:
+                    print('Início do carregamento de '+relativeName)
+
+                if os.path.exists(relativeName) == True:
+                    parser = Parser(Lexer(relativeName))
+                    head = parser.parse()
+                    head.apply(self.analysis)
+                    if self.printLogLoading == True:
+                        print('Arquivo ' + relativeName + ' carregado com sucesso!')
+                else:
+                    if self.printLogLoading == True:
+                        print('Arquivo ' + relativeName + ' não foi encontrado!')
+
+            self.loadedFiles.append(absPath)
+
+        for fact in self.analysis.knowledge.facts:
+            for asserts in self.analysis.knowledge.facts[fact]:
+                fato = fact+"("
+                if isinstance(asserts,str):
+                    fato = fato + asserts
+                elif isinstance(asserts,tuple):
+                    fato = fato + ','.join(asserts)
+                fato = fato + ")"
+                self.prolog.assertz(fato)
+
+        for axiom in self.analysis.knowledge.axioms:
+            #print(axiom)
+            self.prolog.assertz(axiom)
+        
+        
+        self.analysis.knowledge.clean()
+            
+
+    def execute(self,query):
+        return list(self.prolog.query(query))
 

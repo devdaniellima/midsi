@@ -1,21 +1,14 @@
+import time
 from wsmlparser.parser import *
-from pydatalog.pyDatalog.pyDatalog import assert_fact, load, ask
 
-lexer = Lexer('wsmlcodes/OntologiaMundo.wsml')
-knowledge = Knowledge()
-container = PyDatalogAnalysis(knowledge)
+reasoner = Reasoner()
+#reasoner.printLogLoading = True
+reasoner.load('wsmlcodes/CasaAutomatizada.wsml')
+reasoner.load('wsmlcodes/OntologiaMundo.wsml')
+reasoner.load('wsmlcodes/fatorial.wsml')
 
-parser = Parser(lexer)
-head = parser.parse()
-head.apply(container)
-
-for fact in container.knowledge.facts:
-    for asserts in container.knowledge.facts[fact]:
-        assert_fact(fact,*asserts)
-    
-for fact in container.knowledge.facts:
-    print(fact)
-    print(container.knowledge.facts[fact])
-    print()
-
-# print(ask("memberOf(X,Y)"))
+print(reasoner.execute("memberOf(X,'Comodos')"))
+#print()
+#print(reasoner.execute("cityIsInCountry(X,Y)"))
+print()
+print(reasoner.execute("fatorial(10,X)"))

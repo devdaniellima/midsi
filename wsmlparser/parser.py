@@ -38407,6 +38407,7 @@ class Knowledge:
         self.facts['nfp'] = []
         self.facts['conceptAttribute'] = []
         self.axioms = []
+        self.factsAxioms = []
         self.imports = []
 
     def clean(self):
@@ -38724,6 +38725,7 @@ class PySwipAnalysis(Analysis):
     
     def caseALogDefinition(self,node):
         exprs = []
+<<<<<<< Updated upstream
         logExprs = node.getLogExpr()
         isLpRuleAxiom = False
         for logExpr in logExprs:
@@ -38732,6 +38734,10 @@ class PySwipAnalysis(Analysis):
                 isLpRuleAxiom = True
 
         for logExpr in logExprs:
+=======
+        for logExpr in node.getLogExpr():
+            # print(type(logExpr))
+>>>>>>> Stashed changes
             exp = logExpr.apply(self)
             #print(type(logExpr))
             if isLpRuleAxiom == True:
@@ -38923,6 +38929,12 @@ class Reasoner:
                         print('Arquivo ' + relativeName + ' não foi encontrado!')
 
             self.loadedFiles.append(absPath)
+        
+        for fact in self.analysis.knowledge.facts:
+            for asserts in self.analysis.knowledge.facts[fact]:
+                # print(fact)
+                # print(self.analysis.knowledge.facts[fact])
+                assert_fact(fact,*asserts)
 
         for fact in self.analysis.knowledge.facts:
             for asserts in self.analysis.knowledge.facts[fact]:
@@ -38944,4 +38956,3 @@ class Reasoner:
 
     def execute(self,query):
         return list(self.prolog.query(query))
-

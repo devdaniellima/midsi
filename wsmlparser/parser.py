@@ -38725,7 +38725,6 @@ class PySwipAnalysis(Analysis):
     
     def caseALogDefinition(self,node):
         exprs = []
-<<<<<<< Updated upstream
         logExprs = node.getLogExpr()
         isLpRuleAxiom = False
         for logExpr in logExprs:
@@ -38734,10 +38733,6 @@ class PySwipAnalysis(Analysis):
                 isLpRuleAxiom = True
 
         for logExpr in logExprs:
-=======
-        for logExpr in node.getLogExpr():
-            # print(type(logExpr))
->>>>>>> Stashed changes
             exp = logExpr.apply(self)
             #print(type(logExpr))
             if isLpRuleAxiom == True:

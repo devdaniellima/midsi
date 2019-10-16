@@ -38927,12 +38927,6 @@ class Reasoner:
         
         for fact in self.analysis.knowledge.facts:
             for asserts in self.analysis.knowledge.facts[fact]:
-                # print(fact)
-                # print(self.analysis.knowledge.facts[fact])
-                assert_fact(fact,*asserts)
-
-        for fact in self.analysis.knowledge.facts:
-            for asserts in self.analysis.knowledge.facts[fact]:
                 fato = fact+"("
                 if isinstance(asserts,str):
                     fato = fato + asserts

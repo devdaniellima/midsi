@@ -38494,8 +38494,10 @@ class PySwipAnalysis(Analysis):
     def caseAParametrizedFunctionsymbol(self,node):
         id = node.getId().apply(self)
         terms = node.getTerms().apply(self)
+        if type(terms) != str:
+            terms = ','.join(terms)
         
-        return "'"+id + '(' + ','.join(terms) + ')'+"'"
+        return "'"+id + '(' + terms + ')'+"'"
 
     def caseAMathFunctionsymbol(self,node):
         lpar = '('
@@ -38894,6 +38896,8 @@ class Reasoner:
         self.analysis = PySwipAnalysis(Knowledge())
         self.prolog = Prolog()
         self.printLogLoading = False
+        self.printFacts = False
+        self.printAxioms = False
 
     def load(self,file):
         if os.path.exists(file) == False and self.printLogLoading == True:
@@ -38935,10 +38939,14 @@ class Reasoner:
                 elif isinstance(asserts,tuple):
                     fato = fato + ','.join(asserts)
                 fato = fato + ")"
+                if (self.printFacts == True):
+                    print(fato)
                 self.prolog.assertz(fato)
 
         for axiom in self.analysis.knowledge.axioms:
             #print('Knownledge -- ' + axiom)
+            if (self.printAxioms == True):
+                print(axiom)
             self.prolog.assertz(axiom)
         
         
@@ -38959,7 +38967,7 @@ class Reasoner:
         reasoner = Reasoner()
         queryProlog = reasoner.convertQuery(query)
         #print('QUERY PROLOG -- ' + queryProlog)
-        return list(self.prolog.query(queryProlog))
+        return self.executeProlog(queryProlog)
 
     def executeProlog(self,queryProlog):
         return list(self.prolog.query(queryProlog))

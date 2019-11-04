@@ -38898,6 +38898,8 @@ class Reasoner:
         self.printLogLoading = False
         self.printFacts = False
         self.printAxioms = False
+        self.bufferFacts = []
+        self.bufferAxioms = []
 
     def load(self,file):
         if os.path.exists(file) == False and self.printLogLoading == True:
@@ -38942,17 +38944,26 @@ class Reasoner:
                 if (self.printFacts == True):
                     print(fato)
                 self.prolog.assertz(fato)
+                self.bufferFacts = self.bufferFacts + [fato]
 
         for axiom in self.analysis.knowledge.axioms:
             #print('Knownledge -- ' + axiom)
             if (self.printAxioms == True):
                 print(axiom)
             self.prolog.assertz(axiom)
-        
+            self.bufferAxioms = self.bufferAxioms + [axiom]
         
         self.analysis.knowledge.clean()
+
+    def getFacts(self):
+        return self.bufferFacts
+
+    def getAxioms(self):
+        return self.bufferAxioms
             
     def convertQuery(self,query):
+        #Criando uma ontologia default para poder traduzir a query
+        query = "ontology DefaultWSMLEngine axiom axiomDefault definedBy " + query + " implies " + query + ". "
         parser = Parser(Lexer(io.StringIO(query)))
         head = parser.parse()
         head.apply(self.analysis)
@@ -38962,8 +38973,6 @@ class Reasoner:
         return queryProlog
 
     def execute(self,query):
-        #Criando uma ontologia default para poder traduzir a query
-        query = "ontology DefaultWSMLEngine axiom axiomDefault definedBy " + query + " implies " + query + ". "
         reasoner = Reasoner()
         queryProlog = reasoner.convertQuery(query)
         #print('QUERY PROLOG -- ' + queryProlog)

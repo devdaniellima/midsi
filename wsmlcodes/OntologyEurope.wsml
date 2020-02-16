@@ -4,7 +4,7 @@ namespace {_"http://www.wsmo.org/sws-challenge/OntologiaMundo#",
 	dc	 _"http://purl.org/dc/elements/1.1#",
 	wsml _"http://www.wsmo.org/wsml/wsml-syntax#"}
 
-ontology OntologiaMundo
+ontology OntologyEurope
 	nfp 
 		dc#title hasValue "Ontologia do domínio Mundo"
 		dc#contributor hasValue "Daniel Lima"
@@ -110,11 +110,11 @@ axiom cidadeDoContinente
 			implies
 		cidadeDoContinente(?city,?continent).
 
-axiom cityIsInCountry
+axiom isLocalDef
 	definedBy
-		?city [country hasValue ?country] memberOf City
-			implies
-		cityIsInCountry(?city,?country).
+		?x memberOf City implies ?x memberOf Country.
+		?x memberOf Country implies ?x memberOf Continent.
+			
 
 instance Austria memberOf Country
 	name hasValue "Austria"

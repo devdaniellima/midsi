@@ -1,0 +1,170 @@
+wsmlVariant _"http://www.wsmo.org/wsml/wsml-syntax/wsml-flight"
+namespace {
+	_"http://everton.org/tcc/ontologies/CasaAutomatizada#",
+	casa _"http://everton.org/tcc/ontologies/ontCasa#",	
+	disp _"http://everton.org/tcc/ontologies/ontDispositivos#",
+	pessoa _"http://everton.org/tcc/ontologies/ontPessoa#",
+	ser _"http://everton.org/tcc/ontologies/ontServico#"
+ }
+
+ontology CasaAutomatizada
+
+	importsOntology {
+		casa#ontCasa,
+		disp#ontDispositivos,
+		pessoa#ontPessoa,
+		ser#ontServico
+	}
+
+	instance desligarLampada memberOf ser#service
+		ser#oprecondition hasValue "?lampada[disp#status hasValue _boolean(\"true\")] memberOf disp#Lampada."
+		ser#opostcondition hasValue "?lampada[disp#status hasValue _boolean(\"false\")] memberOf disp#Lampada."
+		ser#url	hasValue "http://www.uol.com.br"
+
+
+
+//	instance desligarLampada memberOf ser#service
+//		ser#oprecondition hasValue "?lampada[_\"http://everton.org/tcc/ontologies/ontDispositivos#status\" hasValue _boolean(\"true\")] memberOf _\"http://everton.org/tcc/ontologies/ontDispositivos#Lampada\"."
+//		ser#opostcondition hasValue "?lampada[_\"http://everton.org/tcc/ontologies/ontDispositivos#status\" hasValue _boolean(\"false\")] memberOf _\"http://everton.org/tcc/ontologies/ontDispositivos#Lampada\"."
+//		ser#url	hasValue "http://www.uol.com.br"
+		
+	//Quarto de Solteiro
+	instance QuartoDeSolteiro memberOf casa#Quarto
+		id hasValue 1
+		nome hasValue "Quarto de solteiro"
+		lampada hasValue LampadaQuartoDeSolteiro
+		ventilador hasValue VentiladorQuartoDeSolteiro
+		
+	instance LampadaQuartoDeSolteiro memberOf disp#Lampada
+		id hasValue 11
+		nome hasValue "Lampada do quarto de solteiro"
+		disp#status hasValue _boolean("true")
+		disp#local hasValue QuartoDeSolteiro
+		
+	instance VentiladorQuartoDeSolteiro memberOf disp#Ventilador
+		id hasValue 12
+		nome hasValue "Ventilador do quarto de solteiro"
+		status hasValue _boolean("true")
+		local hasValue QuartoDeSolteiro
+		
+	instance SensorTemperaturaQuartoDeSoleiro memberOf disp#Sensores
+		id hasValue 13
+		nome hasValue "Sensor de temperatura do quarto de soleiro"
+		valor hasValue 50
+		local hasValue QuartoDeSolteiro
+
+	//Quarto de Casal	
+	instance QuartoDeCasal memberOf casa#Quarto
+		id hasValue 2
+		nome hasValue "Quarto de casal"
+		lampada hasValue LampadaQuartoDeCasal
+		ventilador hasValue VentiladorQuartoDeCasal
+		
+	instance LampadaQuartoDeCasal memberOf disp#Lampada
+		id hasValue 21
+		nome hasValue "Lampada do quarto de casal"
+		status hasValue _boolean("false")
+		local hasValue QuartoDeCasal
+		
+	instance VentiladorQuartoDeCasal memberOf disp#Ventilador
+		id hasValue 22
+		nome hasValue "Ventilador do quarto de casal"
+		status hasValue _boolean("true")
+		local hasValue QuartoDeCasal
+		
+		
+	//Sala de estar
+	instance SalaDeEstar memberOf casa#SalaDeEstar
+		id hasValue 3
+		nome hasValue "Sala de estar"
+		lampada hasValue LampadaSalaDeEstar
+		tv hasValue TvSalaDeEstar
+		som hasValue SomSalaDeEstar
+		sensorDeIdentificacao hasValue SensorDeIdentificacao
+		
+	instance LampadaSalaDeEstar memberOf disp#Lampada
+		id hasValue 31
+		nome hasValue "Lampada Sala de Estar"
+		status hasValue _boolean("true")
+		local hasValue SalaDeEstar
+		
+	instance TvSalaDeEstar memberOf disp#Tv
+		id hasValue 32
+		nome hasValue "Tv da Sala de Estar"
+		status hasValue _boolean("true")
+		local hasValue SalaDeEstar
+	
+	instance SomSalaDeEstar memberOf disp#Som
+		id hasValue 33
+		nome hasValue "Som da Sala de Estar"
+		status hasValue _boolean("true")
+		local hasValue SalaDeEstar
+	
+	instance SensorDeIdentificacao memberOf disp#Sensores
+		id hasValue 34
+		nome hasValue "Sensor de Identifica��o da Sala de Estar"
+		status hasValue _boolean("true")
+		local hasValue SalaDeEstar
+		
+		
+	//Garagem
+	instance Garagem memberOf casa#Garagem
+		id hasValue 4
+		nome hasValue "Garagem"
+		lampada hasValue LampadaGaragem
+		
+	instance LampadaGaragem memberOf disp#Lampada
+		id hasValue 41
+		nome hasValue "Lampada da garagem"
+		status hasValue _boolean("true")
+		local hasValue Garagem
+		
+		
+	//Pessoas
+	
+	
+	instance everton memberOf pessoa#Pessoa
+	
+	//instance mariaJose memberOf pessoa#Pessoa
+	instance mariaJose memberOf pessoa#Pessoa
+		pessoa#temConjuge hasValue joseCarlos
+	
+	instance joseCarlos memberOf pessoa#Pessoa
+	
+	instance toto memberOf totoleto
+		nome hasValue {"String1", "String2"}
+	
+	relationInstance pessoa#casal(joseCarlos, mariaJose)
+	
+	concept testInst
+	
+	instance teste memberOf testInst 
+
+
+
+
+	//Axiomas	
+	axiom defDispositivoAxm
+		definedBy
+			?x memberOf disp#Lampada implies ?x memberOf disp#Dispositivo.
+			?x memberOf disp#Ventilador implies ?x memberOf disp#Dispositivo.
+			?x memberOf disp#Sensores implies ?x memberOf disp#Dispositivo.
+			?x memberOf disp#ReceptorParabolica implies ?x memberOf disp#Dispositivo.
+			?x memberOf disp#Som implies ?x memberOf disp#Dispositivo.
+			?x memberOf disp#Tv implies ?x memberOf disp#Dispositivo.
+			/*
+			?x memberOf disp#Dispositivo :-
+				?x memberOf disp#Lampada or
+				?x memberOf disp#Ventilador or
+				?x memberOf disp#Sensores or
+				?x memberOf disp#ReceptorParabolica or  
+				?x memberOf disp#Som or
+				?x memberOf disp#Tv.
+			*/
+	
+	axiom defComodoAxm
+		definedBy
+			?x memberOf casa#Comodos :-
+				?x memberOf casa#Quarto or
+				?x memberOf casa#Garagem or
+				?x memberOf casa#SalaDeEstar.

@@ -4,7 +4,7 @@ namespace {_"http://www.wsmo.org/sws-challenge/OntologiaMundo#",
 	dc	 _"http://purl.org/dc/elements/1.1#",
 	wsml _"http://www.wsmo.org/wsml/wsml-syntax#"}
 
-ontology OntologyEurope
+ontology OntologiaMundo
 	nfp 
 		dc#title hasValue "Ontologia do domínio Mundo"
 		dc#contributor hasValue "Daniel Lima"

@@ -1,19 +1,32 @@
 wsmlVariant _"http://www.wsmo.org/wsml/wsml-syntax/wsml-flight"
-
 namespace {
-	_"http://ont.org/tcc/ontologies/CasaAutomatizada#",
-	casa _"http://ont.org/tcc/ontologies/ontCasa#",	
-	disp _"http://ont.org/tcc/ontologies/ontDispositivos#",
-	pessoa _"http://ont.org/tcc/ontologies/ontPessoa#",
-	ser _"http://ont.org/tcc/ontologies/ontServico#"
-}
+	_"http://everton.org/tcc/ontologies/CasaAutomatizada#",
+	casa _"http://everton.org/tcc/ontologies/ontCasa#",	
+	disp _"http://everton.org/tcc/ontologies/ontDispositivos#",
+	pessoa _"http://everton.org/tcc/ontologies/ontPessoa#",
+	ser _"http://everton.org/tcc/ontologies/ontServico#"
+ }
 
 ontology CasaAutomatizada
+
+	importsOntology {
+		casa#ontCasa,
+		disp#ontDispositivos,
+		pessoa#ontPessoa,
+		ser#ontServico
+	}
 
 	instance desligarLampada memberOf ser#service
 		ser#oprecondition hasValue "?lampada[disp#status hasValue _boolean(\"true\")] memberOf disp#Lampada."
 		ser#opostcondition hasValue "?lampada[disp#status hasValue _boolean(\"false\")] memberOf disp#Lampada."
 		ser#url	hasValue "http://www.uol.com.br"
+
+
+
+//	instance desligarLampada memberOf ser#service
+//		ser#oprecondition hasValue "?lampada[_\"http://everton.org/tcc/ontologies/ontDispositivos#status\" hasValue _boolean(\"true\")] memberOf _\"http://everton.org/tcc/ontologies/ontDispositivos#Lampada\"."
+//		ser#opostcondition hasValue "?lampada[_\"http://everton.org/tcc/ontologies/ontDispositivos#status\" hasValue _boolean(\"false\")] memberOf _\"http://everton.org/tcc/ontologies/ontDispositivos#Lampada\"."
+//		ser#url	hasValue "http://www.uol.com.br"
 		
 	//Quarto de Solteiro
 	instance QuartoDeSolteiro memberOf casa#Quarto
@@ -40,6 +53,7 @@ ontology CasaAutomatizada
 		valor hasValue 50
 		local hasValue QuartoDeSolteiro
 
+	//Quarto de Casal	
 	instance QuartoDeCasal memberOf casa#Quarto
 		id hasValue 2
 		nome hasValue "Quarto de casal"
@@ -58,6 +72,8 @@ ontology CasaAutomatizada
 		status hasValue _boolean("true")
 		local hasValue QuartoDeCasal
 		
+		
+	//Sala de estar
 	instance SalaDeEstar memberOf casa#SalaDeEstar
 		id hasValue 3
 		nome hasValue "Sala de estar"
@@ -89,7 +105,9 @@ ontology CasaAutomatizada
 		nome hasValue "Sensor de Identifica��o da Sala de Estar"
 		status hasValue _boolean("true")
 		local hasValue SalaDeEstar
-	
+		
+		
+	//Garagem
 	instance Garagem memberOf casa#Garagem
 		id hasValue 4
 		nome hasValue "Garagem"
@@ -100,9 +118,14 @@ ontology CasaAutomatizada
 		nome hasValue "Lampada da garagem"
 		status hasValue _boolean("true")
 		local hasValue Garagem
+		
+		
+	//Pessoas
 	
-	instance ont memberOf pessoa#Pessoa
 	
+	instance everton memberOf pessoa#Pessoa
+	
+	//instance mariaJose memberOf pessoa#Pessoa
 	instance mariaJose memberOf pessoa#Pessoa
 		pessoa#temConjuge hasValue joseCarlos
 	
@@ -117,6 +140,10 @@ ontology CasaAutomatizada
 	
 	instance teste memberOf testInst 
 
+
+
+
+	//Axiomas	
 	axiom defDispositivoAxm
 		definedBy
 			?x memberOf disp#Lampada implies ?x memberOf disp#Dispositivo.
@@ -125,6 +152,15 @@ ontology CasaAutomatizada
 			?x memberOf disp#ReceptorParabolica implies ?x memberOf disp#Dispositivo.
 			?x memberOf disp#Som implies ?x memberOf disp#Dispositivo.
 			?x memberOf disp#Tv implies ?x memberOf disp#Dispositivo.
+			/*
+			?x memberOf disp#Dispositivo :-
+				?x memberOf disp#Lampada or
+				?x memberOf disp#Ventilador or
+				?x memberOf disp#Sensores or
+				?x memberOf disp#ReceptorParabolica or  
+				?x memberOf disp#Som or
+				?x memberOf disp#Tv.
+			*/
 	
 	axiom defComodoAxm
 		definedBy

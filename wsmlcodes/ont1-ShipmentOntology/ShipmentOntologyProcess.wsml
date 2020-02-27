@@ -1,0 +1,41 @@
+wsmlVariant _"http://www.wsmo.org/wsml/wsml-syntax/wsml-rule"
+
+namespace {_"http://www.wsmo.org/sws-challenge/ShipmentOntologyProcess#",
+    	so   _"http://www.wsmo.org/sws-challenge/ShipmentOntology#",
+	dc	 _"http://purl.org/dc/elements/1.1#",
+	wsml _"http://www.wsmo.org/wsml/wsml-syntax#",
+	temp _"http://www.wsmo.org/ontologies/nfp/temporalNFPOntology#",
+	pay _"http://www.wsmo.org/ontologies/nfp/paymentNFPOntology#"}
+
+ontology ShipmentOntologyProcess
+	nfp 
+		dc#title hasValue "Shipment Domain Ontology"
+		dc#contributor hasValue "Maciej Zaremba, Matt Moran, Tomas Vitvar, Thomas Haselwanter"
+		dc#date hasValue _date(2006,10,23)
+		dc#format hasValue "text/plain"
+		dc#language hasValue "en-US" 
+	endnfp
+	
+/*
+ * concepts
+*/
+
+concept ShipmentOrderReq
+	from ofType so#ContactInfo
+	shipmentDate ofType so#ShipmentDate
+	package ofType so#Package
+	to ofType so#ContactInfo
+	paymentMethod ofType (0 1) pay#PaymentInstrument
+
+concept ShipmentOrderResp
+	pickupDate ofType _datetime
+ 	price ofType _decimal
+
+concept PriceQuoteReq
+	to ofType so#ContactInfo
+	package ofType so#Package
+
+concept PriceQuoteResp
+ 	price ofType _decimal
+
+relation isShipped(ofType ShipmentOrderReq) 

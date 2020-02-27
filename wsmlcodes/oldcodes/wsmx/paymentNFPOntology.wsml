@@ -1,0 +1,35 @@
+wsmlVariant _"http://www.wsmo.org/wsml/wsml-syntax/wsml-rule"
+
+namespace { _"http://www.wsmo.org/ontologies/nfp/paymentNFPOntology#",
+	dc _"http://purl.org/dc/elements/1.1#",
+	xsd _"http://www.w3.org/2001/XMLSchema#",
+	wsml _"http://www.wsmo.org/wsml/wsml-syntax#",
+	loc _"http://www.wsmo.org/ontologies/nfp/locativeNFPOntology#",
+	temp _"http://www.wsmo.org/ontologies/nfp/temporalNFPOntology#",
+	ava _"http://www.wsmo.org/ontologies/nfp/availabilityNFPOntology#",
+	price _"http://www.wsmo.org/ontologies/nfp/priceNFPOntology#",			
+	cur _"http://www.wsmo.org/ontologies/nfp/currencyNFPOntology#"				
+}
+
+ontology paymentNFPOntology
+	nonFunctionalProperties
+		dc#title hasValue "Payment Ontology"
+		dc#creator hasValue {"Ioan Toma"}
+		dc#subject hasValue {"Payment"}
+		dc#description hasValue "Payment Ontology - complementar to Price Onotlogy"
+		dc#publisher hasValue "DERI Innsbruck"
+		dc#contributor hasValue {"Ioan Toma"}
+		dc#date hasValue "2006-05-08"
+		dc#type hasValue _"http://www.wsmo.org/2004/d2#ontologies"
+		dc#format hasValue "text/html"
+		dc#identifier hasValue _"http://www.wsmo.org/ontologies/nfp/paymentNFPOntology"
+		dc#language hasValue "en-US"
+		wsml#version hasValue "$Revision: 1.0 $"
+	endNonFunctionalProperties
+	
+	concept PaymentInstrument		
+
+	instance CashInstrument memberOf PaymentInstrument
+		nonFunctionalProperties
+			dc#description hasValue "CashInstrument concept definition"
+		endNonFunctionalProperties

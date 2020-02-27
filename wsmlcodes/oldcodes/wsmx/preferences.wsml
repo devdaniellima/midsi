@@ -1,0 +1,32 @@
+wsmlVariant _"http://www.wsmo.org/wsml/wsml-syntax/wsml-rule"
+
+namespace { _"http://www.wsmo.org/ontologies/nfp/preferenceOntology#",
+	dc _"http://purl.org/dc/elements/1.1#",
+	xsd _"http://www.w3.org/2001/XMLSchema#",
+	wsml _"http://www.wsmo.org/wsml/wsml-syntax#"
+}
+
+ontology _"http://www.wsmo.org/ontologies/nfp/preferenceOntology#"
+	nonFunctionalProperties
+		dc#title hasValue "Preferences Ontology"
+		dc#creator hasValue {"Ioan Toma"}
+		dc#subject hasValue {"Preferences"}
+		dc#description hasValue "This ontology provides the terminology for users to express their ranking preferences"
+		dc#publisher hasValue "STI Innsbruck"
+		dc#contributor hasValue {"Ioan Toma"}
+		dc#date hasValue "2009-01-01"
+		dc#type hasValue _"http://www.wsmo.org/2004/d2#ontologies"
+		dc#format hasValue "text/html"
+		dc#identifier hasValue _"http://www.wsmo.org/ontologies/nfp/preferencesOntology"
+		dc#language hasValue "en-US"
+		wsml#version hasValue "$Revision: 1.0 $"
+	endNonFunctionalProperties
+	
+concept Preference
+    nonFunctionalProperties
+      dc#description hasValue "Preference concept"
+    endNonFunctionalProperties
+	nonFunctionalProperty ofType _iri
+	interestValue ofType _float
+	
+	

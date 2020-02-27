@@ -1,18 +1,40 @@
 import os,time
-
-qtde = 50
 tempoInicioBench = time.time()
+
+# Configurações padrões
+qtde = 50
+printResult = False
+
+# CARREGANDO CONFIGURAÇÕES
+conf = open("benchmark.conf","r")
+for linha in conf:
+	linha = linha.strip()
+	if "#" not in linha and linha != '':
+		if 'PRINT_RESULT=' in linha:
+			linha = linha.upper().replace('PRINT_RESULT=','')
+			if linha == 'TRUE':
+				printResult = True
+			else:
+				printResult = False
+		if 'QNTD=' in linha:
+			linha = linha.replace('QNTD=','')
+			if linha.isnumeric():
+				qtde = int(linha)
+				
+conf.close()
+
+# Carregando ontologias
 print("")
 print("======================")
 print("Ínicio do Benchmark")
 print("Carregando informações do arquivo 'benchmark.conf'")
 print("Quantidade total de execuções por linha e por motor: "+str(qtde))
 print("")
-print("")
 
 conf = open("benchmark.conf","r")
 for linha in conf:
-	if "#" not in linha:
+	if "#" not in linha and 'BENCH_EXECUTE=' in linha:
+		linha = linha.replace('BENCH_EXECUTE=','')
 		command = linha.rstrip().split(",")
 		command = " ".join(command)
 		print("")
@@ -36,12 +58,14 @@ for linha in conf:
 					tempoCarregarOntologia = float(l)
 					print("Ontologia: "+str(tempoCarregarOntologia))
 					totalCarregarOntologia += tempoCarregarOntologia
-				if 'Tempo de Execução: ' in l:
+				elif 'Tempo de Execução: ' in l:
 					l = l.replace('Tempo de Execução: ','')
 					l = l[:-3]
 					tempoConsulta = float(l)
 					print("Consulta: "+str(tempoConsulta))
 					totalConsulta += tempoConsulta
+				elif printResult and 'Resultado: ' in l:
+					print(l)
 			print("=")
 
 		print("Tempo total do carregamento da ontologia: "+ str(totalCarregarOntologia))
@@ -66,12 +90,14 @@ for linha in conf:
 					tempoCarregarOntologia = float(l)
 					print("Ontologia: "+str(tempoCarregarOntologia))
 					totalCarregarOntologia += tempoCarregarOntologia
-				if 'Tempo de Execução: ' in l:
+				elif 'Tempo de Execução: ' in l:
 					l = l.replace('Tempo de Execução: ','')
 					l = l[:-3]
 					tempoConsulta = float(l)
 					print("Consulta: "+str(tempoConsulta))
 					totalConsulta += tempoConsulta
+				elif printResult and 'Resultado: ' in l:
+					print(l)
 
 		print("Tempo total do carregamento da ontologia: "+ str(totalCarregarOntologia))
 		print("Média em "+str(qtde)+" execuções: "+str(totalCarregarOntologia/qtde))

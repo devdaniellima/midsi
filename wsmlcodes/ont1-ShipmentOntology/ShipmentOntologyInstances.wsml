@@ -1,0 +1,101 @@
+wsmlVariant _"http://www.wsmo.org/wsml/wsml-syntax/wsml-rule"
+
+namespace {_"http://www.wsmo.org/sws-challenge/ShipmentOntologyInstances#",
+ 	so _"http://www.wsmo.org/sws-challenge/ShipmentOntology#",
+ 	sop _"http://www.wsmo.org/sws-challenge/ShipmentOntologyProcess#",
+	dc _"http://purl.org/dc/elements/1.1#",
+	wsml _"http://www.wsmo.org/wsml/wsml-syntax#"}
+
+ontology ShipmentOntologyInstances
+	nfp 
+		dc#title hasValue "Shipment Domain Instances"
+		dc#contributor hasValue "Maciej Zaremba, Matt Moran, Tomas Vitvar, Thomas Haselwanter"
+		dc#date hasValue _date(2006,10,23)
+		dc#format hasValue "text/plain"
+		dc#language hasValue "en-US" 
+	endnfp
+
+    importsOntology
+    {
+           so#ShipmentOntology,
+           sop#ShipmentOntologyProcess
+    }
+    
+instance MoonContactInfo memberOf so#ContactInfo
+	so#company hasValue "Moon Company"
+	so#firstname hasValue "Michael"
+	so#lastname hasValue "Moon"
+	so#title hasValue "Mr"
+	so#address hasValue MoonAddress
+	so#phone hasValue "+1 424242"
+	so#fax hasValue "+1 424243"
+	so#email hasValue "michael.moon@moon.ie"
+
+instance MoonAddress memberOf so#Address
+	so#streetAddress hasValue "Moon Road 13"
+	so#city hasValue so#MoonCity
+	so#stateProvinceCounty hasValue "CA"
+	so#postalCode hasValue "123"
+
+instance SmithersContactInfo memberOf so#ContactInfo
+    so#company hasValue "Computer Systems and Co"
+	so#firstname hasValue "Wayne"
+	so#lastname hasValue "Smithers"
+	so#title hasValue "Mr"
+	so#address hasValue SmithersAddress
+	so#phone hasValue "+44 235 235"
+	so#fax hasValue "+44 235 236"
+	so#email hasValue "Wayne.Smithers@example.org"
+
+instance SmithersAddress memberOf so#Address
+	so#streetAddress hasValue "20 Denmark Street"
+	so#city hasValue so#Bristol
+	//so#stateProvinceCounty hasValue "England"
+	so#postalCode hasValue "BS1 5DH"
+
+instance GumbleContactInfo memberOf so#ContactInfo
+	so#firstname hasValue "Barney"
+	so#lastname hasValue "Gumble"
+	so#title hasValue "Mr"
+	so#address hasValue GumbleAddress
+	so#phone hasValue "+71 235 235"
+	so#fax hasValue "+71 235 236"
+	so#email hasValue "Barney.Gumble@example.org"
+
+instance GumbleAddress memberOf so#Address
+	so#streetAddress hasValue "320 East 79th Street"
+	so#city hasValue so#NY
+	so#stateProvinceCounty hasValue "NY"
+	so#postalCode hasValue "10021"
+
+instance SzyslakContactInfo memberOf so#ContactInfo
+	so#firstname hasValue "Moe"
+	so#lastname hasValue "Szyslak"
+	so#title hasValue "Mr"
+	so#address hasValue SzyslakAddress
+	so#phone hasValue "+71 235 235"
+	so#fax hasValue "+71 235 236"
+	so#email hasValue "Moe.Szyslak@example.org"
+
+instance SzyslakAddress memberOf so#Address
+	so#streetAddress hasValue "105, Avenue de la Libert."
+	so#city hasValue so#Tunis
+	so#postalCode hasValue "10002"
+
+instance BurnsContactInfo memberOf so#ContactInfo
+	so#firstname hasValue "George"
+	so#lastname hasValue "Burns"
+	so#title hasValue "Mr"
+	so#address hasValue BurnsAddress
+	so#phone hasValue "+352 152 152"
+	so#fax hasValue "+352 123 123"
+	so#email hasValue "George.Burns@example.org"
+
+instance BurnsAddress memberOf so#Address
+	so#streetAddress hasValue "4 Avenue de la Gare."
+	so#city hasValue so#Luxembourg
+	so#postalCode hasValue "1610"
+	
+instance shipmentDate1 memberOf so#ShipmentDate
+	so#earliest hasValue "2009-01-21T13:00:00.046Z"
+	so#latest hasValue "2009-01-22T13:00:00.046Z"

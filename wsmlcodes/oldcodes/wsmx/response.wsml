@@ -1,0 +1,40 @@
+wsmlVariant _"http://www.wsmo.org/wsml/wsml-syntax/wsml-rule"
+
+namespace { _"http://www.wsmo.org/ontologies/nfp/responseOntology#",
+	dc _"http://purl.org/dc/elements/1.1#",
+	xsd _"http://www.w3.org/2001/XMLSchema#",
+	wsml _"http://www.wsmo.org/wsml/wsml-syntax#"
+}
+
+ontology _"http://www.wsmo.org/ontologies/nfp/responseOntology#"
+	nonFunctionalProperties
+		dc#title hasValue "Response Ontology"
+		dc#creator hasValue {"Ioan Toma"}
+		dc#subject hasValue {"Preferences"}
+		dc#description hasValue "This ontology provides the terminology to express more information about the inside of the ranking process"
+		dc#publisher hasValue "STI Innsbruck"
+		dc#contributor hasValue {"Ioan Toma"}
+		dc#date hasValue "2009-05-01"
+		dc#type hasValue _"http://www.wsmo.org/2004/d2#ontologies"
+		dc#format hasValue "text/html"
+		dc#identifier hasValue _"http://www.wsmo.org/ontologies/nfp/responseOntology"
+		dc#language hasValue "en-US"
+		wsml#version hasValue "$Revision: 1.0 $"
+	endNonFunctionalProperties
+	
+concept IndividualNFPWebServiceScore
+    nonFunctionalProperties
+      dc#description hasValue "IndividualNFPWebServiceScore -  contains the individual score for a service for a given nfp"
+    endNonFunctionalProperties
+    service ofType _iri
+	nonFunctionalProperty ofType _iri
+	value ofType _float
+
+concept AggregatedWebServiceScore
+    nonFunctionalProperties
+      dc#description hasValue "AggregatedWebServiceScore - contains the aggregated score for a service"
+    endNonFunctionalProperties
+    service ofType _iri
+	value ofType _float
+	
+	

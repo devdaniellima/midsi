@@ -1,0 +1,528 @@
+wsmlVariant _"http://www.wsmo.org/wsml/wsml-syntax/wsml-rule"
+
+namespace { _"http://www.wsmo.org/ontologies/nfp/temporalNFPOntology#",
+    dc _"http://purl.org/dc/elements/1.1#",
+    xsd _"http://www.w3.org/2001/XMLSchema#",
+    wsml _"http://www.wsmo.org/wsml/wsml-syntax#",
+    loc _"http://www.wsmo.org/ontologies/nfp/locativeNFPOntology#",
+    uom _"http://www.wsmo.org/ontologies/nfp/measuresNFPOntology#"
+ }
+
+ontology _"http://www.wsmo.org/ontologies/nfp/temporalNFPOntology"
+    nonFunctionalProperties
+        dc#title hasValue "Temporal Ontology"
+        dc#creator hasValue {"Ioan Toma"}
+        dc#subject hasValue {"Time", "Date"}
+        dc#description hasValue "Temporal Ontology"
+        dc#publisher hasValue "DERI Innsbruck"
+        dc#contributor hasValue {"Ioan Toma", "Doug Foxvog"}
+        dc#date hasValue "2006-05-06"
+        dc#type hasValue _"http://www.wsmo.org/2004/d2#ontologies"
+        dc#format hasValue "text/html"
+        dc#identifier hasValue _"http://www.wsmo.org/ontologies/nfp/temporalNFPOntology"
+        dc#language hasValue "en-US"
+        wsml#version hasValue "$Revision: 1.0 $"
+    endNonFunctionalProperties
+                         
+	concept TemporalEntity
+    	nonFunctionalProperties
+            dc#description hasValue "Any time interval, duration, or temporally restricted type of time interval."
+        endNonFunctionalProperties
+        hasName ofType _string
+
+	concept TimeInterval subConceptOf TemporalEntity
+        nonFunctionalProperties
+            dc#description hasValue "Time interval, may include temporal gaps"
+        endNonFunctionalProperties
+    	startTime ofType (1 1) TimePoint
+    	endTime ofType (1 1) TimePoint
+    	duration ofType (1 1) TemporalDuration
+        ofMillenium ofType (0 *) CalendarMillenium
+        ofCentury ofType (0 *) CalendarCentury
+        ofDecade ofType (0 *) CalendarDecade
+        ofYear ofType (0 *) CalendarYear
+        ofMonth ofType (0 *) CalendarMonth
+        ofDay ofType (0 *) CalendarDay
+        ofHour ofType (0 *) HourOfDay
+        ofMinute ofType (0 *) MinuteOfHour
+        ofSecond ofType (0 *) SecondOfMinute
+        hasTimeZone ofType (0 *) TimeZone
+
+	concept ContinuousTimeInterval subConceptOf TimeInterval
+		nonFunctionalProperties
+            dc#description hasValue "Time interval with no gap.  The duration of a ContinuousTimeInterval 
+            is the difference in time between its startTime and its endTime."
+        endNonFunctionalProperties
+
+	concept TimePoint subConceptOf ContinuousTimeInterval
+        nonFunctionalProperties
+        	dc#description hasValue "A TimePoint has the same startTime and endTime"
+        	dc#relation hasValue validMillisecond
+        endNonFunctionalProperties
+        ofMillenium ofType (1 1) CalendarMillenium
+        ofCentury ofType (1 1) CalendarCentury
+        ofDecade ofType (1 1) CalendarDecade
+        ofYear ofType (1 1) CalendarYear
+        ofMonth ofType (1 1) CalendarMonth
+        ofDay ofType (1 1) CalendarDay
+        ofHour ofType (1 1) HourOfDay
+        ofMinute ofType (1 1) MinuteOfHour
+        ofSecond ofType (1 1) SecondOfMinute
+	    millisecondOfSecond ofType (1 1) _decimal
+
+	axiom validTimePoint
+      definedBy
+  		!- ?tp[startTime hasValue ?st] memberOf TimePoint and ?tp[endTime hasValue ?st].
+
+	axiom validMillisecond
+      definedBy
+    	!- ?tp[millisecondOfSecond hasValue ?ms] memberOf TimePoint and 
+       	(greaterEqual(?ms, 1000.0) or greaterEqual(0.0, ?ms)).
+
+	concept TimeZone subConceptOf loc#region
+        nonFunctionalProperties
+    	    dc#description hasValue "A TimeZone is a region of the Earth's surface"
+        	dc#relation hasValue validTimeZone1
+        	dc#relation hasValue validTimeZone2
+        endNonFunctionalProperties
+        hasRegion ofType (1 *) loc#Region
+        hasSummerRegion ofType (1 *) loc#Region
+        hasWinterRegion ofType (1 *) loc#Region
+        hasWinterUTCOffsetInHours ofType _decimal
+        hasSummerUTCOffsetInHours ofType _decimal
+
+	axiom validTimeZone1
+    	definedBy
+     	!- ?tz[hasWinterUTCOffsetInHours hasValue ?off] memberOf TimeZone and
+       (greaterEqual(?off, 15) or greaterEqual(_decimal("-14"), ?off)).
+       
+	axiom validTimeZone2
+    	definedBy
+     	!- ?tz[hasSummerUTCOffsetInHours hasValue ?off] memberOf TimeZone and
+       (greaterEqual(?off, 15) or greaterEqual(_decimal("-14"), ?off)).
+
+	concept TemporalDate subConceptOf ContinuousTimeInterval
+        nonFunctionalProperties
+            dc#description hasValue "A ContinuousTimeInterval is an instance of TemporalDate if 
+            and only if it has a standardly-defined location on particular calendar."
+        endNonFunctionalProperties
+
+	concept CalendarYear subConceptOf TemporalDate
+        nonFunctionalProperties
+            dc#description hasValue "a calendar year"
+        endNonFunctionalProperties
+        ofMillenium ofType (1 1) CalendarMillenium
+        ofCentury ofType (1 1) CalendarCentury
+        ofDecade ofType (1 1) CalendarDecade
+
+	concept CalendarMonth subConceptOf TemporalDate
+        nonFunctionalProperties
+            dc#description hasValue "a month on a calendar"
+        endNonFunctionalProperties
+        ofMillenium ofType (1 1) CalendarMillenium
+        ofCentury ofType (1 1) CalendarCentury
+        ofDecade ofType (1 1) CalendarDecade
+        ofYear ofType (1 1) CalendarYear
+    	monthNumber ofType (1 1) _integer
+
+	concept January subConceptOf CalendarMonth
+        nonFunctionalProperties
+        	dc#relation hasValue validJanuary
+        endNonFunctionalProperties
+        
+	concept February subConceptOf CalendarMonth
+        nonFunctionalProperties
+        	dc#relation hasValue validFebruary
+        endNonFunctionalProperties
+
+	concept March subConceptOf CalendarMonth
+        nonFunctionalProperties
+        	dc#relation hasValue validMarch
+        endNonFunctionalProperties
+	
+	concept April subConceptOf CalendarMonth
+        nonFunctionalProperties
+        	dc#relation hasValue validApril
+        endNonFunctionalProperties
+	
+	concept May subConceptOf CalendarMonth
+        nonFunctionalProperties
+        	dc#relation hasValue validMay
+        endNonFunctionalProperties
+	
+	concept June subConceptOf CalendarMonth
+        nonFunctionalProperties
+        	dc#relation hasValue validJune
+        endNonFunctionalProperties
+	
+	concept July subConceptOf CalendarMonth
+        nonFunctionalProperties
+        	dc#relation hasValue validJuly
+        endNonFunctionalProperties
+	
+	concept August subConceptOf CalendarMonth
+        nonFunctionalProperties
+        	dc#relation hasValue validAugust
+        endNonFunctionalProperties
+	
+	concept September subConceptOf CalendarMonth
+        nonFunctionalProperties
+        	dc#relation hasValue validSeptember
+        endNonFunctionalProperties
+	
+	concept October subConceptOf CalendarMonth
+        nonFunctionalProperties
+        	dc#relation hasValue validOctober
+        endNonFunctionalProperties
+	
+	concept November subConceptOf CalendarMonth
+        nonFunctionalProperties
+        	dc#relation hasValue validNovember
+        endNonFunctionalProperties
+	
+	concept December subConceptOf CalendarMonth
+        nonFunctionalProperties
+        	dc#relation hasValue validDecember
+        endNonFunctionalProperties
+
+	axiom validJanuary
+	    definedBy
+	    !- _#[monthNumber hasValue ?n] memberOf January and
+	    nEqual(?n, 1).
+
+	axiom validFebruary
+		definedBy
+     	!- _#[monthNumber hasValue ?n] memberOf February and
+	    nEqual(?n, 2).
+
+	axiom validMarch
+		definedBy
+     	!- _#[monthNumber hasValue ?n] memberOf March and
+	    nEqual(?n, 3).
+
+	axiom validApril
+		definedBy
+     	!- _#[monthNumber hasValue ?n] memberOf April and
+	    nEqual(?n, 4).
+       
+	axiom validMay
+		definedBy
+     	!- _#[monthNumber hasValue ?n] memberOf May and
+	    nEqual(?n, 5).
+
+	axiom validJune
+		definedBy
+     	!- _#[monthNumber hasValue ?n] memberOf June and
+	    nEqual(?n, 6).
+
+	axiom validJuly
+		definedBy
+     	!- _#[monthNumber hasValue ?n] memberOf July and
+	    nEqual(?n, 7).
+
+	axiom validAugust
+		definedBy
+     	!- _#[monthNumber hasValue ?n] memberOf August and
+	    nEqual(?n, 8).
+
+	axiom validSeptember
+		definedBy
+     	!- _#[monthNumber hasValue ?n] memberOf September and
+	    nEqual(?n, 9).
+
+	axiom validOctober
+		definedBy
+     	!- _#[monthNumber hasValue ?n] memberOf October and
+	    nEqual(?n, 10).
+
+	axiom validNovember
+		definedBy
+     	!- _#[monthNumber hasValue ?n] memberOf November and
+	    nEqual(?n, 11).
+
+	axiom validDecember
+		definedBy
+     	!- _#[monthNumber hasValue ?n] memberOf December and
+	    nEqual(?n, 12).
+       
+	concept CalendarDay subConceptOf TemporalDate
+        nonFunctionalProperties
+            dc#description hasValue "OrdinalDate concept definition"
+        	dc#relation hasValue validDayOfMonth
+        endNonFunctionalProperties
+        ofMillenium ofType (1 1) CalendarMillenium
+        ofCentury ofType (1 1) CalendarCentury
+        ofDecade ofType (1 1) CalendarDecade
+        ofYear ofType (1 1) CalendarYear
+        ofMonth ofType (1 1) CalendarMonth
+    	hasYear ofType _gyear
+        hasDayOfYear ofType DayOfYear
+        hasDayOfMonthNumber ofType _gday
+        hasDayOfWeekNumber ofType _integer
+
+	axiom validDayOfMonth
+      	definedBy
+     	!- _#[dayOfMonth hasValue ?n] memberOf CalendarDay and
+       	(greaterEqual(?n, 31) or greaterEqual(1, ?n)).
+
+	axiom validDayOfFebruary
+        definedBy
+          !- _#[dayOfMonth hasValue ?n, ofMonth hasValue ?m] memberOf CalendarDay
+ 		and ?m memberOf February and greaterThan(?n, 29).
+    
+    axiom validDayOfAprilJuneSeptemberOrNovember
+        definedBy
+        !- _#[dayOfMonth hasValue ?n] memberOf CalendarDay and
+        ?m memberOf ThirtyDayMonth and greaterThan(?n, 30). 
+            
+	axiom validDayOfAprilJuneSeptemberOrNovember
+      	definedBy
+     	!- _#[dayOfMonth hasValue ?n] memberOf CalendarDay and
+       	(greaterEqual(?n, 30) or greaterEqual(1, ?n)).
+
+    axiom validDayOfWeekNumber
+        definedBy
+        !- ?x[hasDayOfWeekNumber hasValue ?n] memberOf CalendarDay
+        and (lessEqual(7,?n) or greaterEqual(1,?n)).
+
+	concept Monday subConceptOf CalendarDay
+        nonFunctionalProperties
+    	    dc#relation hasValue validMonday
+        endNonFunctionalProperties
+        
+	concept Tuesday subConceptOf CalendarDay
+        nonFunctionalProperties
+    	    dc#relation hasValue validTuesday
+        endNonFunctionalProperties
+	
+	concept Wednesday subConceptOf CalendarDay
+	    nonFunctionalProperties
+    	    dc#relation hasValue validWednesday
+        endNonFunctionalProperties
+	
+	concept Thursday subConceptOf CalendarDay
+	    nonFunctionalProperties
+    	    dc#relation hasValue validThursday
+        endNonFunctionalProperties
+	
+	concept Friday subConceptOf CalendarDay
+        nonFunctionalProperties
+    	    dc#relation hasValue validFriday
+        endNonFunctionalProperties
+	
+	concept Saturday subConceptOf CalendarDay
+        nonFunctionalProperties
+    	    dc#relation hasValue validSaturday
+        endNonFunctionalProperties
+	
+	concept Sunday subConceptOf CalendarDay
+        nonFunctionalProperties
+    	    dc#relation hasValue validSunday
+        endNonFunctionalProperties
+
+	axiom validMonday
+		definedBy
+     	!- _#[hasDayOfWeekNumber hasValue ?n] memberOf Monday and
+       	(greaterEqual(?n, 1) or greaterEqual(1, ?n)).
+
+	axiom validTuesday
+		definedBy
+     	!- _#[hasDayOfWeekNumber hasValue ?n] memberOf Tuesday and
+       	(greaterEqual(?n, 2) or greaterEqual(2, ?n)).
+
+	axiom validWednesday
+		definedBy
+     	!- _#[hasDayOfWeekNumber hasValue ?n] memberOf Wednesday and
+       	(greaterEqual(?n, 3) or greaterEqual(3, ?n)).
+
+	axiom validThursday
+		definedBy
+     	!- _#[hasDayOfWeekNumber hasValue ?n] memberOf Thursday and
+       	(greaterEqual(?n, 4) or greaterEqual(4, ?n)).
+
+	axiom validFriday
+		definedBy
+     	!- _#[hasDayOfWeekNumber hasValue ?n] memberOf Friday and
+       	(greaterEqual(?n, 5) or greaterEqual(5, ?n)).
+
+	axiom validSaturday
+		definedBy
+     	!- _#[hasDayOfWeekNumber hasValue ?n] memberOf Saturday and
+       	(greaterEqual(?n, 6) or greaterEqual(6, ?n)).
+
+	axiom validSunday
+		definedBy
+     	!- _#[hasDayOfWeekNumber hasValue ?n] memberOf Sunday and
+       	(greaterEqual(?n, 7) or greaterEqual(7, ?n)).
+
+	concept TemporalDuration subConceptOf {TemporalEntity, uom#ScalarValue}
+        nonFunctionalProperties
+            dc#description hasValue "Temporal Duration"
+        endNonFunctionalProperties
+        hasTemporalGranularity ofType (1 1) TemporalGranularity
+
+	concept TemporalGranularity subConceptOf uom#Granularity
+        nonFunctionalProperties
+            dc#description hasValue "Temporal Granularity - unit of measure for temporal duration"
+        endNonFunctionalProperties
+    	hasUnits ofType UnitOfDuration
+
+	instance MonthsGranularity memberOf TemporalGranularity
+		hasUnits hasValue DaysDuration
+      	amount hasValue 1.5
+
+	instance OneSecondGranularity memberOf TemporalGranularity
+		hasUnits hasValue SecondsDuration
+		amount hasValue 1.0
+
+	instance SeveralSecondsGranularity memberOf TemporalGranularity
+		hasUnits hasValue SecondsDuration
+	    amount hasValue 10.0
+
+	instance OneMinuteGranularity memberOf TemporalGranularity
+		hasUnits hasValue MinutesDuration
+      	amount hasValue 1.0
+    
+	instance YearsDuration memberOf UnitOfDuration
+        hasTemporalGranularity hasValue OneSecondGranularity
+        
+	instance MonthsDuration memberOf UnitOfDuration
+        hasTemporalGranularity hasValue MonthsGranularity
+        
+	instance WeeksDuration memberOf UnitOfDuration
+        hasTemporalGranularity hasValue OneSecondGranularity
+        
+	instance DaysDuration memberOf UnitOfDuration
+        hasTemporalGranularity hasValue OneSecondGranularity
+        
+	instance HoursDuration memberOf UnitOfDuration
+        hasTemporalGranularity hasValue OneSecondGranularity
+        
+	instance MinutesDuration memberOf UnitOfDuration
+        hasTemporalGranularity hasValue OneSecondGranularity
+        
+	instance SecondsDuration memberOf UnitOfDuration
+	
+	instance MillisecondsDuration memberOf UnitOfDuration
+	
+	instance DecadesDuration memberOf UnitOfDuration
+        hasTemporalGranularity hasValue OneSecondGranularity
+        
+	instance CenturysDuration memberOf UnitOfDuration
+        hasTemporalGranularity hasValue SeveralSecondsGranularity
+        
+	instance MilleniasDuration memberOf UnitOfDuration
+        hasTemporalGranularity hasValue OneMinuteGranularity
+
+	relationInstance uom#unitMultiplicationFactor(MillisecondsDuration, SecondsDuration, 1000.0)
+	relationInstance uom#unitMultiplicationFactor(SecondsDuration, MinutesDuration, 60.0)
+	relationInstance uom#unitMultiplicationFactor(MinutesDuration, HoursDuration, 60.0)
+	relationInstance uom#unitMultiplicationFactor(HoursDuration, DaysDuration, 60.0)
+	relationInstance uom#unitMultiplicationFactor(HoursDuration, WeeksDuration, 7.0)
+	relationInstance uom#unitMultiplicationFactor(DaysDuration, MonthsDuration, 29.5)
+	relationInstance uom#unitMultiplicationFactor(DaysDuration, YearsDuration, 365.242)
+	relationInstance uom#unitMultiplicationFactor(YearsDuration, DecadesDuration, 10.0)
+	relationInstance uom#unitMultiplicationFactor(DecadesDuration, CenturysDuration, 10.0)
+	relationInstance uom#unitMultiplicationFactor(CenturysDuration, MilleniasDuration, 10.0)
+
+	axiom validMonthNumber
+		definedBy
+      	!- _#[monthNumber hasValue ?n] memberOf ?month and
+       	?month[monthNumber hasValue ?m] and nEqual(?n, m).
+       
+	axiom validDayOfWeek
+		definedBy
+		!- _#[hasDayOfWeekNumber hasValue ?n] memberOf ?day and
+       	?day[dayOfWeekNumber hasValue ?d] and nEqual(?n, d).                     
+       	
+    concept TimeZone
+        nonFunctionalProperties
+            dc#description hasValue "TimeZone concept definition"
+        endNonFunctionalProperties    
+        hasRegion ofType (1 *) loc#Region
+        hasUTCOffset ofType _decimal
+        
+    axiom validURCOffset
+        definedBy
+            !- ?x[hasUTCOffset hasValue ?V] memberOf TimeZone and (lessEqual(15,?V) or greaterEqual(_decimal("-15"),?V)).                    
+                  
+    concept DayOfYear 
+        nonFunctionalProperties
+            dc#description hasValue "DayOfYear concept definition"
+            dc#relation hasValue validDayOfYear                     
+        endNonFunctionalProperties    
+        value ofType _integer
+        
+    axiom validDayOfYear
+        definedBy
+            !- ?x[value hasValue ?V] memberOf DayOfYear and (lessEqual(366, ?V) or greaterThan(1,?V)).             
+
+    concept WeekDate subConceptOf TemporalDate
+        nonFunctionalProperties
+            dc#description hasValue "WeekDate concept definition"
+        endNonFunctionalProperties    
+        hasWeekNumber ofType WeekNumber 
+        hasDayOfWeekNumber ofType DayOfWeekNumber
+
+    concept WeekNumber 
+        nonFunctionalProperties
+            dc#description hasValue "WeekNumber concept definition"
+            dc#relation hasValue validWeekNumberr                       
+        endNonFunctionalProperties    
+        value ofType _integer
+        
+    axiom validWeekNumber
+        definedBy
+            !- ?x[value hasValue ?V] memberOf WeekNumber and (lessEqual(54,?V) or greaterEqual(1,?V)).           
+
+    concept TemporalGranularity
+        nonFunctionalProperties
+            dc#description hasValue "TemporalGranularity concept definition"
+        endNonFunctionalProperties
+        hasName ofType _string
+        
+    concept UserDefinedTemporalGranularity
+        nonFunctionalProperties
+            dc#description hasValue "UserDefinedTemporalGranularity concept definition"
+        endNonFunctionalProperties
+        
+    concept StandardTemporalGranularity
+        nonFunctionalProperties
+            dc#description hasValue "StandardTemporalGranularity concept definition"
+        endNonFunctionalProperties
+                               
+    concept HourOfDay
+        nonFunctionalProperties
+            dc#description hasValue "Hours concept definition"
+            dc#relation hasValue validHour
+        endNonFunctionalProperties    
+        value ofType _integer
+    
+    axiom validHour
+        definedBy
+            !- ?X[value hasValue ?V] memberOf Hours and (lessEqual(23,?V) or greaterThan(0,?V)).            
+
+    concept MinuteOfHour 
+        nonFunctionalProperties
+            dc#description hasValue "Minutes concept definition"
+            dc#relation hasValue validMinute
+        endNonFunctionalProperties    
+        value ofType _integer
+
+    axiom validMinute
+        definedBy
+            !- ?X[value hasValue ?V] memberOf Minutes and (lessEqual(59,?V) or greaterThan(0,?V)).          
+
+    concept SecondOfMinute 
+        nonFunctionalProperties
+            dc#description hasValue "Seconds concept definition"
+            dc#relation hasValue validSecond
+        endNonFunctionalProperties    
+        value ofType _integer
+
+    axiom validSecond
+        definedBy
+            !- ?X[value hasValue ?V] memberOf Seconds and (lessEqual(60,?V) or greaterEqual(0,?V)).          
+                                
+                     
+       	

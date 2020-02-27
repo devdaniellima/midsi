@@ -1,0 +1,304 @@
+wsmlVariant _"http://www.wsmo.org/wsml/wsml-syntax/wsml-rule"
+
+namespace {_"http://www.wsmo.org/sws-challenge/ShipmentOntology#",
+	dc	 _"http://purl.org/dc/elements/1.1#",
+	wsml _"http://www.wsmo.org/wsml/wsml-syntax#"}
+
+ontology ShipmentOntology
+	nfp 
+		dc#title hasValue "Shipment Domain Ontology"
+		dc#contributor hasValue "Adina Sirbu, Maciej Zaremba, Matt Moran, Tomas Vitvar, Thomas Haselwanter"
+		dc#date hasValue _date(2006,10,23)
+		dc#format hasValue "text/plain"
+		dc#language hasValue "en-US" 
+	endnfp
+	
+concept OrderRequest
+	nfp
+		dc#description hasValue "Information provided for a pickup request"
+	endnfp
+	from ofType ContactInfo
+	to ofType ContactInfo
+	type ofType ShipmentType
+	package ofType Package
+
+concept Package
+	nfp
+		dc#description hasValue "concept of a package"
+	endnfp
+	quantity ofType _integer
+	length ofType _decimal
+	width ofType _decimal
+	height ofType _decimal
+	weight ofType _decimal
+	declaredValue impliesType (0 1) _float
+	containesItemsOfType impliesType (0 1) ItemType
+	packageStatus impliesType (0 1) PackageStatus
+
+concept DimensionalWeight
+	nfp
+		dc#description hasValue "concept of a package"
+	endnfp
+	weight ofType _decimal
+	
+concept ContactInfo
+	nfp 
+		dc#description hasValue "Contact definition"
+	endnfp
+    company ofType _string
+	firstname ofType _string
+	lastname ofType _string
+	title ofType _string
+	address ofType Address
+	telephone ofType _string
+	fax ofType _string
+	email ofType _string
+
+concept ShipmentDate
+	earliest ofType _string
+	latest ofType _string
+
+//	earliest ofType _datetime
+//	latest ofType _datetime
+
+concept Address
+	streetAddress ofType _string
+	city ofType City
+	stateProvinceCounty ofType _string
+		nfp
+			dc#description hasValue "required in (US/Canada/Ireland)"
+		endnfp
+	postalCode ofType _string
+		nfp
+			dc#description hasValue "required except in the following countries: Bahamas, Chile, Costa
+                Rica, Dominican Republic, Guatemala, Hong Kong, Ireland"
+		endnfp
+
+concept City
+	nfp
+		dc#description hasValue "concept of a city"
+	endnfp
+	name ofType _string	
+	country ofType Country
+
+concept Country
+	nfp
+		dc#description hasValue "concept of a country"
+	endnfp
+	name ofType _string
+	continent ofType Continent
+	
+concept Continent
+	nfp 
+		dc#description hasValue "concept of a continent"
+	endnfp
+	name ofType _string
+	
+/*concept TimeInterval
+	start ofType _datetime
+	end ofType _datetime	*/
+	
+concept ShipmentType
+	nfp
+		dc#description hasValue "type of shipment"
+	endnfp
+
+concept InvalidOrder
+	fault ofType _string	
+
+
+/*
+ * relations
+ */
+relation cityIsOnContinent (ofType City, ofType Continent)
+   nonFunctionalProperties
+       dc#description hasValue "Relation that holds between a city and the continent it belongs to"
+   endNonFunctionalProperties
+
+relation cityIsInCountry (ofType City, ofType Country)
+   nonFunctionalProperties
+       dc#description hasValue "Relation that holds between a city and the country it belongs to"
+   endNonFunctionalProperties
+
+/*
+ * instances
+ */
+instance Europe memberOf Continent
+	name hasValue "Europe"
+	
+instance NorthAmerica memberOf Continent
+ 	name hasValue "North America"
+
+instance SouthAmerica memberOf Continent
+ 	name hasValue "South America"
+ 	
+instance Africa memberOf Continent
+	name hasValue "Africa"
+	
+instance Asia memberOf Continent
+	name hasValue "Asia"	
+
+instance Oceania memberOf Continent
+	name hasValue "Oceania"
+
+instance NY memberOf City
+	name hasValue "New York"
+	country hasValue USA
+
+instance MoonCity memberOf City
+	name hasValue "Moon City"
+	country hasValue USA
+
+instance Bristol memberOf City
+	name hasValue "Bristol"
+	country hasValue UK
+
+instance Tunis memberOf City
+	name hasValue "Tunis"
+	country hasValue Tunisia
+
+instance Luxembourg memberOf City
+	name hasValue "Luxembourg"
+	country hasValue LuxembourgCountry
+
+instance ExpressPlus memberOf ShipmentType
+
+instance Express memberOf ShipmentType
+
+instance ExpressSaver memberOf ShipmentType
+
+instance Standard memberOf ShipmentType
+
+
+/*
+ * axioms
+ */ 
+axiom cityIsOnContinentDef
+	definedBy
+		(?city [country hasValue ?country] memberOf City
+			and 
+		?country [continent hasValue ?continent])
+			implies 
+		cityIsOnContinent(?city, ?continent).
+
+axiom cityIsInCountryDef
+	definedBy
+		(?city [country hasValue ?country] memberOf City)
+			implies 
+		cityIsInCountry(?city, ?country).
+
+		
+//axiom addressIsOnContinentDef
+//	definedBy
+//			addressIsOnContinent(?city, ?continent)
+//			impliedBy
+//			(?address [city hasValue ?city] memberOf Address
+//			and 
+//		?city [country hasValue ?country] memberOf City
+//			and 
+//		?country [continent hasValue ?continent]).
+
+
+instance Austria memberOf Country
+	name hasValue "Austria"
+	continent hasValue Europe
+
+instance USA memberOf Country
+	name hasValue "United States"
+	continent hasValue NorthAmerica
+	
+instance Canada memberOf Country
+	name hasValue "Canada"
+	continent hasValue NorthAmerica
+	
+instance UK memberOf Country
+	name hasValue "United Kingdom"
+	continent hasValue Europe
+	
+//instance EnglandUK memberOf Country
+//	name hasValue "United Kingdom(England)"
+//	continent hasValue Europe
+//
+//instance NorthernIrelandUK memberOf Country
+//	name hasValue "Northern Irland"
+//	continent hasValue Europe
+//
+//instance ScotlandUK memberOf Country
+//	name hasValue "United Kingdom(Scotland)"
+//	continent hasValue Europe
+//
+//instance WalesUK memberOf Country
+//	name hasValue "United Kingdom(Wales)"
+//	continent hasValue Europe
+
+instance Tunisia memberOf Country
+	name hasValue "Tunisia"
+	continent hasValue Africa
+	
+instance LuxembourgCountry memberOf Country
+	name hasValue "Luxembourg"
+	continent hasValue Europe
+
+instance Argentina memberOf Country
+	name hasValue "Argentina"
+	continent hasValue SouthAmerica
+
+concept ItemType
+  nonFunctionalProperties
+     dc#description hasValue "type of item contained in a package"
+  endNonFunctionalProperties
+ 
+instance Glassware memberOf ItemType
+  nonFunctionalProperties
+     dc#description hasValue "Item of type Glassware"
+  endNonFunctionalProperties
+
+instance Jewelry memberOf ItemType
+  nonFunctionalProperties
+     dc#description hasValue "Item of type Jewelry"
+  endNonFunctionalProperties
+
+instance Antiques memberOf ItemType
+  nonFunctionalProperties
+     dc#description hasValue "Item of type Antiques"
+  endNonFunctionalProperties
+ 
+instance Metal memberOf ItemType
+  nonFunctionalProperties
+     dc#description hasValue "Item of type Metal"
+  endNonFunctionalProperties
+
+instance Wood memberOf ItemType
+  nonFunctionalProperties
+     dc#description hasValue "Item of type Wood"
+  endNonFunctionalProperties
+
+instance Plastic memberOf ItemType
+  nonFunctionalProperties
+     dc#description hasValue "Item of type Plastic"
+  endNonFunctionalProperties
+     
+concept PackageStatus
+  nonFunctionalProperties
+     dc#description hasValue "status of the package"
+  endNonFunctionalProperties
+
+instance packageLost memberOf PackageStatus
+  nonFunctionalProperties
+     dc#description hasValue "Package is lost"
+  endNonFunctionalProperties
+
+instance packageDamaged memberOf PackageStatus
+  nonFunctionalProperties
+     dc#description hasValue "Package is damaged"
+  endNonFunctionalProperties
+
+instance packageSent memberOf PackageStatus
+  nonFunctionalProperties
+     dc#description hasValue "Package is sent"
+  endNonFunctionalProperties
+
+instance packageReceived memberOf PackageStatus
+  nonFunctionalProperties
+     dc#description hasValue "Package is received"
+  endNonFunctionalProperties

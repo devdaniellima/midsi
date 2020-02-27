@@ -1,0 +1,115 @@
+wsmlVariant _"http://www.wsmo.org/wsml/wsml-syntax/wsml-rule"
+
+namespace { _"http://www.wsmo.org/ontologies/nfp/discountsNFPOntology#",
+	dc _"http://purl.org/dc/elements/1.1#",
+	xsd _"http://www.w3.org/2001/XMLSchema#",
+	wsml _"http://www.wsmo.org/wsml/wsml-syntax#",
+	ava _"http://www.wsmo.org/ontologies/nfp/availabilityNFPOntology#",	
+	price _"http://www.wsmo.org/ontologies/nfp/priceNFPOntology#",
+	pay _"http://www.wsmo.org/ontologies/nfp/paymentNFPOntology#",					
+	loc _"http://www.wsmo.org/ontologies/nfp/locativeNFPOntology#",
+	temp _"http://www.wsmo.org/ontologies/nfp/temporalNFPOntology#"													
+}
+
+ontology _"http://www.wsmo.org/ontologies/nfp/discountsNFPOntology"
+	nonFunctionalProperties
+		dc#title hasValue "Discounts Ontology"
+		dc#creator hasValue {"Ioan Toma"}
+		dc#subject hasValue {"Discount"}
+		dc#description hasValue "Discounts Ontology"
+		dc#publisher hasValue "DERI Innsbruck"
+		dc#contributor hasValue {"Ioan Toma"}
+		dc#date hasValue "2006-05-08"
+		dc#type hasValue _"http://www.wsmo.org/2004/d2#ontologies"
+		dc#format hasValue "text/html"
+		dc#identifier hasValue _"http://www.wsmo.org/ontologies/nfp/discountsNFPOntology"
+		dc#language hasValue "en-US"
+		wsml#version hasValue "$Revision: 1.0 $"
+	endNonFunctionalProperties
+	
+	concept Discount
+		nonFunctionalProperties
+			dc#description hasValue "Discount concept definition"
+		endNonFunctionalProperties
+		hasCondition ofType Condition
+		hasAmount ofType DiscountAmount
+		hasResultingDiscountedPrice ofType ResultingDiscountPrice
+		hasAvailability ofType (1 *) ava#Availability
+		
+	concept PayeeDiscount subConceptOf Discount
+		nonFunctionalProperties
+			dc#description hasValue "PayeeDiscount concept definition"
+		endNonFunctionalProperties
+
+	concept StudentDiscount subConceptOf PayeeDiscount
+		nonFunctionalProperties
+			dc#description hasValue "StudentDiscount concept definition"
+		endNonFunctionalProperties
+		applicableToSchoolStudents ofType (1 1) _boolean
+		applicableToFulltimeUniversityStudents ofType (1 1) _boolean
+
+	concept MembershipDiscount subConceptOf PayeeDiscount
+		nonFunctionalProperties
+			dc#description hasValue "MembershipDiscount concept definition"
+		endNonFunctionalProperties
+		isAvailableToHolders ofType Membership
+
+	concept ShareholderDiscount subConceptOf PayeeDiscount
+		nonFunctionalProperties
+			dc#description hasValue "ShareholderDiscount concept definition"
+		endNonFunctionalProperties
+		availableToShareholders ofType _iri //Provider
+		availableToShareholdersWithMinimumNumberOfUnits ofType (1 1) loc#nonNegativeInteger
+		
+	concept AgeGroupDiscount subConceptOf PayeeDiscount
+		nonFunctionalProperties
+			dc#description hasValue "AgeGroupDiscount concept definition"
+		endNonFunctionalProperties
+		hasName ofType (0 1) _string
+		ageFromValue ofType (1 1) loc#nonNegativeInteger
+		ageToValue ofType (1 1) loc#nonNegativeInteger				
+
+	concept DiscountAmount
+		nonFunctionalProperties
+			dc#description hasValue "DiscountAmount concept definition"
+		endNonFunctionalProperties		
+		absoluteDiscount ofType (0 1) price#MonetaryAmount
+		percetDiscount ofType (0 1) price#Percentage	
+		forService ofType (1 1) _iri //Service	
+
+	concept ResultingDiscountedPrice subConceptOf price#Price
+		nonFunctionalProperties
+			dc#description hasValue "ResultingDiscountedPrice concept definition"
+		endNonFunctionalProperties		
+
+	concept PaymentDiscount
+		nonFunctionalProperties
+			dc#description hasValue "PaymentDiscount concept definition"
+		endNonFunctionalProperties		
+		hasMinimumPriceRequiredToReceiveDiscount ofType (0 1) price#AbsoutePrice
+	
+	concept PaymentInstrumentTypeDiscount subConceptOf PaymentDiscount
+		nonFunctionalProperties
+			dc#description hasValue "PaymentInstrumentTypeDiscount concept definition"
+		endNonFunctionalProperties		
+		offersPaymentInstrumentTypeDiscountFor ofType (1 1) pay#PaymentInstrumentType
+			
+	concept PaymentLocationTypeDiscount subConceptOf PaymentDiscount
+		nonFunctionalProperties
+			dc#description hasValue "PaymentLocationTypeDiscount concept definition"
+		endNonFunctionalProperties		
+		offersPaymentLocationTypeDiscountFor ofType (0 1) loc#LocativeEntityType
+
+	concept CouponPaymentDiscount subConceptOf PaymentDiscount
+		nonFunctionalProperties
+			dc#description hasValue "CouponPaymentDiscount concept definition"
+		endNonFunctionalProperties		
+		hasValidityPeriod ofType (0 1) temp#TemporalEntity
+		isIssuedBy ofType (1 1) _iri //could be a person, organization or any kind of provider
+
+	concept EarlyPaymentDiscount subConceptOf PaymentDiscount
+		nonFunctionalProperties
+			dc#description hasValue "CouponPaymentDiscount concept definition"
+		endNonFunctionalProperties		
+		hasEarlyPaymentOffset ofType temp#TemporalDuration
+		cutOffDate ofType (0 1) temp#TemporalDuration

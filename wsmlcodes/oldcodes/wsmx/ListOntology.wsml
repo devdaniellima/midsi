@@ -1,0 +1,60 @@
+wsmlVariant _"http://www.wsmo.org/wsml/wsml-syntax/wsml-rule"
+namespace { _"http://cvs.deri.org/cgi-bin/viewcvs.cgi/*checkout*/wsmo/papers/swsc/ListOntology.wsml#",
+  dc _"http://purl.org/dc/elements/1.1#",
+  loc _"http://cvs.deri.org/cgi-bin/viewcvs.cgi/*checkout*/wsmo/papers/swsc/Location.wsml#",
+  so _"http://cvs.deri.org/cgi-bin/viewcvs.cgi/*checkout*/wsmo/papers/swsc/Shipment.wsml#",
+  wsml _"http://www.wsmo.org/wsml/wsml-syntax#",
+  list _"http://cvs.deri.org/cgi-bin/viewcvs.cgi/*checkout*/wsmo/papers/swsc/ListOntology.wsml#" }
+
+ontology ListOntology
+  nonFunctionalProperties
+    dc#title hasValue "Encoding lists and aggregates in WSML"
+    dc#language hasValue "en-US"
+    dc#contributor hasValue {"Holger", "Adina"}
+    dc#format hasValue "text/plain"
+    dc#date hasValue _date(2006,11,03)
+    wsml#version hasValue "$version"
+  endNonFunctionalProperties
+  
+
+
+axiom hasSizeOnLists
+  definedBy 
+    hasSize(empty,0).
+    hasSize(list(?object,?list),?size) :- 
+      hasSize(?list,?n) and ?size=(?n+1).
+  
+//axiom hasSumOnLists
+//  definedBy 
+//    hasSum(empty,0).
+//    hasSum(list(?object,?list),?sum) :- 
+//      hasSum(?list,?n) and ?sum=(?n+?object).
+      
+axiom listElementOf
+  definedBy 
+    //this is how it is supposed to work but it doesn't :(
+//    listElementOf(?element, list(?le, empty)) :- ?le = ?element.
+//    listElementOf(?element, list(?le, ?lst)) :- listElementOf(?element, ?lst) .
+    //this is a stupid hack:
+    listElementOf(?element, list(?l, empty)) :- ?l = ?element. 
+    listElementOf(?element, list(?l1, list(?l2,empty))) :- ?l1 = ?element or ?l2 = ?element.
+    listElementOf(?element, list(?l1, list(?l2,list(?l3,empty)))) :- ?l1 = ?element or ?l2 = ?element or ?l3 = ?element.
+    listElementOf(?element, list(?l1, list(?l2,list(?l3,list(?l4,empty))))) :- ?l1 = ?element or ?l2 = ?element or ?l3 = ?element or ?l4 = ?element.
+    listElementOf(?element, list(?l1, list(?l2,list(?l3,list(?l4,list(?l5,empty)))))) :- ?l1 = ?element or ?l2 = ?element or ?l3 = ?element  or ?l4 = ?element or ?l5 = ?element.
+    listElementOf(?element, list(?l1, list(?l2,list(?l3,list(?l4,list(?l5,list(?l6,empty))))))) :- ?l1 = ?element or ?l2 = ?element or ?l3 = ?element or ?l4 = ?element or ?l5 = ?element or ?l6 = ?element.
+    listElementOf(?element, list(?l1, list(?l2,list(?l3,list(?l4,list(?l5,list(?l6,list(?l7,empty)))))))) :- ?l1 = ?element or ?l2 = ?element or ?l3 = ?element or ?l4 = ?element or ?l5 = ?element or ?l6 = ?element or ?l7 = ?element.
+
+    
+//axiom hasSizeTest 
+//  definedBy
+//    hv(5,list#list(1,list(2,list(3,list(4,list(5,empty)))))). 
+//    hv(4,list(1,list(2,list(3,list(4,empty))))). 
+//    hv(3,list(4,list(5,list(6,empty)))).    
+//    hv(1,list(2,list(3,empty))).    
+//    hv(1,list(1,empty)).    
+//    hv(0,list#list(p1,list#list(p2,empty))).
+    
+    //Query hv(?x,?list) and hasSize(?list,?value).
+    //Query hv(?x2,?list) and hasSum(?list,?value).
+    //Query hv(5,?list) and list#listElementOf(?value, ?list).
+ 

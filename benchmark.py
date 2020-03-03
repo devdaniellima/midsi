@@ -1,4 +1,13 @@
 import os,time
+if not os.path.isdir('log'):
+	os.mkdir('log')
+
+logFile = open('log/log.txt','w')
+def log(linha="",tela=True):
+	if tela:
+		print(linha)
+	logFile.write(linha+'\n')
+
 tempoInicioBench = time.time()
 
 # Configurações padrões
@@ -20,16 +29,27 @@ for linha in conf:
 			linha = linha.replace('QNTD=','')
 			if linha.isnumeric():
 				qtde = int(linha)
+		if 'PRINT_FACTS_WE=' in linha:
+			linha = linha.upper().replace('PRINT_FACTS_WE=','')
+			if linha == 'TRUE':
+				printFactsWE = True
+			else:
+				printFactsWE = False
+		if 'PRINT_AXIOMS_WE=' in linha:
+			linha = linha.upper().replace('PRINT_AXIOMS_WE=','')
+			if linha == 'TRUE':
+				printAxiomsWE = True
+			else:
+				printAxiomsWE = False
 				
 conf.close()
 
 # Carregando ontologias
-print("")
-print("======================")
-print("Ínicio do Benchmark")
-print("Carregando informações do arquivo 'benchmark.conf'")
-print("Quantidade total de execuções por linha e por motor: "+str(qtde))
-print("")
+log("======================")
+log("Ínicio do Benchmark")
+log("Carregando informações do arquivo 'benchmark.conf'")
+log("Quantidade total de execuções por linha e por motor: "+str(qtde))
+log("")
 
 conf = open("benchmark.conf","r")
 for linha in conf:
@@ -37,18 +57,18 @@ for linha in conf:
 		linha = linha.replace('BENCH_EXECUTE=','')
 		command = linha.rstrip().split(",")
 		command = " ".join(command)
-		print("")
-		print("=== Próxima Execução (Ontologia / Querys)")
-		print(command)
-		print("")
-		print("==")
-		print("WSML Engine")
-		print("==")
+		log("")
+		log("=== Próxima Execução (Ontologia / Querys)")
+		log(command)
+		log("")
+		log("==")
+		log("WSML Engine")
+		log("==")
 		totalCarregarOntologia = 0
 		totalConsulta = 0
 		commandWsmlEngine = "python3 wsml-engine-bench.py " + str(command)
 		for x in range(qtde):
-			print("Loop "+str(x))
+			log("Loop "+str(x))
 			result = os.popen(commandWsmlEngine).read()
 			result = result.split('\n')
 			for l in result:
@@ -56,31 +76,35 @@ for linha in conf:
 					l = l.replace('Carregar Ontologia: ','')
 					l = l[:-3]
 					tempoCarregarOntologia = float(l)
-					print("Ontologia: "+str(tempoCarregarOntologia))
+					log("Ontologia: "+str(tempoCarregarOntologia))
 					totalCarregarOntologia += tempoCarregarOntologia
 				elif 'Tempo de Execução: ' in l:
 					l = l.replace('Tempo de Execução: ','')
 					l = l[:-3]
 					tempoConsulta = float(l)
-					print("Consulta: "+str(tempoConsulta))
+					log("Consulta: "+str(tempoConsulta))
 					totalConsulta += tempoConsulta
 				elif printResult and 'Resultado: ' in l:
-					print(l)
-			print("=")
+					log(l)
+				elif printFactsWE and 'Fatos: ' in l:
+					log(l)
+				elif printAxiomsWE and 'Axiomas: ' in l:
+					log(l)
+			log("=")
 
-		print("Tempo total do carregamento da ontologia: "+ str(totalCarregarOntologia))
-		print("Média em "+str(qtde)+" execuções: "+str(totalCarregarOntologia/qtde))
-		print("Tempo total de execução da consulta: "+ str(totalConsulta))
-		print("Média em "+str(qtde)+" execuções: "+str(totalConsulta/qtde))
+		log("Tempo total do carregamento da ontologia: "+ str(totalCarregarOntologia))
+		log("Média em "+str(qtde)+" execuções: "+str(totalCarregarOntologia/qtde))
+		log("Tempo total de execução da consulta: "+ str(totalConsulta))
+		log("Média em "+str(qtde)+" execuções: "+str(totalConsulta/qtde))
 
-		print("==")
-		print("Íris")
-		print("==")
+		log("==")
+		log("Íris")
+		log("==")
 		totalCarregarOntologia = 0
 		totalConsulta = 0
 		commandIris = "java -jar iris-bench.jar " + str(command)
 		for x in range(qtde):
-			print("Loop "+str(x))
+			log("Loop "+str(x))
 			result = os.popen(commandIris).read()
 			result = result.split('\n')
 			for l in result:
@@ -88,27 +112,28 @@ for linha in conf:
 					l = l.replace('Carregar Ontologia: ','')
 					l = l[:-3]
 					tempoCarregarOntologia = float(l)
-					print("Ontologia: "+str(tempoCarregarOntologia))
+					log("Ontologia: "+str(tempoCarregarOntologia))
 					totalCarregarOntologia += tempoCarregarOntologia
 				elif 'Tempo de Execução: ' in l:
 					l = l.replace('Tempo de Execução: ','')
 					l = l[:-3]
 					tempoConsulta = float(l)
-					print("Consulta: "+str(tempoConsulta))
+					log("Consulta: "+str(tempoConsulta))
 					totalConsulta += tempoConsulta
 				elif printResult and 'Resultado: ' in l:
-					print(l)
+					log(l)
 
-		print("Tempo total do carregamento da ontologia: "+ str(totalCarregarOntologia))
-		print("Média em "+str(qtde)+" execuções: "+str(totalCarregarOntologia/qtde))
-		print("Tempo total de execução da consulta: "+ str(totalConsulta))
-		print("Média em "+str(qtde)+" execuções: "+str(totalConsulta/qtde))
+		log("Tempo total do carregamento da ontologia: "+ str(totalCarregarOntologia))
+		log("Média em "+str(qtde)+" execuções: "+str(totalCarregarOntologia/qtde))
+		log("Tempo total de execução da consulta: "+ str(totalConsulta))
+		log("Média em "+str(qtde)+" execuções: "+str(totalConsulta/qtde))
 
 conf.close()
 
 tempoFimBench = time.time()
 
-print("")
-print("Fim do Benchmark")
-print("Tempo Total: "+ str(round(tempoFimBench-tempoInicioBench,2)) + " segundos")
-print("======================")
+log("")
+log("Fim do Benchmark")
+log("Tempo Total: "+ str(round(tempoFimBench-tempoInicioBench,2)) + " segundos")
+log("======================")
+logFile.close()

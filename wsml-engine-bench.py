@@ -12,8 +12,10 @@ for contArg in range(len(args)):
 		if (os.path.exists(arg)):
 			inicio = time.time()
 			reasoner.load(arg)
+			print("Fatos: "+str(reasoner.getFacts()))
+			print("Axiomas: "+str(reasoner.getAxioms()))
 			fim = time.time()
-			tempo = (fim-inicio)*100
+			tempo = (fim-inicio)*1000
 			print("Carregar Ontologia: "+str(round(tempo,2)) + " ms")
 			ontCarregada = True
 	elif ontCarregada :
@@ -24,7 +26,7 @@ for contArg in range(len(args)):
 			inicio = time.time()
 			res = reasoner.execute(query)
 			fim = time.time()
-			tempo = (fim-inicio)*100
+			tempo = (fim-inicio)*1000
 			print("Query: "+query)
 			print("Tempo de Execução: "+ str(round(tempo,2)) + " ms")
 			print("Resultado: " + str(res))

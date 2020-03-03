@@ -38765,8 +38765,9 @@ class PySwipAnalysis(Analysis):
     def caseAImplicationExpr(self,node):
         expr = node.getExpr().apply(self)
         # print(node.getImplyOp())
-        
         exprImpl = node.getDisjunction().apply(self)
+        if exprImpl[0] == exprImpl[-1] == "'":
+            exprImpl = exprImpl[1:-1]
         
         axiomImpl = exprImpl + ' :- ' + expr
         #print("Axiom Impl -- " + axiomImpl)
@@ -38791,7 +38792,6 @@ class PySwipAnalysis(Analysis):
 
     def caseAConjunctionDisjunction(self,node):
         #print(type(node.getConjunction()))
-        #print(node.getConjunction())
         return node.getConjunction().apply(self)
     
     def caseASimpleSubexpr(self,node):
@@ -38979,4 +38979,11 @@ class Reasoner:
         return self.executeProlog(queryProlog)
 
     def executeProlog(self,queryProlog):
-        return list(self.prolog.query(queryProlog))
+        result = self.prolog.query(queryProlog)
+        resultList = None
+        try:
+            resultList = list(result)
+        except Exception as ex:
+            resultList = {'erro':str(ex)}
+        finally:
+            return resultList

@@ -1,0 +1,1 @@
+?city [country hasValue ?country] memberOf City and ?country [continent hasValue ?continent]

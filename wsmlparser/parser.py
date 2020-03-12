@@ -38406,7 +38406,6 @@ class Knowledge:
         self.facts['nfp'] = []
         self.facts['conceptAttribute'] = []
         self.axioms = []
-        self.factsAxioms = []
         self.imports = []
 
     def clean(self):

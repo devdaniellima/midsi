@@ -4,7 +4,7 @@ from datetime import datetime
 if not os.path.isdir('log'):
 	os.mkdir('log')
 
-logFile = open('log/log-'+str(datetime.now().strftime('%d-%m-%Y-%H-%M-%S'))+'.txt','w')
+logFile = open('log/log-'+str(datetime.now().strftime('%Y-%m-%d-%H-%M-%S'))+'.txt','w')
 def log(linha="",tela=True):
 	if tela:
 		print(linha)
@@ -17,6 +17,7 @@ qtde = 50
 printResult = False
 dirJava = "java"
 dirPython = "python3"
+printQuery = False
 
 # CARREGANDO CONFIGURAÇÕES
 conf = open("benchmark.conf","r")
@@ -29,6 +30,12 @@ for linha in conf:
 				printResult = True
 			else:
 				printResult = False
+		if 'PRINT_QUERY=' in linha:
+			linha = linha.upper().replace('PRINT_QUERY=','')
+			if linha == 'TRUE':
+				printQuery = True
+			else:
+				printQuery = False
 		if 'QNTD=' in linha:
 			linha = linha.replace('QNTD=','')
 			if linha.isnumeric():
@@ -98,6 +105,8 @@ for linha in conf:
 					log(l)
 				elif printAxiomsWE and 'Axiomas: ' in l:
 					log(l)
+				elif printQuery and 'Query: ' in l:
+					log(l)
 			log("=")
 
 		log("Tempo total do carregamento da ontologia: "+ str(round(totalCarregarOntologia,2)))
@@ -130,7 +139,7 @@ for linha in conf:
 					totalConsulta += tempoConsulta
 				elif printResult and 'Resultado: ' in l:
 					log(l)
-				else:
+				elif printQuery and 'Query: ' in l:
 					log(l)
 
 		log("Tempo total do carregamento da ontologia: "+ str(round(totalCarregarOntologia,2)))

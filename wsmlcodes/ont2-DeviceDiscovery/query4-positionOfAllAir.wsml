@@ -1,0 +1,1 @@
+?air[posx hasValue ?x,posy hasValue ?y] memberOf AirConditioner

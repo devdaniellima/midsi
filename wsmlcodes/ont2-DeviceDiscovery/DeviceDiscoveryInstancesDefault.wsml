@@ -70,3 +70,9 @@ instance tempUpService memberOf Service
 instance tempDownService memberOf Service
 	link hasValue "http://linkToTempDown.com.br"
 	requestModel hasValue "{linkToTempDown}/{device}"
+
+axiom lampServicesDef
+	definedBy
+		?lamp[?service hasValue ?s] memberOf Lamp and ?s memberOf Service
+	implies
+		lampAndServices(?lamp,?service).

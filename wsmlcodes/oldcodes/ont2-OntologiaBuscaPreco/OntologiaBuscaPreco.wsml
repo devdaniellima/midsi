@@ -1,0 +1,27 @@
+wsmlVariant _"http://www.wsmo.org/wsml/wsml-syntax/wsml-rule"
+
+ontology OntologiaBuscaPreco
+  nfp
+    title hasValue "Ontologia de Domínio Busca Preco"
+    contributor hasValue "Daniel Lima"
+    date hasValue _date(2020,03,06)
+    format hasValue "text/plain"
+    language hasValue "pt-BR"
+  endnfp
+
+concept Local
+  nfp
+    description hasValue "Informação dos Locais"
+  endnfp
+  estado ofType _string
+  cidade ofType _string
+  bairro ofType _string
+  endereco ofType _string
+
+concept Mercado
+  nfp
+    description hasValue "Informações dos mercados"
+  endnfp
+  cep ofType Local
+  nome ofType _string
+

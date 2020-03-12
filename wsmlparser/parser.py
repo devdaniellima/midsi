@@ -9739,7 +9739,7 @@ class AAttrRelList(Node):
         return AAttrRelList(self.cloneNode(self._attr_rel_list_),self.cloneNode(self._comma_),self.cloneNode(self._attr_relation_))
 
     def apply(self, analysis):
-        analysis.caseAAttrRelList(self)
+        return analysis.caseAAttrRelList(self)
 
     def getAttrRelList (self):
         return self._attr_rel_list_
@@ -38428,6 +38428,7 @@ class PySwipAnalysis(Analysis):
         self.axiomsVariablesTemp = []
         self.printComments = False
         self.termQuotes = True
+        self.isQuery = False
 
     def caseStart(self, node):
         # node - Class Start
@@ -38493,11 +38494,16 @@ class PySwipAnalysis(Analysis):
 
     def caseAParametrizedFunctionsymbol(self,node):
         id = node.getId().apply(self)
-        terms = node.getTerms().apply(self)
-        if type(terms) != str:
-            terms = ','.join(terms)
-        
-        return "'"+id + '(' + terms + ')'+"'"
+        terms = node.getTerms()
+        if terms != None:
+            terms = terms.apply(self)
+            
+            if type(terms) != str:
+                terms = ','.join(terms)
+            
+            return "'"+id + '(' + terms + ')'+"'"
+        else:
+            return ""
 
     def caseAMathFunctionsymbol(self,node):
         lpar = '('
@@ -38704,7 +38710,8 @@ class PySwipAnalysis(Analysis):
 
     def caseAAxiomOntologyElement(self,node):
         for axiom in node.getAxiom().apply(self):
-            self.knowledge.axioms.append(axiom)
+            if axiom not in self.knowledge.axioms:
+                self.knowledge.axioms.append(axiom)
     
     def caseAAxiom(self,node):
         return node.getAxiomdefinition().apply(self)
@@ -38738,7 +38745,7 @@ class PySwipAnalysis(Analysis):
         for logExpr in logExprs:
             exp = logExpr.apply(self)
             #print(type(logExpr))
-            if isLpRuleAxiom == True:
+            if isLpRuleAxiom == True and exp not in self.knowledge.axioms:
                 self.knowledge.axioms.append(exp)
             
             else:
@@ -38766,12 +38773,13 @@ class PySwipAnalysis(Analysis):
         expr = node.getExpr().apply(self)
         # print(node.getImplyOp())
         exprImpl = node.getDisjunction().apply(self)
-        if exprImpl[0] == exprImpl[-1] == "'":
+        if exprImpl != "" and exprImpl[0] == exprImpl[-1] == "'":
             exprImpl = exprImpl[1:-1]
         
         axiomImpl = exprImpl + ' :- ' + expr
         #print("Axiom Impl -- " + axiomImpl)
-        self.knowledge.axioms.append(axiomImpl)
+        if axiomImpl not in self.knowledge.axioms:
+            self.knowledge.axioms.append(axiomImpl)
         
         return expr
 
@@ -38780,7 +38788,7 @@ class PySwipAnalysis(Analysis):
         #print(type(node.getDisjunction()))
         #print(node.getDisjunction().apply(self))
         disjunction = node.getDisjunction().apply(self)
-        if disjunction[0] == disjunction[-1] == "'":
+        if disjunction != "" and disjunction[0] == disjunction[-1] == "'":
             disjunction = disjunction[1:-1]
         
         return disjunction
@@ -38830,12 +38838,31 @@ class PySwipAnalysis(Analysis):
         term = node.getTerm().apply(self)
         # self.axiomsVariablesTemp.append(term)
         specification = node.getAttrSpecification().apply(self)
+        molecule = ""
+        if len(specification) > 0:
+            for spec in specification:
+                molecule += spec[1] + '(' + term + ',' + spec[0] + ',' + spec[2] + '),'
+            if molecule[-1] == ',':
+                molecule = molecule[0:-1]
+        else:
+            molecule = specification[1] + '(' + term + ',' + specification[0] + ',' + specification[2] + ')'
 
-        molecule = specification[1] + '(' + term + ',' + specification[0] + ',' + specification[2] + ')'
         return molecule
 
     def caseAAttrSpecification(self,node):
         return node.getAttrRelList().apply(self)
+
+    def caseAAttrRelList(self,node):
+        l = []
+        
+        attrRelation = node.getAttrRelation().apply(self)
+        if attrRelation != None: 
+            l += attrRelation
+
+        attrRelList = node.getAttrRelList().apply(self)
+        l += attrRelList
+
+        return l
 
     def caseAAttrRelationAttrRelList(self,node):
         return node.getAttrRelation().apply(self)
@@ -38850,7 +38877,7 @@ class PySwipAnalysis(Analysis):
         termlist = node.getTermlist().apply(self)        
         #print('t'+term)
         #print(termlist[0])
-        return [term,'hasValue',termlist[0]]
+        return [[term,'hasValue',termlist[0]]]
     
     def caseAConceptMoleculePreferredMolecule(self,node):
         molecule = ''
@@ -38867,10 +38894,13 @@ class PySwipAnalysis(Analysis):
         #print(molecule)
         # Montando os termos adicionais
         if (node.getAttrSpecification() != None):
-            specification = node.getAttrSpecification().apply(self)
-            moleculeSpecification = specification[1] + '(' + term + ',' + specification[0] + ',' + specification[2] + ')'            
-            molecule = molecule + ',' + moleculeSpecification
-        
+            specificationList = node.getAttrSpecification().apply(self)
+            for specification in specificationList:
+                # print(specification)
+                moleculeSpecification = specification[1] + '(' + term + ',' + specification[0] + ',' + specification[2] + ')'            
+                molecule = molecule + ',' + moleculeSpecification
+        # print('molecule ===>>> '+str(molecule))
+        # exit()
         return molecule
 
     def caseAConjunction(self,node):
@@ -38947,7 +38977,7 @@ class Reasoner:
                 self.bufferFacts = self.bufferFacts + [fato]
 
         for axiom in self.analysis.knowledge.axioms:
-            #print('Knownledge -- ' + axiom)
+            # print('Knownledge -- ' + axiom)
             if (self.printAxioms == True):
                 print(axiom)
             self.prolog.assertz(axiom)
@@ -38965,11 +38995,13 @@ class Reasoner:
         #Criando uma ontologia default para poder traduzir a query
         query = "ontology DefaultWSMLEngine axiom axiomDefault definedBy " + query + " implies " + query + ". "
         parser = Parser(Lexer(io.StringIO(query)))
+        self.analysis.isQuery = True
         head = parser.parse()
         head.apply(self.analysis)
         queryProlog = self.analysis.knowledge.axioms[0].split(' :- ')[1]
         #if queryProlog[0] == "'" and queryProlog[-1] == "'":
         #    queryProlog = queryProlog[1:-1]
+        self.analysis.isQuery = False
         return queryProlog
 
     def execute(self,query):

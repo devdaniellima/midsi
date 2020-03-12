@@ -1,0 +1,72 @@
+wsmlVariant _"http://www.wsmo.org/wsml/wsml-syntax/wsml-rule"
+
+namespace {
+	_"http://www.daniellima.br/DevicesDiscoveryOntology/DeviceDiscoveryInstancesDefault#",
+	dd _"http://www.daniellima.br/DevicesDiscoveryOntology/DeviceDiscovery#"
+}
+
+ontology DeviceDiscoveryInstancesDefault
+	nfp 
+		title hasValue "Device Discovery Domain Instances"
+		contributor hasValue "Daniel Lima"
+		date hasValue _date(2020,03,06)
+    	format hasValue "text/plain"
+    	language hasValue "en-US"
+	endnfp
+
+importsOntology {
+	dd#DeviceDiscovery
+}
+
+instance Lamp1 memberOf Lamp
+	posx hasValue 95
+	posy hasValue 120
+	name hasValue "Lamp 1"
+	turnOn hasValue turnOnService
+	turnOff hasValue turnOffService
+
+instance Lamp2 memberOf Lamp
+	posx hasValue 356
+	posy hasValue 120
+	name hasValue "Lamp 2"
+	turnOn hasValue turnOnService
+	turnOff hasValue turnOffService
+
+instance Lamp3 memberOf Lamp
+	posx hasValue 604
+	posy hasValue 120
+	name hasValue "Lamp 3"
+	turnOn hasValue turnOnService
+	turnOff hasValue turnOffService
+
+instance Air1 memberOf AirConditioner
+	posx hasValue 207
+	posy hasValue 45
+	name hasValue "Air 1"
+	turnOn hasValue turnOnService
+	turnOff hasValue turnOffService
+	tempUp hasValue turnUp
+	tempDown hasValue Service
+
+instance Air2 memberOf AirConditioner
+	posx hasValue 490
+	posy hasValue 45
+	name hasValue "Air 2"
+	turnOn hasValue turnOnService
+	turnOff hasValue turnOffService
+
+instance turnOnService memberOf Service
+	link hasValue "http://linkToTurnOnLamp1.com.br"
+	requestModel hasValue "{linkToTurnOn}/{device}"
+
+instance turnOffService memberOf Service
+	link hasValue "http://linkToTurnOffLamp1.com.br"
+	requestModel hasValue "{linkToTurnOff}/{device}"
+
+instance tempUpService memberOf Service
+	link hasValue "http://linkToTempUp.com.br"
+	requestModel hasValue "{linkToTempUp}/{device}"
+
+instance tempDownService memberOf Service
+	link hasValue "http://linkToTempDown.com.br"
+	requestModel hasValue "{linkToTempDown}/{device}"

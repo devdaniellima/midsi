@@ -1,0 +1,69 @@
+wsmlVariant _"http://www.wsmo.org/wsml/wsml-syntax/wsml-rule"
+
+namespace {
+	_"http://www.daniellima.br/DevicesDiscoveryOntology/DeviceDiscovery#"
+}
+
+ontology DeviceDiscovery
+	nfp
+	    title hasValue "Device Discovery Domain Ontology"
+    	contributor hasValue "Daniel Lima"
+    	date hasValue _date(2020,03,06)
+    	format hasValue "text/plain"
+    	language hasValue "en-US"
+  	endnfp
+
+concept Device
+	nfp
+		description hasValue "Information to define devices"
+	endnfp
+	posx ofType _integer
+	posy ofType _integer
+	name ofType _string
+
+concept Service
+	nfp
+		description hasValue "Information to define service connection"
+	endnfp
+	link ofType _string
+	requestModel ofType _string
+
+concept Lamp subConceptOf Device
+	nfp
+		description hasValue "Information to define lamp device"
+	endnfp
+	turnOn ofType Service
+	turnOff ofType Service
+
+concept AirConditioner subConceptOf Device
+	nfp
+		description hasValue "Information to define air conditioner device"
+	endnfp
+	turnOn ofType Service
+	turnOff ofType Service
+	tempUp ofType Service
+	tempDown ofType Service
+
+axiom allServicesDef
+	definedBy
+		?device[posx hasValue ?xdevice, posy hasValue ?ydevice, ?serviceName hasValue ?serviceValue] 
+		and ?serviceValue[link hasValue ?linkService, requestModel hasValue ?requestModel] memberOf Service
+	implies
+		allServices(?device,?serviceName,?linkService,?requestModel).
+
+// Axiom for discovering nearby services using the distance between two points formula
+axiom servicesAroundDef
+	definedBy
+		?device[posx hasValue ?xdevice, posy hasValue ?ydevice, ?serviceName hasValue ?serviceValue] 
+		and ?serviceValue[link hasValue ?linkService, requestModel hasValue ?requestModel] memberOf Service
+		and (?dist*?dist) >= (((?xdevice-?x)*(?xdevice-?x))+((?ydevice-?y)*(?ydevice-?y)))
+	implies
+		servicesAround(?x,?y,?dist,?device,?serviceName,?linkService,?requestModel).
+
+// Definition devices
+axiom devicesDef
+	definedBy
+		?device memberOf Lamp
+		or ?device memberOf AirConditioner
+	implies
+		devices(?device).

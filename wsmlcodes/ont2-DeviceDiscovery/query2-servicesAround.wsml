@@ -1,0 +1,1 @@
+?device[posx hasValue ?xdevice, posy hasValue ?ydevice, ?serviceName hasValue ?serviceValue] and ?serviceValue[link hasValue ?linkService, requestModel hasValue ?requestModel] memberOf Service and (360*360) >= (((?xdevice-79)*(?xdevice-79))+((?ydevice-42)*(?ydevice-42)))

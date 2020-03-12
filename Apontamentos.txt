@@ -2,3 +2,4 @@
 - não está trazendo resultados de ontologias importadas
 WSML Engine 
 - nos axiomas além da definicão do implies, também cria a definição do axioma para possível pergunta com todas as variáveis utilizadas no axioma como parâmetros
+

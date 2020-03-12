@@ -1,0 +1,8 @@
+wsmlVariant _"http://www.wsmo.org/wsml/wsml-syntax/wsml-rule" 
+namespace { _"http://br.ufs.dsi.lumesi#"}
+ 
+ontology numerico 
+
+axiom makeFatorial definedBy
+	factorial(0,1).
+	factorial(?n,?f) :- (?n > 0) and (?n1 = (?n - 1)) and (factorial (?n1, ?f1)) and (?f = (?n * ?f1)).

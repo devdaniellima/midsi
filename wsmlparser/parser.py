@@ -38992,7 +38992,7 @@ class Reasoner:
             
     def convertQuery(self,query):
         #Criando uma ontologia default para poder traduzir a query
-        query = "ontology DefaultWSMLEngine axiom axiomDefault definedBy " + query + " implies " + query + ". "
+        query = "ontology DefaultMidsi axiom axiomDefault definedBy " + query + " implies " + query + ". "
         parser = Parser(Lexer(io.StringIO(query)))
         self.analysis.isQuery = True
         head = parser.parse()

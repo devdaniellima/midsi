@@ -1,29 +1,28 @@
-# Projeto wsml-engine
-## TCC - Sistemas de Informação - Universidade Federal de Sergipe - Itabaiana - SE
+# Projeto MIDSI
+
+### Código fonte do motor de inferência Midsi com estudo de caso e benchmark
+
+Nova solução para descoberta de dados em soluções baseadas em Web Semântica, possibilita o carregamento de ontologias e inferência de resultados utilizando WSML.
 
 ### Pré-requisitos:
-* SwiProlog
-* Python 3.*
-    * pyswip
 
-### Instalando em distribuições baseadas em Debian:
-    Para instalar basta executar o arquivo install.sh como sudo ou executar os seguintes comandos:
+- SwiProlog
+- Python 3.\*
+  - pyswip
 
-    # Instalando o SwiProlog
-    sudo apt-get install software-properties-common
-    sudo apt-add-repository ppa:swi-prolog/stable
-    sudo apt-get update
-    sudo apt-get install swi-prolog
+### Instalando dependências do projeto
 
-    # Instalando o Python 3.* e o PIP
-    sudo apt-get install python3.6
-    sudo apt-get install python3-pip
+Sistemas baseados em debian:
 
-    #Instalando a biblioteca pyswip
-    pip3 install pyswip
+    sudo ./install.sh
 
-    # Para executar o Íris benchmark
-    sudo apt-get install default-jre
+Outros sistemas instalar seguintes pacotes:
 
-    # Para executar o wsml engine e íris como serviço
-    pip3 install flask
+    default_jre
+    python3
+    swi-prolog #swi-prolog ou pl
+    pip pyswip
+
+### Benchmark
+
+Para executar e visualizar os resultados `python3 benchmark.py`. Será criado uma pasta log contendo o resultado do benchmark.

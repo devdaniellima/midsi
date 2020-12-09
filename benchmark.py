@@ -77,14 +77,14 @@ for linha in conf:
 		log(command)
 		log("")
 		log("==")
-		log("WSML Engine")
+		log("Midsi")
 		log("==")
 		totalCarregarOntologia = 0
 		totalConsulta = 0
-		commandWsmlEngine = dirPython+" wsml-engine-bench.py " + str(command)
+		commandMidsi = dirPython+" midsi-bench.py " + str(command)
 		for x in range(qtde):
 			log("Loop "+str(x))
-			result = os.popen(commandWsmlEngine).read()
+			result = os.popen(commandMidsi).read()
 			result = result.split('\n')
 			for l in result:
 				if 'Carregar Ontologia: ' in l:

@@ -1,0 +1,320 @@
+======================
+Ínicio do Benchmark
+Carregando informações do arquivo 'benchmark.conf'
+Quantidade total de execuções por linha e por motor: 50
+
+
+=== Próxima Execução (Ontologia / Querys)
+wsmlcodes/ont3-Factorial/factorial.wsml wsmlcodes/ont3-Factorial/query1-factorial10.wsml
+
+==
+WSML Engine
+==
+Loop 0
+Ontologia: 33.01
+Query: factorial(10,?x)
+Consulta: 3.56
+Resultado: [{'X': 3628800}]
+=
+Loop 1
+Ontologia: 6.42
+Query: factorial(10,?x)
+Consulta: 2.05
+Resultado: [{'X': 3628800}]
+=
+Loop 2
+Ontologia: 6.51
+Query: factorial(10,?x)
+Consulta: 2.02
+Resultado: [{'X': 3628800}]
+=
+Loop 3
+Ontologia: 6.39
+Query: factorial(10,?x)
+Consulta: 2.12
+Resultado: [{'X': 3628800}]
+=
+Loop 4
+Ontologia: 6.6
+Query: factorial(10,?x)
+Consulta: 2.08
+Resultado: [{'X': 3628800}]
+=
+Loop 5
+Ontologia: 6.47
+Query: factorial(10,?x)
+Consulta: 2.0
+Resultado: [{'X': 3628800}]
+=
+Loop 6
+Ontologia: 6.38
+Query: factorial(10,?x)
+Consulta: 2.03
+Resultado: [{'X': 3628800}]
+=
+Loop 7
+Ontologia: 7.82
+Query: factorial(10,?x)
+Consulta: 3.06
+Resultado: [{'X': 3628800}]
+=
+Loop 8
+Ontologia: 8.19
+Query: factorial(10,?x)
+Consulta: 2.65
+Resultado: [{'X': 3628800}]
+=
+Loop 9
+Ontologia: 6.52
+Query: factorial(10,?x)
+Consulta: 2.03
+Resultado: [{'X': 3628800}]
+=
+Loop 10
+Ontologia: 7.0
+Query: factorial(10,?x)
+Consulta: 2.13
+Resultado: [{'X': 3628800}]
+=
+Loop 11
+Ontologia: 6.51
+Query: factorial(10,?x)
+Consulta: 2.14
+Resultado: [{'X': 3628800}]
+=
+Loop 12
+Ontologia: 6.49
+Query: factorial(10,?x)
+Consulta: 2.06
+Resultado: [{'X': 3628800}]
+=
+Loop 13
+Ontologia: 6.61
+Query: factorial(10,?x)
+Consulta: 2.04
+Resultado: [{'X': 3628800}]
+=
+Loop 14
+Ontologia: 6.45
+Query: factorial(10,?x)
+Consulta: 2.09
+Resultado: [{'X': 3628800}]
+=
+Loop 15
+Ontologia: 6.53
+Query: factorial(10,?x)
+Consulta: 1.97
+Resultado: [{'X': 3628800}]
+=
+Loop 16
+Ontologia: 6.37
+Query: factorial(10,?x)
+Consulta: 2.12
+Resultado: [{'X': 3628800}]
+=
+Loop 17
+Ontologia: 6.41
+Query: factorial(10,?x)
+Consulta: 2.07
+Resultado: [{'X': 3628800}]
+=
+Loop 18
+Ontologia: 6.34
+Query: factorial(10,?x)
+Consulta: 2.0
+Resultado: [{'X': 3628800}]
+=
+Loop 19
+Ontologia: 6.44
+Query: factorial(10,?x)
+Consulta: 2.03
+Resultado: [{'X': 3628800}]
+=
+Loop 20
+Ontologia: 6.37
+Query: factorial(10,?x)
+Consulta: 1.98
+Resultado: [{'X': 3628800}]
+=
+Loop 21
+Ontologia: 6.52
+Query: factorial(10,?x)
+Consulta: 2.02
+Resultado: [{'X': 3628800}]
+=
+Loop 22
+Ontologia: 6.36
+Query: factorial(10,?x)
+Consulta: 2.02
+Resultado: [{'X': 3628800}]
+=
+Loop 23
+Ontologia: 7.22
+Query: factorial(10,?x)
+Consulta: 3.3
+Resultado: [{'X': 3628800}]
+=
+Loop 24
+Ontologia: 6.49
+Query: factorial(10,?x)
+Consulta: 2.01
+Resultado: [{'X': 3628800}]
+=
+Loop 25
+Ontologia: 6.43
+Query: factorial(10,?x)
+Consulta: 1.99
+Resultado: [{'X': 3628800}]
+=
+Loop 26
+Ontologia: 6.38
+Query: factorial(10,?x)
+Consulta: 2.02
+Resultado: [{'X': 3628800}]
+=
+Loop 27
+Ontologia: 6.55
+Query: factorial(10,?x)
+Consulta: 2.05
+Resultado: [{'X': 3628800}]
+=
+Loop 28
+Ontologia: 6.38
+Query: factorial(10,?x)
+Consulta: 2.06
+Resultado: [{'X': 3628800}]
+=
+Loop 29
+Ontologia: 6.4
+Query: factorial(10,?x)
+Consulta: 2.07
+Resultado: [{'X': 3628800}]
+=
+Loop 30
+Ontologia: 6.43
+Query: factorial(10,?x)
+Consulta: 1.97
+Resultado: [{'X': 3628800}]
+=
+Loop 31
+Ontologia: 6.35
+Query: factorial(10,?x)
+Consulta: 2.06
+Resultado: [{'X': 3628800}]
+=
+Loop 32
+Ontologia: 6.4
+Query: factorial(10,?x)
+Consulta: 2.0
+Resultado: [{'X': 3628800}]
+=
+Loop 33
+Ontologia: 6.45
+Query: factorial(10,?x)
+Consulta: 2.03
+Resultado: [{'X': 3628800}]
+=
+Loop 34
+Ontologia: 6.38
+Query: factorial(10,?x)
+Consulta: 2.07
+Resultado: [{'X': 3628800}]
+=
+Loop 35
+Ontologia: 6.55
+Query: factorial(10,?x)
+Consulta: 2.13
+Resultado: [{'X': 3628800}]
+=
+Loop 36
+Ontologia: 6.44
+Query: factorial(10,?x)
+Consulta: 2.07
+Resultado: [{'X': 3628800}]
+=
+Loop 37
+Ontologia: 6.44
+Query: factorial(10,?x)
+Consulta: 1.96
+Resultado: [{'X': 3628800}]
+=
+Loop 38
+Ontologia: 6.44
+Query: factorial(10,?x)
+Consulta: 2.06
+Resultado: [{'X': 3628800}]
+=
+Loop 39
+Ontologia: 6.53
+Query: factorial(10,?x)
+Consulta: 2.06
+Resultado: [{'X': 3628800}]
+=
+Loop 40
+Ontologia: 6.4
+Query: factorial(10,?x)
+Consulta: 2.12
+Resultado: [{'X': 3628800}]
+=
+Loop 41
+Ontologia: 6.37
+Query: factorial(10,?x)
+Consulta: 2.09
+Resultado: [{'X': 3628800}]
+=
+Loop 42
+Ontologia: 6.41
+Query: factorial(10,?x)
+Consulta: 1.96
+Resultado: [{'X': 3628800}]
+=
+Loop 43
+Ontologia: 8.97
+Query: factorial(10,?x)
+Consulta: 3.17
+Resultado: [{'X': 3628800}]
+=
+Loop 44
+Ontologia: 6.38
+Query: factorial(10,?x)
+Consulta: 2.68
+Resultado: [{'X': 3628800}]
+=
+Loop 45
+Ontologia: 6.48
+Query: factorial(10,?x)
+Consulta: 1.98
+Resultado: [{'X': 3628800}]
+=
+Loop 46
+Ontologia: 6.48
+Query: factorial(10,?x)
+Consulta: 2.0
+Resultado: [{'X': 3628800}]
+=
+Loop 47
+Ontologia: 6.58
+Query: factorial(10,?x)
+Consulta: 2.06
+Resultado: [{'X': 3628800}]
+=
+Loop 48
+Ontologia: 6.35
+Query: factorial(10,?x)
+Consulta: 2.01
+Resultado: [{'X': 3628800}]
+=
+Loop 49
+Ontologia: 6.52
+Query: factorial(10,?x)
+Consulta: 2.01
+Resultado: [{'X': 3628800}]
+=
+Tempo total do carregamento da ontologia: 355.91
+Média em 50 execuções: 7.12
+Tempo total de execução da consulta: 108.26
+Média em 50 execuções: 2.17
+==
+Íris
+==
+Loop 0

@@ -2,7 +2,7 @@
 
 ### Código fonte do motor de inferência Midsi com estudo de caso e benchmark
 
-Nova solução para descoberta de dados em soluções baseadas em Web Semântica, possibilita o carregamento de ontologias e inferência de resultados utilizando WSML.
+Solução para descoberta de dados em projetos aplicáveis a Web Semântica, possibilitando o carregamento de ontologias e inferência de resultados utilizando a linguagem WSML.
 
 ### Pré-requisitos:
 

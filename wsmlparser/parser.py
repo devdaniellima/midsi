@@ -39018,3 +39018,14 @@ class Reasoner:
             resultList = {'erro':str(ex)}
         finally:
             return resultList
+    
+    def clear(self):
+        for fact in self.bufferFacts:
+            self.prolog.retractall(fact)
+        self.bufferFacts = []
+    
+        for axiom in self.bufferAxioms:
+            axiomParts = axiom.split(' :- ')
+            head = axiomParts[0]
+            self.prolog.retractall(head)
+        self.bufferAxioms = []

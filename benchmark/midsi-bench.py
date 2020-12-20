@@ -1,5 +1,6 @@
 import sys,os
 import time
+sys.path.append('../')
 from wsmlparser.parser import *
 
 args = sys.argv[1:]

@@ -1,22 +1,22 @@
-# Projeto MIDSI
+# MIDSI Project
 
-### Código fonte do motor de inferência Midsi com estudo de caso e benchmark
+### Source code of the Midsi inference engine with case study and benchmark
 
-Nova solução para descoberta de dados em soluções baseadas em Web Semântica, possibilita o carregamento de ontologias e inferência de resultados utilizando WSML.
+New solution for data discovery in Semantic Web-based solutions, allows the loading of ontologies and inference results using WSML.
 
-### Pré-requisitos:
+### Requirements:
 
 - SwiProlog
 - Python 3.\*
   - pyswip
 
-### Instalando dependências do projeto
+### Installing project dependencies
 
-Sistemas baseados em debian:
+Debian-based systems:
 
     sudo ./install.sh
 
-Outros sistemas instalar seguintes pacotes:
+Other systems install the following packages:
 
     default_jre
     python3
@@ -25,4 +25,11 @@ Outros sistemas instalar seguintes pacotes:
 
 ### Benchmark
 
-Para executar e visualizar os resultados `python3 benchmark.py`. Será criado uma pasta log contendo o resultado do benchmark.
+- To run and view the results:
+
+      cd benchmark
+      python3 benchmark.py
+    
+- Additional settings to the benchmark can be changed in **benchmark.conf**.
+
+- A **log** folder will be created containing the result of the benchmark.

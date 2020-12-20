@@ -2,7 +2,7 @@
 
 ### Source code of the Midsi inference engine with case study and benchmark
 
-New solution for data discovery in Semantic Web-based solutions, allows the loading of ontologies and inference results using WSML.
+Solution for data discovery in projects applicable to the Semantic Web, enabling the loading of ontologies and inference of results using the WSML language.
 
 ### Requirements:
 

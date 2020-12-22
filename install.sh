@@ -31,6 +31,5 @@ install python3 python3 python3
 install pip3 python3-pip pip3
 install swipl swi-prolog pl
 pip3 install pyswip
-pip3 install flask
 
 echo 'Finalizado...'

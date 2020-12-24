@@ -59,5 +59,10 @@ while True:
                 print('File not found')
                 response = 'File not found'
                 sent = sock.sendto(response.encode('utf_8'), addr)
+        elif command == 'exit':
+            response = 'Server closed!'
+            sent = sock.sendto(response.encode('utf_8'), addr)
+            sock.close()
+            exit()
         else:
             sent = sock.sendto(b'Command invalid!', addr)

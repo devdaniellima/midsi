@@ -9,10 +9,10 @@ def error():
     print('* --query "cityIsOnContinent(?x,?y)"')
     print('* --queryFile ../wsmlcodes/ont1-ShipmentOntology/query1-allPackageStatus.wsml')
 
-if len(sys.argv) > 1 and sys.argv[1] in ['--clear', '--ontology', '--query', '--queryFile']:
+if len(sys.argv) > 1 and sys.argv[1] in ['--exit', '--clear', '--ontology', '--query', '--queryFile']:
     command = sys.argv[1][2:]
     message = ''
-    if sys.argv[1] == '--clear':
+    if sys.argv[1] in ['--clear', '--exit']:
         message = command
     elif len(sys.argv) > 2 and sys.argv[2] != '' and sys.argv[2] != None:
         message = command + '=' + sys.argv[2]

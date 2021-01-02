@@ -2,12 +2,12 @@ import socket, sys
 from config import *
 
 def error():
-    print('Invalid command!')
-    print('Command examples:')
-    print('* --clear')
+    print(ERROR + 'Command not found!')
+    print(INFO + 'Command examples:')
     print('* --ontology ../wsmlcodes/ont1-ShipmentOntology/ShipmentOntology.wsml')
     print('* --query "cityIsOnContinent(?x,?y)"')
     print('* --queryFile ../wsmlcodes/ont1-ShipmentOntology/query1-allPackageStatus.wsml')
+    print('* --exit # Send signals to the server that it can be shut down')
 
 if len(sys.argv) > 1 and sys.argv[1] in ['--exit', '--clear', '--ontology', '--query', '--queryFile']:
     command = sys.argv[1][2:]
@@ -32,7 +32,7 @@ if len(sys.argv) > 1 and sys.argv[1] in ['--exit', '--clear', '--ontology', '--q
             data, server = sock.recvfrom(4096)
             print(data.decode('utf-8'))
         except Exception as ex:
-            print('\n* midsi-service.py is running?')
+            print(INFO + '\n* midsi-service.py is running?')
         finally:
             pass
 else:

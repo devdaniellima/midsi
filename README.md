@@ -29,7 +29,46 @@ Other systems install the following packages:
 
       cd benchmark
       python3 benchmark.py
-    
+
 - Additional settings to the benchmark can be changed in **benchmark.conf**.
 
 - A **log** folder will be created containing the result of the benchmark.
+
+### Using Midsi as a service
+
+Just enter the `./service` folder and start the `midsi-service.py` server. The configuration of ip and port is in the file `config.py`, to use another address just change it.
+
+    cd ./service
+    python3 midsi-service.py
+
+To make it easier to use, the commands we can use on our server were centralized in `midsi-client.py`.
+
+- Loading an ontology:
+
+    ```
+    python3 midsi-client.py --ontology ../wsmlcodes/ont1-ShipmentOntology/ShipmentOntology.wsml
+    ```
+
+- Running a query:
+
+    ```
+    python3 midsi-client.py --query "cityIsOnContinent(?x,?y)"
+    ```
+
+- Executing a query from a file:
+
+    ```
+    python --queryFile ../wsmlcodes/ont1-ShipmentOntology/query1-allPackageStatus.wsml
+    ```
+
+- Closing the server (can be done by closing `midsi-service.py` directly):
+
+    ```
+    python3 midsi-client.py --exit
+    ```
+
+### WSML to VSCode
+
+We created an extension for VSCode that provides syntax highlighting and bracket matching for WSML files. **It also has integrated controls for the use of the Midsi client / server previously exposed**.
+
+It can be downloaded directly from the VSCode marktplace, searching for WSML. See more at [https://github.com/devdaniellima/wsml-vscode](https://github.com/devdaniellima/wsml-vscode).

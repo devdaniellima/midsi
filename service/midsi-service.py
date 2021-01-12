@@ -31,33 +31,45 @@ while True:
             response = 'Cleared in ' + str(round(countTime, 2)) + ' ms'
             sock.sendto(response.encode('utf_8'), addr)
         elif command == 'ontology':
-            print(INFO + 'Command: load ontology ' + args[1])
-            start = time.time()
-            reasoner.load(args[1])
-            finish = time.time()
-            countTime = (finish-start)*1000
-            response = SUCCESS + 'Loaded in ' + str(round(countTime, 2)) + ' ms'
-            sock.sendto(response.encode('utf_8'), addr)
-        elif command == 'query':
-            print(INFO + 'Command: execute query ' + args[1])
-            start = time.time()
-            result = reasoner.execute(args[1])
-            finish = time.time()
-            countTime = (finish-start)*1000
-            response = str(result)+'\nQuery finished in ' + str(round(countTime, 2)) + ' ms'
-            sent = sock.sendto(response.encode('utf_8'), addr)
-        elif command == 'queryFile':
-            print(INFO + 'Command: execute query file ' + args[1])
-            if (os.path.exists(args[1])):
-                f = open(args[1] ,'r')
-                query = f.read()
-                f.close()
+            try:
+                print(INFO + 'Command: load ontology ' + args[1])
                 start = time.time()
-                result = reasoner.execute(query)
+                reasoner.load(args[1])
+                finish = time.time()
+                countTime = (finish-start)*1000
+                response = SUCCESS + 'Loaded in ' + str(round(countTime, 2)) + ' ms'
+                sock.sendto(response.encode('utf_8'), addr)
+            except:
+                response = "\n{'erro':'Internal error'}"
+                sent = sock.sendto(response.encode('utf_8'), addr)
+        elif command == 'query':
+            try:
+                print(INFO + 'Command: execute query ' + args[1])
+                start = time.time()
+                result = reasoner.execute(args[1])
                 finish = time.time()
                 countTime = (finish-start)*1000
                 response = str(result)+'\nQuery finished in ' + str(round(countTime, 2)) + ' ms'
                 sent = sock.sendto(response.encode('utf_8'), addr)
+            except:
+                response = "\n{'erro':'Internal error'}"
+                sent = sock.sendto(response.encode('utf_8'), addr)
+        elif command == 'queryFile':
+            print(INFO + 'Command: execute query file ' + args[1])
+            if (os.path.exists(args[1])):
+                try:
+                    f = open(args[1] ,'r')
+                    query = f.read()
+                    f.close()
+                    start = time.time()
+                    result = reasoner.execute(query)
+                    finish = time.time()
+                    countTime = (finish-start)*1000
+                    response = str(result)+'\nQuery finished in ' + str(round(countTime, 2)) + ' ms'
+                    sent = sock.sendto(response.encode('utf_8'), addr)
+                except:
+                    response = "\n{'erro':'Internal error'}"
+                    sent = sock.sendto(response.encode('utf_8'), addr)
             else:
                 print(ERROR + 'File not found')
                 response = ERROR + 'File not found'
@@ -66,7 +78,7 @@ while True:
             response = INFO + 'Server closed!'
             sent = sock.sendto(response.encode('utf_8'), addr)
             sock.close()
-            exit(SUCCESS + 'Server closed!')
+            exit(SUCCESS + '* Server closed!')
         else:
             response = ERROR + 'Command invalid!'
             sent = sock.sendto(response.encode('utf_8'), addr)

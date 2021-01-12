@@ -5720,7 +5720,7 @@ class ARelationOntologyElement(Node):
         return ARelationOntologyElement(self.cloneNode(self._relation_))
 
     def apply(self, analysis):
-        analysis.caseARelationOntologyElement(self)
+        return analysis.caseARelationOntologyElement(self)
 
     def getRelation (self):
         return self._relation_
@@ -7056,7 +7056,7 @@ class ARelation(Node):
         return ARelation(self.cloneNode(self._t_relation_),self.cloneNode(self._id_),self.cloneNode(self._arity_),self.cloneNode(self._paramtyping_),self.cloneNode(self._superrelation_),self.cloneNode(self._nfp_))
 
     def apply(self, analysis):
-        analysis.caseARelation(self)
+        return analysis.caseARelation(self)
 
     def getTRelation (self):
         return self._t_relation_
@@ -7203,7 +7203,7 @@ class AParamtype(Node):
         return AParamtype(self.cloneNode(self._att_type_),self.cloneNode(self._idlist_))
 
     def apply(self, analysis):
-        analysis.caseAParamtype(self)
+        return analysis.caseAParamtype(self)
 
     def getAttType (self):
         return self._att_type_
@@ -7276,7 +7276,7 @@ class AParamtyping(Node):
         return AParamtyping(self.cloneNode(self._lpar_),self.cloneNode(self._paramtype_),self.cloneList(self._moreparamtype_),self.cloneNode(self._rpar_))
 
     def apply(self, analysis):
-        analysis.caseAParamtyping(self)
+        return analysis.caseAParamtyping(self)
 
     def getLpar (self):
         return self._lpar_
@@ -7383,7 +7383,7 @@ class AMoreparamtype(Node):
         return AMoreparamtype(self.cloneNode(self._comma_),self.cloneNode(self._paramtype_))
 
     def apply(self, analysis):
-        analysis.caseAMoreparamtype(self)
+        return analysis.caseAMoreparamtype(self)
 
     def getComma (self):
         return self._comma_
@@ -38405,6 +38405,8 @@ class Knowledge:
         self.facts['hasValue'] = []
         self.facts['nfp'] = []
         self.facts['conceptAttribute'] = []
+        self.facts['relation'] = []
+        self.facts['relationType'] = []
         self.axioms = []
         self.imports = []
 
@@ -38417,6 +38419,8 @@ class Knowledge:
         self.facts['hasValue'] = []
         self.facts['nfp'] = []
         self.facts['conceptAttribute'] = []
+        self.facts['relation'] = []
+        self.facts['relationType'] = []
         self.axioms = []
         self.imports = []
 
@@ -38571,7 +38575,8 @@ class PySwipAnalysis(Analysis):
                             self.knowledge.facts['nfp'].append(nfpFact)
 
         for ontologyElement in node.getOntologyElement():
-            # print(type(ontologyElement))
+            #if isinstance(ontologyElement,ARelationOntologyElement):
+            #    print(ontologyElement)
             ontologyElement.apply(self)
     
     def caseAImportsontologyHeader(self,node):
@@ -38621,7 +38626,7 @@ class PySwipAnalysis(Analysis):
         if listAttribute != None:
             for attribute in listAttribute:
                 factAttributeValue = attribute.apply(self)
-                for factAttr in factAttributeValue:                    
+                for factAttr in factAttributeValue:     
                     fact = tuple([conceptId]+factAttr)
                     self.knowledge.facts['conceptAttribute'].append(fact)
 
@@ -38918,6 +38923,48 @@ class PySwipAnalysis(Analysis):
     def caseAComplexSubexpr(self,node):
         # print(node.getExpr().apply(self))
         return node.getExpr().apply(self)
+    
+    def caseARelationOntologyElement(self, node):
+        node.getRelation().apply(self)
+
+    def caseARelation(self, node):
+        # Relations id
+        relationId = "'"+node.getId().apply(self)+"'"
+        self.knowledge.facts['relation'].append(relationId)
+        
+        # Relations params types
+        listParamtyping = node.getParamtyping().apply(self)
+        listParamtypingString = map(lambda item: "'"+str(item)+"'",listParamtyping)
+        for param in listParamtyping:
+            paramString = "'"+str(param).strip()+"'"
+            relationType = tuple([relationId] + [paramString])
+            self.knowledge.facts['relationType'].append(relationType)
+
+        # Relations Nfp
+        nfp = node.getNfp()
+        if nfp != None:
+            nfpAttributeList = nfp.apply(self)
+            for nfpAttribute in nfpAttributeList:
+                for nfpAttribute in nfpAttribute:
+                    nfpId,nfpValue = nfpAttribute
+                    nfpFact = (relationId,nfpId,nfpValue)
+                    self.knowledge.facts['nfp'].append(nfpFact)
+
+    def caseAParamtyping(self, node):
+        params = []
+        paramType = node.getParamtype().apply(self)
+        params.append(paramType)
+        moreParamtype = node.getMoreparamtype()
+        for mParamType in moreParamtype:
+            paramType = mParamType.apply(self)
+            params.append(paramType)
+        return params
+
+    def caseAParamtype(self, node):
+        return node.getIdlist()
+
+    def caseAMoreparamtype(self, node):
+        return node.getParamtype().apply(self)
 
 class Reasoner:
     def __init__(self,):

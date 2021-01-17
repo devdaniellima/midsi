@@ -38407,6 +38407,7 @@ class Knowledge:
         self.facts['conceptAttribute'] = []
         self.facts['relation'] = []
         self.facts['relationType'] = []
+        self.instanceRelations = []
         self.axioms = []
         self.imports = []
 
@@ -38421,6 +38422,7 @@ class Knowledge:
         self.facts['conceptAttribute'] = []
         self.facts['relation'] = []
         self.facts['relationType'] = []
+        self.instanceRelations = []
         self.axioms = []
         self.imports = []
 
@@ -38575,8 +38577,6 @@ class PySwipAnalysis(Analysis):
                             self.knowledge.facts['nfp'].append(nfpFact)
 
         for ontologyElement in node.getOntologyElement():
-            #if isinstance(ontologyElement,ARelationOntologyElement):
-            #    print(ontologyElement)
             ontologyElement.apply(self)
     
     def caseAImportsontologyHeader(self,node):
@@ -38965,6 +38965,34 @@ class PySwipAnalysis(Analysis):
 
     def caseAMoreparamtype(self, node):
         return node.getParamtype().apply(self)
+    
+    def caseARelationinstanceOntologyElement(self, node):
+        node.getRelationinstance().apply(self)
+
+    def caseARelationinstance(self, node):
+        instanceRelation = []
+
+        id = "'" + str(node.getRelation()).strip() + "'"
+        instanceRelation.append(id)
+        
+        firstValue = node.getValue().apply(self)
+        instanceRelation.append(firstValue)
+
+        moreValues = node.getMorevalues()
+        for value in moreValues:
+            instanceRelation.append(value.apply(self))
+
+        self.knowledge.instanceRelations.append(tuple(instanceRelation))
+        
+        # Relation instance nfp
+        nfp = node.getNfp()
+        if nfp != None:
+            nfpAttributeList = nfp.apply(self)
+            for nfpAttribute in nfpAttributeList:
+                for nfpAttribute in nfpAttribute:
+                    nfpId,nfpValue = nfpAttribute
+                    nfpFact = (id,nfpId,nfpValue)
+                    self.knowledge.facts['nfp'].append(nfpFact)
 
 class Reasoner:
     def __init__(self,):
@@ -38990,7 +39018,6 @@ class Reasoner:
         self.analysis.knowledge.imports.append(fileName)
 
         for arqImp in self.analysis.knowledge.imports:
-
             absPath = os.path.abspath(dirName+arqImp)
             if absPath not in self.loadedFiles:
                 relativeName = dirName+arqImp+'.wsml'
@@ -39009,6 +39036,7 @@ class Reasoner:
 
             self.loadedFiles.append(absPath)
         
+        # Load facts in memory
         for fact in self.analysis.knowledge.facts:
             for asserts in self.analysis.knowledge.facts[fact]:
                 fato = fact+"("
@@ -39022,12 +39050,39 @@ class Reasoner:
                 self.prolog.assertz(fato)
                 self.bufferFacts = self.bufferFacts + [fato]
 
+        # Load axioms in memory
         for axiom in self.analysis.knowledge.axioms:
-            # print('Knownledge -- ' + axiom)
             if (self.printAxioms == True):
                 print(axiom)
             self.prolog.assertz(axiom)
             self.bufferAxioms = self.bufferAxioms + [axiom]
+
+        # Load instances relation in memory
+        for factInstance in self.analysis.knowledge.instanceRelations:
+            # Verify if relation exits
+            rRelation = self.prolog.query("relation("+factInstance[0]+")")
+            rListRelation = None
+            try:
+                rListRelation = list(rRelation)
+                if (len(rListRelation) > 0):
+                    # Verify if type is match
+                    rListInstanceRelation = list(self.prolog.query("relationType("+factInstance[0]+", Y)"))
+                    if (len(rListInstanceRelation) + 1 == len(factInstance)):
+                        isOk = True
+                        for i in range(0,len(rListInstanceRelation)):
+                            instance = factInstance[i+1]
+                            concept = "'" + str(rListInstanceRelation[i]['Y']) + "'"
+                            
+                            rMemberOf = list(self.prolog.query("memberOf("+instance+","+concept+")"))
+                            if len(rMemberOf) == 0:
+                                isOk = False
+                        if isOk:
+                            head = factInstance[0][1:-1]
+                            values = ','.join(factInstance[1:])
+                            fact = head + '(' + values + ')'
+                            self.prolog.assertz(fact)
+            except Exception as ex:
+                pass
         
         self.analysis.knowledge.clean()
 

@@ -39058,9 +39058,12 @@ class Reasoner:
             self.bufferAxioms = self.bufferAxioms + [axiom]
 
         # Load instances relation in memory
+        # print(self.analysis.knowledge.facts['relation'])
+        # print(self.analysis.knowledge.instanceRelations)
         for factInstance in self.analysis.knowledge.instanceRelations:
             # Verify if relation exits
             rRelation = self.prolog.query("relation("+factInstance[0]+")")
+            # print("relation("+factInstance[0]+")")
             rListRelation = None
             try:
                 rListRelation = list(rRelation)
@@ -39080,6 +39083,7 @@ class Reasoner:
                             head = factInstance[0][1:-1]
                             values = ','.join(factInstance[1:])
                             fact = head + '(' + values + ')'
+                            # print(fact)
                             self.prolog.assertz(fact)
             except Exception as ex:
                 pass

@@ -1,0 +1,94 @@
+wsmlVariant _"http://www.wsmo.org/wsml/wsml-syntax/wsml-rule"
+
+namespace {
+	_"br.com.devdaniellima/RepositoryOntology/Repository"
+}
+
+ontology Repository
+  nfp
+		dc#title hasValue "Repository Ontology"
+		dc#contributor hasValue "Daniel Lima"
+		dc#date hasValue _date(2021,02,24)
+		dc#format hasValue "text/plain"
+		dc#language hasValue "en-US" 
+  endnfp
+
+concept Source
+	nfp
+		description hasValue "Information provided for a Source"
+	endnfp
+	uri ofType _string
+
+concept Package
+	nfp
+		description hasValue "Information provided for a package"
+	endnfp
+	packageSource ofType Source
+	package ofType _string
+	version ofType _string
+	bundle ofType _string
+	fileName ofType _string
+	installedSize ofType _string
+	description ofType _string
+	maintainer ofType _string
+	architecture ofType _string
+
+relation depends (ofType Package, ofType Package)
+	nfp
+		description hasValue "Dependency relationship between the packages, first depends on the second."
+	endnfp
+
+axiom packageDependencesDef
+	definedBy (
+		?package [package hasValue ?packageName, bundle hasValue ?bundle] and
+		(
+			depends(?package, ?packageDep)
+		) and
+		?packageDep [package hasValue ?packageDependencyName]
+	) implies packageDependences(?packageName, ?packageDependencyName).
+
+axiom packageUriDef
+	definedBy (
+		?package [package hasValue ?packageName, fileName hasValue ?packageUri, packageSource hasValue ?packageSource] and
+		(
+			?packageSource [uri hasValue ?sourceUri] memberOf Source
+		)
+	) implies packageUri(?packageName, ?sourceUri, ?packageUri).
+
+/* INSTANCES */
+
+instance MicrosoftVSCodeSource memberOf Source
+	uri hasValue "https://packages.microsoft.com/repos/code/"
+
+instance Code_v_1_53_2__1 memberOf Package
+	packageSource hasValue MicrosoftVSCodeSource
+	package hasValue "code"
+	version hasValue "1.53.2"
+	bundle hasValue "1613044664"
+	fileName hasValue "pool/main/c/code/code_1.53.2-1613044664_amd64.deb"
+	description hasValue "Code editing. Redefined."
+	maintainer hasValue "Microsoft Corporation <vscode-linux@microsoft.com>"
+	architecture hasValue "amd64"
+
+instance Apt_v_1_0_0__1 memberOf Package
+	package hasValue "apt"
+
+instance Gnupg_v_1_0_0__1 memberOf Package
+	package hasValue "gnupg"
+
+instance Libxkbfile1_v_1_0_0__1 memberOf Package
+	package hasValue "libxkbfile1"
+
+instance Libxss1_v_1_0_0__1 memberOf Package
+	package hasValue "libxss1"
+
+instance Libgbm1_v_1_0_0__1 memberOf Package
+	package hasValue "libgbm1"
+
+relationInstance depends(Code_v_1_53_2__1, Apt_v_1_0_0__1)
+relationInstance depends(Code_v_1_53_2__1, Gnupg_v_1_0_0__1)
+relationInstance depends(Code_v_1_53_2__1, Libxkbfile1_v_1_0_0__1)
+relationInstance depends(Code_v_1_53_2__1, Libxss1_v_1_0_0__1)
+relationInstance depends(Code_v_1_53_2__1, Libgbm1_v_1_0_0__1)
+
+/*Depends: libnss3 (>= 2:3.26), gnupg, apt, libxkbfile1, libsecret-1-0, libgtk-3-0 (>= 3.10.0), libxss1, libgbm1*/

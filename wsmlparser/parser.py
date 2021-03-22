@@ -38659,7 +38659,10 @@ class PySwipAnalysis(Analysis):
         instanceId = "'"+node.getId().apply(self)+"'"
         self.knowledge.facts['instance'].append(instanceId)
 
-        if node.getMemberof() != None:
+        if node.getMemberof() == None:
+            memberOfInstance = (instanceId,"'Thing'")
+            self.knowledge.facts['memberOf'].append(memberOfInstance)
+        else:
             ids = node.getMemberof().apply(self)
             for idMemberOf in ids:
                 memberOfInstance = (instanceId,"'"+idMemberOf+"'")

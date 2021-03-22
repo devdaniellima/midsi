@@ -26,7 +26,6 @@ concept Package
 	packageSource ofType Source
 	package ofType _string
 	version ofType _string
-	bundle ofType _string
 	fileName ofType _string
 	installedSize ofType _string
 	description ofType _string
@@ -40,10 +39,8 @@ relation depends (ofType Package, ofType Package)
 
 axiom packageDependencesDef
 	definedBy (
-		?package [package hasValue ?packageName, bundle hasValue ?bundle] and
-		(
-			depends(?package, ?packageDep)
-		) and
+		?package [package hasValue ?packageName] and
+		depends(?package, ?packageDep) and
 		?packageDep [package hasValue ?packageDependencyName]
 	) implies packageDependences(?packageName, ?packageDependencyName).
 
@@ -64,31 +61,24 @@ instance Code_v_1_53_2__1 memberOf Package
 	packageSource hasValue MicrosoftVSCodeSource
 	package hasValue "code"
 	version hasValue "1.53.2"
-	bundle hasValue "1613044664"
 	fileName hasValue "pool/main/c/code/code_1.53.2-1613044664_amd64.deb"
 	description hasValue "Code editing. Redefined."
 	maintainer hasValue "Microsoft Corporation <vscode-linux@microsoft.com>"
 	architecture hasValue "amd64"
 
-instance Apt_v_1_0_0__1 memberOf Package
-	package hasValue "apt"
-
-instance Gnupg_v_1_0_0__1 memberOf Package
-	package hasValue "gnupg"
-
-instance Libxkbfile1_v_1_0_0__1 memberOf Package
-	package hasValue "libxkbfile1"
-
-instance Libxss1_v_1_0_0__1 memberOf Package
-	package hasValue "libxss1"
-
-instance Libgbm1_v_1_0_0__1 memberOf Package
-	package hasValue "libgbm1"
-
-relationInstance depends(Code_v_1_53_2__1, Apt_v_1_0_0__1)
-relationInstance depends(Code_v_1_53_2__1, Gnupg_v_1_0_0__1)
-relationInstance depends(Code_v_1_53_2__1, Libxkbfile1_v_1_0_0__1)
-relationInstance depends(Code_v_1_53_2__1, Libxss1_v_1_0_0__1)
-relationInstance depends(Code_v_1_53_2__1, Libgbm1_v_1_0_0__1)
-
 /*Depends: libnss3 (>= 2:3.26), gnupg, apt, libxkbfile1, libsecret-1-0, libgtk-3-0 (>= 3.10.0), libxss1, libgbm1*/
+
+relationInstance depends(Code_v_1_53_2__1, DA__1)
+relationInstance depends(Code_v_1_53_2__1, DA__2)
+
+concept DependencyAtom
+
+instance DA__1 memberOf DependencyAtom
+	package hasValue "dconf-gsettings-backend"
+	comparison hasValue ">="
+	version hasValue "2:3.26"
+
+instance DA__2 memberOf DependencyAtom
+	package hasValue "guile-2.2-libs"
+	comparison hasValue ""
+	version hasValue ""

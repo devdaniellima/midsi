@@ -27345,6 +27345,10 @@ class Lexer(object):
                     	return token
                 else:
                     if (len(text) > 0):
+                        print("LexerException")
+                        print(" => start_line",str(start_line))
+                        print(" => start_pos",str(start_pos))
+                        print(" => text",str(text))
                         raise LexerException("[" + str(start_line + 1) + "," + str(start_pos + 1) + "]" +" Unknown token: " + str(text))
                     else:
                         return EOF(start_line + 1, start_pos + 1)
@@ -38344,6 +38348,10 @@ class Parser(object):
                 node = Start(node1, node2)
                 return node
             elif (action[0] == ACTION_ERROR):
+                print("Exception in:")
+                print(' => last_token', str(last_token))
+                print(' => last_line', str(last_line))
+                print(' => last_pos', str(last_pos))
                 raise ParserException(last_token, "[" + str(last_line) + "," + str(last_pos) + "] " + errorMessages[errors[action[1]]])
     
     def unescape (self, s):
@@ -39007,8 +39015,13 @@ class Reasoner:
         self.printAxioms = False
         self.bufferFacts = []
         self.bufferAxioms = []
+        self.hasImportExtendsFile = False
 
     def load(self,file):
+        if not self.hasImportExtendsFile:
+            self.prolog.consult(os.path.dirname(os.path.realpath(__file__)) + '/extends.pl')
+            self.hasImportExtendsFile = True
+
         if os.path.exists(file) == False and self.printLogLoading == True:
             print('Arquivo '+ file + ' não foi encontrado!')
             return False
@@ -39078,10 +39091,20 @@ class Reasoner:
                         for i in range(0,len(rListInstanceRelation)):
                             instance = factInstance[i+1]
                             concept = "'" + str(rListInstanceRelation[i]['Y']) + "'"
-                            
-                            rMemberOf = list(self.prolog.query("memberOf("+instance+","+concept+")"))
-                            if len(rMemberOf) == 0:
-                                isOk = False
+                            if concept[1] == '_':
+                                print(instance)
+                                print(concept)
+                                if concept == "'_integer'" and not instance.isdigit():
+                                    isOk = False
+                                    break
+                                elif concept == "'_string'" and instance[0] != '"' and instance[-1] != '"':
+                                    isOk = False
+                                    break
+                            else:
+                                rMemberOf = list(self.prolog.query("memberOf("+instance+","+concept+")"))
+                                if len(rMemberOf) == 0:
+                                    isOk = False
+                                    break
                         if isOk:
                             head = factInstance[0][1:-1]
                             values = ','.join(factInstance[1:])

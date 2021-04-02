@@ -11580,7 +11580,7 @@ class AIriIri(Node):
         return AIriIri(self.cloneNode(self._full_iri_))
 
     def apply(self, analysis):
-        analysis.caseAIriIri(self)
+        return analysis.caseAIriIri(self)
 
     def getFullIri (self):
         return self._full_iri_
@@ -38470,19 +38470,18 @@ class PySwipAnalysis(Analysis):
         return str(node.getString()).strip()
 
     def caseATermValue(self,node):
-        #print(type(node.getId()))
-        #print(node.getId())
         return "'" + str(node.getId().apply(self)).strip() + "'"
 
     def caseAIriId(self,node):
         return node.getIri().apply(self)
+    
+    def caseAIriIri(self, node):
+        return str(node.getFullIri())
 
     def caseASqnameIri(self,node):
         return node.getSqname().apply(self)
 
     def caseAAnySqname(self,node):
-        # print(node.getPrefix())
-        #print(node.getName())
         return str(node.getName()).strip()
 
     def caseAVarTerm(self,node):
@@ -39034,21 +39033,40 @@ class Reasoner:
         self.analysis.knowledge.imports.append(fileName)
 
         for arqImp in self.analysis.knowledge.imports:
-            absPath = os.path.abspath(dirName+arqImp)
-            if absPath not in self.loadedFiles:
-                relativeName = dirName+arqImp+'.wsml'
-                if self.printLogLoading == True:
-                    print('Início do carregamento de '+relativeName)
+            arqImpStrip = arqImp.strip()
 
-                if os.path.exists(relativeName) == True:
-                    parser = Parser(Lexer(relativeName))
+            if '_"/' in arqImpStrip:
+                absPath = arqImpStrip[2:-1]
+            elif '_"' in arqImpStrip:
+                relativePath = arqImpStrip[2:-1]
+                
+                if relativePath[-5:] != '.wsml':
+                    relativePath += '.wsml'
+
+                if '~' in relativePath:
+                    relativePath = relativePath.replace('~', os.path.expanduser('~'))
+
+                os.chdir(os.path.dirname(relativePath))
+                absPath = os.path.abspath(os.path.basename(relativePath))
+            else:
+                if arqImpStrip[-5:] != '.wsml':
+                    arqImpStrip += '.wsml'
+
+                os.chdir(dirName)
+                absPath = os.path.abspath(arqImpStrip)
+
+            if absPath not in self.loadedFiles:
+                if self.printLogLoading == True:
+                    print('Start loading '+absPath)
+
+                if os.path.exists(absPath):
+                    parser = Parser(Lexer(absPath))
                     head = parser.parse()
                     head.apply(self.analysis)
                     if self.printLogLoading == True:
-                        print('Arquivo ' + relativeName + ' carregado com sucesso!')
+                        print('File ' + absPath + ' successfully uploaded!')
                 else:
-                    if self.printLogLoading == True:
-                        print('Arquivo ' + relativeName + ' não foi encontrado!')
+                    print('WARNING: File ' + absPath + ' not found!')
 
             self.loadedFiles.append(absPath)
         

@@ -39110,8 +39110,6 @@ class Reasoner:
                             instance = factInstance[i+1]
                             concept = "'" + str(rListInstanceRelation[i]['Y']) + "'"
                             if concept[1] == '_':
-                                print(instance)
-                                print(concept)
                                 if concept == "'_integer'" and not instance.isdigit():
                                     isOk = False
                                     break

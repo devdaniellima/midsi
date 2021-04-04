@@ -38918,10 +38918,13 @@ class PySwipAnalysis(Analysis):
         return molecule
 
     def caseAConjunction(self,node):
+        subExpr = node.getSubexpr().apply(self)
+        if subExpr != "" and subExpr[0] == subExpr[-1] == "'":
+            subExpr = subExpr[1:-1]
         conjuncao = ''
         conjuncao = node.getConjunction().apply(self)
         conjuncao = conjuncao + ',' # print(node.getTAnd())
-        conjuncao = conjuncao + node.getSubexpr().apply(self)
+        conjuncao = conjuncao + subExpr
 
         return conjuncao
     
@@ -39031,6 +39034,8 @@ class Reasoner:
         dirName = '/'.join(fileCamArr[0:-1]) + '/'
 
         self.analysis.knowledge.imports.append(fileName)
+        
+        os.chdir(dirName)
 
         for arqImp in self.analysis.knowledge.imports:
             arqImpStrip = arqImp.strip()
@@ -39046,14 +39051,12 @@ class Reasoner:
                 if '~' in relativePath:
                     relativePath = relativePath.replace('~', os.path.expanduser('~'))
 
-                os.chdir(os.path.dirname(relativePath))
-                absPath = os.path.abspath(os.path.basename(relativePath))
+                absPath = os.path.abspath(relativePath)
             else:
                 if arqImpStrip[-5:] != '.wsml':
                     arqImpStrip += '.wsml'
 
-                os.chdir(dirName)
-                absPath = os.path.abspath(arqImpStrip)
+                absPath = os.path.abspath('./'+arqImpStrip)
 
             if absPath not in self.loadedFiles:
                 if self.printLogLoading == True:

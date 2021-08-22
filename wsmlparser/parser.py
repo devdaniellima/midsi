@@ -38407,7 +38407,7 @@ class Knowledge:
     def __init__(self):
         self.facts = dict()
         self.facts['ontology'] = []
-        self.facts['concept'] = []
+        self.facts['conceptTerm'] = []
         self.facts['instance'] = []
         self.facts['memberOf'] = []
         self.facts['hasValue'] = []
@@ -38422,7 +38422,7 @@ class Knowledge:
     def clean(self):
         self.facts = dict()
         self.facts['ontology'] = []
-        self.facts['concept'] = []
+        self.facts['conceptTerm'] = []
         self.facts['instance'] = []
         self.facts['memberOf'] = []
         self.facts['hasValue'] = []
@@ -38617,7 +38617,7 @@ class PySwipAnalysis(Analysis):
             print('-- caseAConcept --')
 
         conceptId = "'"+node.getId().apply(self)+"'"
-        self.knowledge.facts['concept'].append(conceptId)
+        self.knowledge.facts['conceptTerm'].append(conceptId)
         # header*
         nfp = node.getNfp()
         if nfp != None:
@@ -39129,7 +39129,8 @@ class Reasoner:
                             values = ','.join(factInstance[1:])
                             fact = head + '(' + values + ')'
                             # print(fact)
-                            self.prolog.assertz(fact)
+                            if (self.printFacts == True):
+                                self.prolog.assertz(fact)
             except Exception as ex:
                 pass
         

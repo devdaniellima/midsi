@@ -12,16 +12,21 @@ Solution for data discovery in projects applicable to the Semantic Web, enabling
 
 ### Installing project dependencies
 
-Debian-based systems:
+Linux Debian-based systems:
 
     sudo ./install.sh
 
-Other systems install the following packages:
+Other linux systems install the following packages:
 
     default_jre
     python3
     swi-prolog #swi-prolog ou pl
     pip pyswip
+
+MacOS (Intel or M1):
+
+    brew install swi-prolog
+    pip3 install pyswip
 
 ### Benchmark
 

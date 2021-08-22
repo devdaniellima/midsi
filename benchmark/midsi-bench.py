@@ -3,6 +3,8 @@ import time
 sys.path.append('../')
 from wsmlparser.parser import *
 
+mainDir = os.getcwd()
+
 args = sys.argv[1:]
 ontCarregada = False
 
@@ -20,7 +22,8 @@ for contArg in range(len(args)):
 			print("Carregar Ontologia: "+str(round(tempo,2)) + " ms")
 			ontCarregada = True
 	elif ontCarregada :
-		if (os.path.exists(arg)):
+		os.chdir(mainDir)
+		if (os.path.exists(arg)):	
 			f = open(arg,'r')
 			query = f.read()
 			f.close()

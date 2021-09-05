@@ -40,7 +40,7 @@ while True:
                 response = SUCCESS + 'Loaded in ' + str(round(countTime, 2)) + ' ms'
                 sock.sendto(response.encode('utf_8'), addr)
             except:
-                response = "\n{'erro':'Internal error'}"
+                response = "\n{'error':'Internal error'}"
                 sent = sock.sendto(response.encode('utf_8'), addr)
         elif command == 'query':
             try:
@@ -52,7 +52,7 @@ while True:
                 response = str(result)+'\nQuery finished in ' + str(round(countTime, 2)) + ' ms'
                 sent = sock.sendto(response.encode('utf_8'), addr)
             except:
-                response = "\n{'erro':'Internal error'}"
+                response = "\n{'error':'Internal error'}"
                 sent = sock.sendto(response.encode('utf_8'), addr)
         elif command == 'queryFile':
             print(INFO + 'Command: execute query file ' + args[1])
@@ -68,7 +68,7 @@ while True:
                     response = str(result)+'\nQuery finished in ' + str(round(countTime, 2)) + ' ms'
                     sent = sock.sendto(response.encode('utf_8'), addr)
                 except:
-                    response = "\n{'erro':'Internal error'}"
+                    response = "\n{'error':'Internal error'}"
                     sent = sock.sendto(response.encode('utf_8'), addr)
             else:
                 print(ERROR + 'File not found')

@@ -39015,6 +39015,7 @@ class Reasoner:
         self.printLogLoading = False
         self.printFacts = False
         self.printAxioms = False
+        self.printQueryProlog = False
         self.bufferFacts = []
         self.bufferAxioms = []
         self.hasImportExtendsFile = False
@@ -39069,7 +39070,8 @@ class Reasoner:
                     if self.printLogLoading == True:
                         print('File ' + absPath + ' successfully uploaded!')
                 else:
-                    print('WARNING: File ' + absPath + ' not found!')
+                    if self.printLogLoading == True:
+                        print('WARNING: File ' + absPath + ' not found!')
 
             self.loadedFiles.append(absPath)
         
@@ -39158,7 +39160,9 @@ class Reasoner:
     def execute(self,query):
         reasoner = Reasoner()
         queryProlog = reasoner.convertQuery(query)
-        #print('QUERY PROLOG -- ' + queryProlog)
+        
+        if (self.printQueryProlog == True):
+            print('Prolog: ' + queryProlog)
         return self.executeProlog(queryProlog)
 
     def executeProlog(self,queryProlog):
@@ -39167,7 +39171,7 @@ class Reasoner:
         try:
             resultList = list(result)
         except Exception as ex:
-            resultList = {'erro':str(ex)}
+            resultList = { 'error' : str(ex) }
         finally:
             return resultList
     

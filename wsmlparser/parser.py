@@ -38814,6 +38814,7 @@ class PySwipAnalysis(Analysis):
 
     def caseAConjunctionDisjunction(self,node):
         #print(type(node.getConjunction()))
+        #print(node.getConjunction())
         return node.getConjunction().apply(self)
     
     def caseASimpleSubexpr(self,node):
@@ -38929,9 +38930,12 @@ class PySwipAnalysis(Analysis):
         return conjuncao
     
     def caseASubexprConjunction(self,node):
-        #print(type(node.getSubexpr()))
-        #print(node.getSubexpr())
-        return node.getSubexpr().apply(self)
+        # print(type(node.getSubexpr()))
+        # print(node.getSubexpr())
+        subExpr = node.getSubexpr().apply(self)
+        if subExpr != "" and subExpr[0] == subExpr[-1] == "'":
+            subExpr = subExpr[1:-1]
+        return subExpr
 
     def caseAComplexSubexpr(self,node):
         # print(node.getExpr().apply(self))
@@ -39130,9 +39134,9 @@ class Reasoner:
                             head = factInstance[0][1:-1]
                             values = ','.join(factInstance[1:])
                             fact = head + '(' + values + ')'
-                            # print(fact)
                             if (self.printFacts == True):
-                                self.prolog.assertz(fact)
+                                print(fact)
+                            self.prolog.assertz(fact)
             except Exception as ex:
                 pass
         

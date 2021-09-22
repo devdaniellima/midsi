@@ -38566,7 +38566,8 @@ class PySwipAnalysis(Analysis):
         if node.getId() != None: # returning AIriId
         #    print(node.getId()) # Salvar id da ontologia
             ontologyId = "'"+node.getId().apply(self)+"'"
-            self.knowledge.facts['ontology'].append(ontologyId)
+            if ontologyId not in self.knowledge.facts['ontology']:
+                self.knowledge.facts['ontology'].append(ontologyId)
 
         for ontologyHeader in node.getHeader():
             if (isinstance(ontologyHeader,AImportsontologyHeader)):
@@ -38581,7 +38582,8 @@ class PySwipAnalysis(Analysis):
                             # nfp = "nfp("+str(nfpAttribute[0])+" hasValue "+str(nfpAttribute[1])+")"
                             nfpId,nfpValue = nfpAttribute
                             nfpFact = (ontologyId,nfpId,nfpValue)
-                            self.knowledge.facts['nfp'].append(nfpFact)
+                            if nfpFact not in self.knowledge.facts['nfp']:
+                                self.knowledge.facts['nfp'].append(nfpFact)
 
         for ontologyElement in node.getOntologyElement():
             ontologyElement.apply(self)
@@ -38617,7 +38619,8 @@ class PySwipAnalysis(Analysis):
             print('-- caseAConcept --')
 
         conceptId = "'"+node.getId().apply(self)+"'"
-        self.knowledge.facts['conceptTerm'].append(conceptId)
+        if conceptId not in self.knowledge.facts['conceptTerm']:
+            self.knowledge.facts['conceptTerm'].append(conceptId)
         # header*
         nfp = node.getNfp()
         if nfp != None:
@@ -38627,7 +38630,8 @@ class PySwipAnalysis(Analysis):
                     # nfp = "nfp("+str(nfpAttribute[0])+" hasValue "+str(nfpAttribute[1])+")"
                     nfpId,nfpValue = nfpAttribute
                     nfpFact = (conceptId,nfpId,nfpValue)
-                    self.knowledge.facts['nfp'].append(nfpFact)
+                    if nfpFact not in self.knowledge.facts['nfp']:
+                        self.knowledge.facts['nfp'].append(nfpFact)
         
         listAttribute = node.getAttribute()
         if listAttribute != None:
@@ -38635,7 +38639,8 @@ class PySwipAnalysis(Analysis):
                 factAttributeValue = attribute.apply(self)
                 for factAttr in factAttributeValue:     
                     fact = tuple([conceptId]+factAttr)
-                    self.knowledge.facts['conceptAttribute'].append(fact)
+                    if fact not in self.knowledge.facts['conceptAttribute']:
+                        self.knowledge.facts['conceptAttribute'].append(fact)
 
     def caseAAttribute(self,node):
         idAttr = "'"+node.getId().apply(self)+"'"
@@ -38664,22 +38669,26 @@ class PySwipAnalysis(Analysis):
             print('-- caseAInstance --')
         
         instanceId = "'"+node.getId().apply(self)+"'"
-        self.knowledge.facts['instance'].append(instanceId)
+        if instanceId not in self.knowledge.facts['instance']:
+            self.knowledge.facts['instance'].append(instanceId)
 
         if node.getMemberof() == None:
             memberOfInstance = (instanceId,"'Thing'")
-            self.knowledge.facts['memberOf'].append(memberOfInstance)
+            if memberOfInstance not in self.knowledge.facts['memberOf']:
+                self.knowledge.facts['memberOf'].append(memberOfInstance)
         else:
             ids = node.getMemberof().apply(self)
             for idMemberOf in ids:
                 memberOfInstance = (instanceId,"'"+idMemberOf+"'")
-                self.knowledge.facts['memberOf'].append(memberOfInstance)
+                if memberOfInstance not in self.knowledge.facts['memberOf']:
+                    self.knowledge.facts['memberOf'].append(memberOfInstance)
 
         for attribute in node.getAttributevalue():
             attributeValues = attribute.apply(self)
             for attributeValue in attributeValues:
                 attributeOfInstance = tuple([instanceId] + attributeValue)
-                self.knowledge.facts['hasValue'].append(attributeOfInstance)
+                if attributeOfInstance not in self.knowledge.facts['hasValue']:
+                    self.knowledge.facts['hasValue'].append(attributeOfInstance)
     
     def caseAMemberof(self,node):
         return node.getIdlist().apply(self)
@@ -38947,7 +38956,8 @@ class PySwipAnalysis(Analysis):
     def caseARelation(self, node):
         # Relations id
         relationId = "'"+node.getId().apply(self)+"'"
-        self.knowledge.facts['relation'].append(relationId)
+        if relationId not in self.knowledge.facts['relation']:
+            self.knowledge.facts['relation'].append(relationId)
         
         # Relations params types
         listParamtyping = node.getParamtyping().apply(self)
@@ -38955,7 +38965,8 @@ class PySwipAnalysis(Analysis):
         for param in listParamtyping:
             paramString = "'"+str(param).strip()+"'"
             relationType = tuple([relationId] + [paramString])
-            self.knowledge.facts['relationType'].append(relationType)
+            if relationType not in self.knowledge.facts['relationType']:
+                self.knowledge.facts['relationType'].append(relationType)
 
         # Relations Nfp
         nfp = node.getNfp()
@@ -38965,7 +38976,8 @@ class PySwipAnalysis(Analysis):
                 for nfpAttribute in nfpAttribute:
                     nfpId,nfpValue = nfpAttribute
                     nfpFact = (relationId,nfpId,nfpValue)
-                    self.knowledge.facts['nfp'].append(nfpFact)
+                    if nfpFact not in self.knowledge.facts['nfp']:
+                        self.knowledge.facts['nfp'].append(nfpFact)
 
     def caseAParamtyping(self, node):
         params = []
@@ -39009,7 +39021,8 @@ class PySwipAnalysis(Analysis):
                 for nfpAttribute in nfpAttribute:
                     nfpId,nfpValue = nfpAttribute
                     nfpFact = (id,nfpId,nfpValue)
-                    self.knowledge.facts['nfp'].append(nfpFact)
+                    if nfpFact not in self.knowledge.facts['nfp']:
+                        self.knowledge.facts['nfp'].append(nfpFact)
 
 class Reasoner:
     def __init__(self,):

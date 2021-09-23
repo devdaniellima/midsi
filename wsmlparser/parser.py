@@ -38965,8 +38965,8 @@ class PySwipAnalysis(Analysis):
         for param in listParamtyping:
             paramString = "'"+str(param).strip()+"'"
             relationType = tuple([relationId] + [paramString])
-            if relationType not in self.knowledge.facts['relationType']:
-                self.knowledge.facts['relationType'].append(relationType)
+            #if relationType not in self.knowledge.facts['relationType']:
+            self.knowledge.facts['relationType'].append(relationType)
 
         # Relations Nfp
         nfp = node.getNfp()

@@ -5,7 +5,9 @@
 Solution for data discovery in projects applicable to the Semantic Web, enabling the loading of ontologies and inference of results using the WSML language.
 
 SableCC is used for translators for the WSML language.
+
 Prolog is used as an engine to perform inferences.
+
 Pyswip is used for connection between python and prolog resources.
 
 ### Requirements:
